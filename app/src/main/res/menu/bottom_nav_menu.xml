@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/listFragment"
+        android:icon="@drawable/ic_list_view"
+        android:title="@string/list" />
+
+    <item
+        android:id="@+id/mapFragment"
+        android:icon="@drawable/ic_map_view"
+        android:title="@string/map" />
+
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search" />
+
+    <item
+        android:id="@+id/loanFragment"
+        android:icon="@drawable/ic_house_loan"
+        android:title="@string/loan" />
+
+</menu>

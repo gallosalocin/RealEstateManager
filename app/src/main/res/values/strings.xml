@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Real Estate Manager</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="login">Login</string>
+    <string name="click_here_to_register">Click here to register</string>
+    <string name="login_title_first">Real Estate</string>
+    <string name="login_title_second">Manager</string>
+    <string name="register">Register</string>
+    <string name="click_here_to_login">Click here to login</string>
+    <string name="list">List</string>
+    <string name="map">Map</string>
+    <string name="search">Search</string>
+    <string name="loan">Loan</string>
 </resources>
