@@ -1,10 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_red_light"
     tools:context=".ui.LoanFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loan_amount"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_loan_amount"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/custom_input"
+                android:drawableStart="@drawable/ic_dollar"
+                android:drawablePadding="10dp"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:selectAllOnFocus="true"
+                android:textSize="20sp"
+                tools:ignore="RtlSymmetry" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/interested_rate"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_interest_rate"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/custom_input"
+                android:drawableStart="@drawable/ic_percent"
+                android:drawablePadding="10dp"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:paddingStart="10dp"
+                android:selectAllOnFocus="true"
+                android:textSize="20sp"
+                tools:ignore="RtlSymmetry" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/number_of_year"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_number_years"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/custom_input"
+                android:drawableStart="@drawable/ic_time"
+                android:drawablePadding="10dp"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:selectAllOnFocus="true"
+                android:textSize="20sp"
+                tools:ignore="RtlSymmetry" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_calculate"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/round_btn"
+                android:text="@string/calculate"
+                android:textAllCaps="false"
+                android:textSize="20sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_total_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/total_amount"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linear_layout" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_per_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/per_year"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linear_layout" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_per_month"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/per_month"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linear_layout" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

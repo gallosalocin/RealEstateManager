@@ -71,6 +71,6 @@
     <fragment
         android:id="@+id/addFragment"
         android:name="com.openclassrooms.realestatemanager.ui.AddFragment"
-        android:label="Add Real Estate"
+        android:label="Add Property"
         tools:layout="@layout/fragment_add" />
 </navigation>

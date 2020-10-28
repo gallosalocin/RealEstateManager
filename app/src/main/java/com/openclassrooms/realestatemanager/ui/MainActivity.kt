@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Setup Navigation Component
-    fun setupNavigationComponent() {
+    private fun setupNavigationComponent() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.findNavController()
 
@@ -32,12 +32,18 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController)
         bottom_nav_view.setupWithNavController(navController)
+        bottom_nav_view.setOnNavigationItemReselectedListener { /* */ }
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.loginFragment, R.id.registerFragment -> {
                     toolbar.visibility = View.GONE
                     bottom_nav_view.visibility = View.GONE
+                    fab_add.visibility = View.GONE
+                }
+                R.id.loanFragment -> {
+                    toolbar.visibility = View.VISIBLE
+                    bottom_nav_view.visibility = View.VISIBLE
                     fab_add.visibility = View.GONE
                 }
                 else -> {
