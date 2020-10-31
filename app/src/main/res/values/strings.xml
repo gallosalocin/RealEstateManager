@@ -23,4 +23,5 @@
     <string name="currency">currency</string>
     <string name="euro">euro</string>
     <string name="logout">Logout</string>
+    <string name="add_new_property">Add new property</string>
 </resources>

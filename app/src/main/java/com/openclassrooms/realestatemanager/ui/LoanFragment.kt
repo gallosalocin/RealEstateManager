@@ -2,10 +2,7 @@ package com.openclassrooms.realestatemanager.ui
 
 import android.os.Bundle
 import android.text.Editable
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.openclassrooms.realestatemanager.R
@@ -20,6 +17,11 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     private var nbrYear: Editable? = null
     private var isDollar: Boolean = false
     private lateinit var menu: Menu
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
