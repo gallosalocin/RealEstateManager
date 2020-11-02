@@ -12,16 +12,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.databinding.FragmentLoginBinding
 import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_IS_USER_LOGIN
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_login.*
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
+    private lateinit var binding: FragmentLoginBinding
     private val viewModel: MainViewModel by viewModels()
     private lateinit var agentsList: List<Agent>
     private lateinit var sharedPref: SharedPreferences
@@ -33,9 +34,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentLoginBinding.bind(view)
 
-        sharedPref= requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
-        if (sharedPref.contains(SHARED_PREFERENCES_IS_USER_LOGIN)){
+        sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
+        if (sharedPref.contains(SHARED_PREFERENCES_IS_USER_LOGIN)) {
             val action = LoginFragmentDirections.actionLoginFragmentToListFragment()
             findNavController().navigate(action)
         }
@@ -45,24 +47,24 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         })
 
 
-        tv_register.setOnClickListener {
+        binding.tvRegister.setOnClickListener {
             val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
             findNavController().navigate(action)
         }
 
-        btn_login.setOnClickListener {
-            if (agentsList.any { it.username == (et_username.text.toString().trim()) }) {
-                if (agentsList.any { it.password == (et_password.text.toString().trim()) }) {
+        binding.btnLogin.setOnClickListener {
+            if (agentsList.any { it.username == (binding.etUsername.text.toString().trim()) }) {
+                if (agentsList.any { it.password == (binding.etPassword.text.toString().trim()) }) {
                     val editor: SharedPreferences.Editor = sharedPref.edit()
                     editor.putBoolean(SHARED_PREFERENCES_IS_USER_LOGIN, true)
                     editor.apply()
                     val action = LoginFragmentDirections.actionLoginFragmentToListFragment()
                     findNavController().navigate(action)
                 } else {
-                    et_password.error = "incorrect password"
+                    binding.etPassword.error = "incorrect password"
                 }
             } else {
-                et_username.error = "This username doesn't exist, please register first"
+                binding.etUsername.error = "This username doesn't exist, please register first"
             }
         }
     }

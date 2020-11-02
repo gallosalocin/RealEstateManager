@@ -10,19 +10,21 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupNavigationComponent()
 
@@ -37,27 +39,27 @@ class MainActivity : AppCompatActivity() {
                 setOf(R.id.mapFragment, R.id.listFragment, R.id.searchFragment, R.id.loanFragment)
         )
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        bottom_nav_view.setupWithNavController(navController)
-        bottom_nav_view.setOnNavigationItemReselectedListener { /* */ }
+        binding.bottomNavView.setupWithNavController(navController)
+        binding.bottomNavView.setOnNavigationItemReselectedListener { /* */ }
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.loginFragment, R.id.registerFragment -> {
-                    toolbar.visibility = View.GONE
-                    bottom_nav_view.visibility = View.GONE
-                    fab_add.visibility = View.GONE
+                    binding.toolbar.visibility = View.GONE
+                    binding.bottomNavView.visibility = View.GONE
+                    binding.fabAdd.visibility = View.GONE
                 }
                 R.id.loanFragment -> {
-                    toolbar.visibility = View.VISIBLE
-                    bottom_nav_view.visibility = View.VISIBLE
-                    fab_add.visibility = View.GONE
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.bottomNavView.visibility = View.VISIBLE
+                    binding.fabAdd.visibility = View.GONE
                 }
                 else -> {
-                    toolbar.visibility = View.VISIBLE
-                    bottom_nav_view.visibility = View.VISIBLE
-                    fab_add.visibility = View.VISIBLE
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.bottomNavView.visibility = View.VISIBLE
+                    binding.fabAdd.visibility = View.VISIBLE
                 }
             }
         }

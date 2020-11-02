@@ -1,8 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.view.*
@@ -10,13 +7,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.other.Constants
-import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
+import com.openclassrooms.realestatemanager.databinding.FragmentLoanBinding
 import com.openclassrooms.realestatemanager.utils.Utils
-import kotlinx.android.synthetic.main.fragment_loan.*
 
 class LoanFragment : Fragment(R.layout.fragment_loan) {
 
+    private lateinit var binding: FragmentLoanBinding
     private var result: Float = 0f
     private var resultPerYear: Float = 0f
     private var resultPerMonth: Float = 0f
@@ -31,18 +27,19 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentLoanBinding.bind(view)
 
         setHasOptionsMenu(true)
 
-        tv_total_amount.text = resources.getString(R.string.total_amount, "", "");
-        tv_per_year.text = resources.getString(R.string.per_year, "", "");
-        tv_per_month?.text = resources.getString(R.string.per_month, "", "");
+        binding.tvTotalAmount.text = resources.getString(R.string.total_amount, "", "");
+        binding.tvPerYear.text = resources.getString(R.string.per_year, "", "");
+        binding.tvPerMonth?.text = resources.getString(R.string.per_month, "", "");
 
-        val loanAmount = et_loan_amount.text
-        val interestedRate = et_interest_rate.text
-        nbrYear = et_number_years.text
+        val loanAmount = binding.etLoanAmount.text
+        val interestedRate = binding.etInterestRate.text
+        nbrYear = binding.etNumberYears.text
 
-        btn_calculate.setOnClickListener {
+        binding.btnCalculate.setOnClickListener {
             if (loanAmount.isNullOrEmpty() || interestedRate.isNullOrEmpty() || nbrYear.isNullOrEmpty()) {
                 Toast.makeText(requireContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -74,9 +71,9 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
                     isDollar = false
                     menu.getItem(0).setIcon(R.drawable.ic_euro)
                     if (result == 0f) {
-                        et_loan_amount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar, 0, 0, 0)
+                        binding.etLoanAmount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar, 0, 0, 0)
                     } else {
-                        et_loan_amount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar, 0, 0, 0)
+                        binding.etLoanAmount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar, 0, 0, 0)
                         result = Utils.convertEuroToDollar(result.toInt()).toFloat()
                         resultPerYear = result / nbrYear.toString().toInt()
                         resultPerMonth = resultPerYear / 12
@@ -86,9 +83,9 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
                     isDollar = true
                     menu.getItem(0).setIcon(R.drawable.ic_dollar)
                     if (result == 0f) {
-                        et_loan_amount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro, 0, 0, 0)
+                        binding.etLoanAmount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro, 0, 0, 0)
                     } else {
-                        et_loan_amount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro, 0, 0, 0)
+                        binding.etLoanAmount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro, 0, 0, 0)
                         result = Utils.convertDollarToEuro(result.toInt()).toFloat()
                         resultPerYear = result / nbrYear.toString().toInt()
                         resultPerMonth = resultPerYear / 12
@@ -103,9 +100,9 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showResults(currency : String) {
-        tv_total_amount.text = resources.getString(R.string.total_amount, currency, String.format("%.0f", result));
-        tv_per_year.text = resources.getString(R.string.per_year, currency, String.format("%.2f", resultPerYear));
-        tv_per_month.text = resources.getString(R.string.per_month, currency, String.format("%.2f", resultPerMonth));
+    private fun showResults(currency: String) {
+        binding.tvTotalAmount.text = resources.getString(R.string.total_amount, currency, String.format("%.0f", result));
+        binding.tvPerYear.text = resources.getString(R.string.per_year, currency, String.format("%.2f", resultPerYear));
+        binding.tvPerMonth.text = resources.getString(R.string.per_month, currency, String.format("%.2f", resultPerMonth));
     }
 }

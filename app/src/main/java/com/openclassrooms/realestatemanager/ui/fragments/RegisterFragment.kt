@@ -11,14 +11,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.databinding.FragmentRegisterBinding
 import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_register.*
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
+    private lateinit var binding: FragmentRegisterBinding
     private val viewModel: MainViewModel by viewModels()
     private lateinit var agentsList: List<Agent>
 
@@ -29,65 +30,66 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentRegisterBinding.bind(view)
 
         viewModel.getAllAgents.observe(viewLifecycleOwner, Observer {
             agentsList = it
         })
 
-        tv_login.setOnClickListener {
+        binding.tvLogin.setOnClickListener {
             val action = RegisterFragmentDirections.actionRegisterFragmentToLoginFragment()
             findNavController().navigate(action)
         }
 
-        btn_register.setOnClickListener {
+        binding.btnRegister.setOnClickListener {
             if (!validateUsername() or (!validatePassword()) or (!validateConfirmPassword())) {
                 return@setOnClickListener
             }
 
-            if (agentsList.any { it.username == (et_username_register.text.toString().trim()) }) {
-                et_username_register.error = "This username already exist"
+            if (agentsList.any { it.username == (binding.etUsernameRegister.text.toString().trim()) }) {
+                binding.etUsernameRegister.error = "This username already exist"
             } else {
-                if (et_password_register.text.toString() == et_confirm_password_register.text.toString().trim()) {
-                    val username = et_username_register.text.toString().trim()
-                    val password = et_confirm_password_register.text.toString().trim()
+                if (binding.etPasswordRegister.text.toString() == binding.etConfirmPasswordRegister.text.toString().trim()) {
+                    val username = binding.etUsernameRegister.text.toString().trim()
+                    val password = binding.etConfirmPasswordRegister.text.toString().trim()
                     val newAgent = Agent(username, password)
                     viewModel.insertAgent(newAgent)
                     Toast.makeText(requireContext(), "You are registered now", Toast.LENGTH_SHORT).show()
                     val action = RegisterFragmentDirections.actionRegisterFragmentToLoginFragment()
                     findNavController().navigate(action)
                 } else {
-                    et_confirm_password_register.error = "Your passwords don't match"
+                    binding.etConfirmPasswordRegister.error = "Your passwords don't match"
                 }
             }
         }
     }
 
     private fun validateUsername(): Boolean {
-        return if (et_username_register.length() < 4) {
-            et_username_register.error = "Min. 4 chars"
+        return if (binding.etUsernameRegister.length() < 4) {
+            binding.etUsernameRegister.error = "Min. 4 chars"
             false
         } else {
-            et_username_register.error = null
+            binding.etUsernameRegister.error = null
             true
         }
     }
 
     private fun validatePassword(): Boolean {
-        return if (et_password_register.length() < 4) {
-            et_password_register.error = "Min. 4 chars"
+        return if (binding.etPasswordRegister.length() < 4) {
+            binding.etPasswordRegister.error = "Min. 4 chars"
             false
         } else {
-            et_password_register.error = null
+            binding.etPasswordRegister.error = null
             true
         }
     }
 
     private fun validateConfirmPassword(): Boolean {
-        return if (et_confirm_password_register.length() < 4) {
-            et_confirm_password_register.error = "Min. 4 chars"
+        return if (binding.etConfirmPasswordRegister.length() < 4) {
+            binding.etConfirmPasswordRegister.error = "Min. 4 chars"
             false
         } else {
-            et_confirm_password_register.error = null
+            binding.etConfirmPasswordRegister.error = null
             true
         }
     }

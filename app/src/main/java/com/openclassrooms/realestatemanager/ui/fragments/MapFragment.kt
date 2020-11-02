@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,12 +19,14 @@ import kotlinx.android.synthetic.main.fragment_loan.*
 @AndroidEntryPoint
 class MapFragment : Fragment(R.layout.fragment_map) {
 
+    private lateinit var binding: FragmentMapBinding
     private val viewModel: MainViewModel by viewModels()
     private lateinit var menu: Menu
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentMapBinding.bind(view)
 
         setHasOptionsMenu(true)
     }
