@@ -73,4 +73,13 @@
         android:name="com.openclassrooms.realestatemanager.ui.fragments.AddFragment"
         android:label="Add Property"
         tools:layout="@layout/fragment_add" />
+    <fragment
+        android:id="@+id/logoutFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.LogoutFragment"
+        android:label="fragment_logout"
+        tools:layout="@layout/fragment_logout" >
+        <action
+            android:id="@+id/action_logoutFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 </navigation>

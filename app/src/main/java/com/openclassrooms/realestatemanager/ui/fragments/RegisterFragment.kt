@@ -56,7 +56,6 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                     val action = RegisterFragmentDirections.actionRegisterFragmentToLoginFragment()
                     findNavController().navigate(action)
                 } else {
-                    et_password_register.error = "Your passwords don't match"
                     et_confirm_password_register.error = "Your passwords don't match"
                 }
             }

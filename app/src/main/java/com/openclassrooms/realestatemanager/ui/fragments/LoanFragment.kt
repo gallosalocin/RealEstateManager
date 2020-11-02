@@ -1,11 +1,17 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.other.Constants
+import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
 import com.openclassrooms.realestatemanager.utils.Utils
 import kotlinx.android.synthetic.main.fragment_loan.*
 
@@ -90,7 +96,9 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
                     }
                 }
             }
-            R.id.tb_menu_logout -> Toast.makeText(requireContext(), "Logout", Toast.LENGTH_SHORT).show()
+            R.id.tb_menu_logout -> {
+                findNavController().navigate(R.id.logoutFragment)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
