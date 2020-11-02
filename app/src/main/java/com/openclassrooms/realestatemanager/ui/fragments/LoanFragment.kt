@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.ui
+package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.os.Bundle
 import android.text.Editable

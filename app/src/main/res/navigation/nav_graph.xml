@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.LoginFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.RegisterFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -37,12 +37,12 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.SearchFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.ListFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.ListFragment"
         android:label="List"
         tools:layout="@layout/fragment_list">
         <action
@@ -51,12 +51,12 @@
     </fragment>
     <fragment
         android:id="@+id/loanFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.LoanFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.LoanFragment"
         android:label="Loan Calculator"
         tools:layout="@layout/fragment_loan" />
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.MapFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.MapFragment"
         android:label="Map"
         tools:layout="@layout/fragment_map">
         <action
@@ -65,12 +65,12 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.DetailsFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment"
         android:label="Details"
         tools:layout="@layout/fragment_details" />
     <fragment
         android:id="@+id/addFragment"
-        android:name="com.openclassrooms.realestatemanager.ui.AddFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.AddFragment"
         android:label="Add Property"
         tools:layout="@layout/fragment_add" />
 </navigation>
