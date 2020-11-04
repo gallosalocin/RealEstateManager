@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -27,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigationComponent()
+        binding.fabAdd.setOnClickListener{
+            navController.navigate(R.id.addFragment)
+        }
 
     }
 
@@ -51,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                     binding.bottomNavView.visibility = View.GONE
                     binding.fabAdd.visibility = View.GONE
                 }
-                R.id.loanFragment -> {
+                R.id.loanFragment, R.id.searchFragment -> {
                     binding.toolbar.visibility = View.VISIBLE
                     binding.bottomNavView.visibility = View.VISIBLE
                     binding.fabAdd.visibility = View.GONE
@@ -67,5 +71,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }
