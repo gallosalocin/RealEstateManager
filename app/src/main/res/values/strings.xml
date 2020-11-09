@@ -24,4 +24,47 @@
     <string name="euro">euro</string>
     <string name="logout">Logout</string>
     <string name="add_new_property">Add new property</string>
+    <string name="price">Price</string>
+    <string name="area_in_square_meter">Area in m²</string>
+    <string name="type">Type</string>
+    <string name="rooms">Rooms</string>
+    <string name="bedrooms">Bedrooms</string>
+    <string name="bathrooms">Bathrooms</string>
+    <string name="location">Location</string>
+    <string name="address">Address</string>
+    <string name="city">City</string>
+    <string name="postcode">Postcode</string>
+    <string name="available_date">Available date</string>
+    <string name="sold_date">Sold date</string>
+    <string name="sold">Sold</string>
+    <string name="save">save</string>
+    <string name="edit">edit</string>
+    <string name="add_photo">Add photo</string>
+    <string name="description">Description</string>
+    <string name="country">Country</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+
+    <string-array name="type_of_properties">
+        <item>Type</item>
+        <item>Flat</item>
+        <item>Penthouse</item>
+        <item>Duplex</item>
+        <item>Villa</item>
+        <item>Manor</item>
+    </string-array>
+
+    <string-array name="number_of_rooms">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10+</item>
+    </string-array>
 </resources>

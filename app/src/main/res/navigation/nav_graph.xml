@@ -66,12 +66,16 @@
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment"
-        android:label="Details"
-        tools:layout="@layout/fragment_details" />
+        android:label="Property Details"
+        tools:layout="@layout/fragment_details" >
+        <action
+            android:id="@+id/action_detailsFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.AddFragment"
-        android:label="Add Property"
+        android:label="Add New Property"
         tools:layout="@layout/fragment_add" />
     <fragment
         android:id="@+id/logoutFragment"

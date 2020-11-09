@@ -22,20 +22,23 @@ import kotlin.random.Random
 class ListFragment : Fragment(R.layout.fragment_list) {
 
     private lateinit var binding: FragmentListBinding
+    private lateinit var propertyAdapter: PropertyAdapter
     private val viewModel: MainViewModel by viewModels()
     private lateinit var menu: Menu
 
     private lateinit var propertiesList: MutableList<Property>
 
 
+    companion object {
+        var isDollar: Boolean = false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentListBinding.bind(view)
-
         setHasOptionsMenu(true)
 
-
-        val propertyAdapter = PropertyAdapter()
+        propertyAdapter = PropertyAdapter()
 
         binding.apply {
             rvList.adapter = propertyAdapter
@@ -45,14 +48,16 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         propertyAdapter.properties = listProperty()
 
         propertyAdapter.setOnItemClickListener {
-            Toast.makeText(requireContext(), it.address, Toast.LENGTH_SHORT).show()
+            val action = ListFragmentDirections.actionListFragmentToDetailsFragment()
+            findNavController().navigate(action)
         }
     }
 
     private fun listProperty(): List<Property> {
         propertiesList = ArrayList()
         for (i in 1..25) {
-            propertiesList.add(Property("Villa $i", Random.nextInt(1000000, 10000000), 0f, 0, "", "Paris $i"))
+            propertiesList.add(Property(type = "Villa $i", priceInDollars = Random.nextInt(1000000, 10000000), nbrRoom = "6", nbrBedroom = "3",
+                    nbrBathroom = "2", city = "Paris $i", country = "", entryDate = "", postcode = "", street = ""))
         }
         return propertiesList
     }
@@ -66,7 +71,18 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.tb_menu_currency -> Toast.makeText(requireContext(), "currency", Toast.LENGTH_SHORT).show()
+            R.id.tb_menu_currency -> {
+                if (isDollar) {
+                    isDollar = false
+                    menu.getItem(0).setIcon(R.drawable.ic_euro)
+                    propertyAdapter.properties = listProperty()
+                } else {
+                    isDollar = true
+                    menu.getItem(0).setIcon(R.drawable.ic_dollar)
+                    propertyAdapter.properties = listProperty()
+                }
+            }
+
             R.id.tb_menu_logout -> {
                 findNavController().navigate(R.id.logoutFragment)
             }

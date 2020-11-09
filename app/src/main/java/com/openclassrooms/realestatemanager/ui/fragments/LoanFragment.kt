@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentLoanBinding
 import com.openclassrooms.realestatemanager.utils.Utils
+import java.text.DecimalFormat
 
 class LoanFragment : Fragment(R.layout.fragment_loan) {
 
@@ -101,8 +102,10 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     }
 
     private fun showResults(currency: String) {
-        binding.tvTotalAmount.text = resources.getString(R.string.total_amount, currency, String.format("%.0f", result));
-        binding.tvPerYear.text = resources.getString(R.string.per_year, currency, String.format("%.2f", resultPerYear));
-        binding.tvPerMonth.text = resources.getString(R.string.per_month, currency, String.format("%.2f", resultPerMonth));
+        val formatter = DecimalFormat("#,###.00")
+
+        binding.tvTotalAmount.text = resources.getString(R.string.total_amount, currency, formatter.format(result));
+        binding.tvPerYear.text = resources.getString(R.string.per_year, currency, formatter.format(resultPerYear));
+        binding.tvPerMonth.text = resources.getString(R.string.per_month, currency, formatter.format(resultPerMonth));
     }
 }

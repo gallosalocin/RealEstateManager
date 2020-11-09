@@ -42,7 +42,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
 
         binding.btnRegister.setOnClickListener {
-            if (!validateUsername() or (!validatePassword()) or (!validateConfirmPassword())) {
+            if (!validateFirstName() or (!validateLastName()) or (!validateUsername()) or (!validatePassword()) or (!validateConfirmPassword())) {
                 return@setOnClickListener
             }
 
@@ -50,9 +50,11 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 binding.etUsernameRegister.error = "This username already exist"
             } else {
                 if (binding.etPasswordRegister.text.toString() == binding.etConfirmPasswordRegister.text.toString().trim()) {
+                    val firstName = binding.etFirstName.text.toString().trim()
+                    val lastName = binding.etLastName.text.toString().trim()
                     val username = binding.etUsernameRegister.text.toString().trim()
                     val password = binding.etConfirmPasswordRegister.text.toString().trim()
-                    val newAgent = Agent(username, password)
+                    val newAgent = Agent(firstName, lastName, username, password)
                     viewModel.insertAgent(newAgent)
                     Toast.makeText(requireContext(), "You are registered now", Toast.LENGTH_SHORT).show()
                     val action = RegisterFragmentDirections.actionRegisterFragmentToLoginFragment()
@@ -61,6 +63,26 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                     binding.etConfirmPasswordRegister.error = "Your passwords don't match"
                 }
             }
+        }
+    }
+
+    private fun validateFirstName(): Boolean {
+        return if (binding.etUsernameRegister.length() < 0) {
+            binding.etUsernameRegister.error = "Can't be empty"
+            false
+        } else {
+            binding.etUsernameRegister.error = null
+            true
+        }
+    }
+
+    private fun validateLastName(): Boolean {
+        return if (binding.etUsernameRegister.length() < 0) {
+            binding.etUsernameRegister.error = "Can't be empty"
+            false
+        } else {
+            binding.etUsernameRegister.error = null
+            true
         }
     }
 

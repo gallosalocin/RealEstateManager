@@ -93,7 +93,7 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp"
-            android:background="@drawable/round_btn"
+            android:background="@drawable/custom_button_background"
             android:text="@string/calculate"
             android:textAllCaps="false"
             android:textSize="20sp" />

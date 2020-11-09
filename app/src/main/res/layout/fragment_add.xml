@@ -1,10 +1,411 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@android:color/white"
+    android:padding="10dp"
     tools:context=".ui.fragments.AddFragment">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@android:color/darker_gray"
+        android:text="@string/add_photo"
+        app:layout_constraintBottom_toBottomOf="@id/rv_add"
+        app:layout_constraintLeft_toRightOf="@id/rv_add"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rv_add"
+        tools:targetApi="lollipop" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_add"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/et_price"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_add_photo"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/item_photo_details" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:drawableStart="@drawable/ic_dollar"
+        android:drawablePadding="5dp"
+        android:hint="@string/price"
+        android:inputType="number"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/et_area"
+        app:layout_constraintTop_toBottomOf="@id/rv_add" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_area"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:drawableStart="@drawable/ic_area"
+        android:drawablePadding="10dp"
+        android:hint="@string/area_in_square_meter"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toRightOf="@id/et_price"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_price" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:paddingStart="5dp"
+        android:paddingBottom="2dp"
+        android:text="@string/type"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_room"
+        app:layout_constraintTop_toBottomOf="@id/et_price"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_room"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="5dp"
+        android:paddingBottom="2dp"
+        android:text="@string/rooms"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/tv_type"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_price"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/sp_type"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/custom_spinner_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/sp_room"
+        app:layout_constraintTop_toBottomOf="@id/tv_type" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/sp_room"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/custom_spinner_background"
+        app:layout_constraintLeft_toRightOf="@id/sp_type"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_type" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_bedroom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
+        android:text="@string/bedrooms"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_bathroom"
+        app:layout_constraintTop_toBottomOf="@id/sp_type"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_bathroom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:paddingStart="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
+        android:text="@string/bathrooms"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/tv_bedroom"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sp_type"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/sp_bedroom"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/custom_spinner_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/sp_bathroom"
+        app:layout_constraintTop_toBottomOf="@id/tv_bedroom" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/sp_bathroom"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/custom_spinner_background"
+        app:layout_constraintLeft_toRightOf="@id/sp_bedroom"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_bedroom" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableStart="@drawable/ic_location"
+        android:drawablePadding="5dp"
+        android:text="@string/location"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sp_bedroom"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:hint="@string/address"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/et_postcode"
+        app:layout_constraintTop_toBottomOf="@id/tv_location" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_postcode"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:hint="@string/postcode"
+        android:inputType="number"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toRightOf="@id/et_address"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_address" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_city"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:hint="@string/city"
+        android:inputType="text"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/et_country"
+        app:layout_constraintTop_toBottomOf="@id/et_address" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_country"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:hint="@string/country"
+        android:inputType="text"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toRightOf="@id/et_city"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_address" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_poi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:drawableStart="@drawable/ic_poi"
+        android:drawablePadding="5dp"
+        android:text="Points of interest"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_city"
+        tools:ignore="RtlSymmetry" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_restaurant"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Restaurants"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_restaurant"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/chip_bar"
+        app:layout_constraintTop_toBottomOf="@id/tv_poi" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_bar"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bars"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_bar"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_restaurant"
+        app:layout_constraintRight_toLeftOf="@id/chip_store"
+        app:layout_constraintTop_toTopOf="@id/chip_restaurant" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_store"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stores"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_store"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_bar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chip_restaurant" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_park"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Parks"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_park"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/chip_school"
+        app:layout_constraintTop_toBottomOf="@id/chip_restaurant" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_school"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="Schools"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_school"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_park"
+        app:layout_constraintRight_toLeftOf="@id/chip_hospital"
+        app:layout_constraintTop_toTopOf="@id/chip_park" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_hospital"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="Hospitals"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_hospital"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_school"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chip_park" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/ed_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="@string/description"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chip_park"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_available_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:drawableStart="@drawable/ic_calendar"
+        android:drawablePadding="10dp"
+        android:focusable="false"
+        android:hint="@string/available_date"
+        android:inputType="none"
+        android:textColor="@android:color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ed_description" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cb_is_sold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="@string/sold"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/et_available_date"
+        app:layout_constraintLeft_toRightOf="@id/et_available_date"
+        app:layout_constraintTop_toTopOf="@id/et_available_date" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_sold_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:drawableStart="@drawable/ic_calendar"
+        android:drawablePadding="10dp"
+        android:focusable="false"
+        android:hint="@string/sold_date"
+        android:inputType="none"
+        android:textColor="@android:color/black"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/et_available_date"
+        app:layout_constraintTop_toBottomOf="@id/et_available_date" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

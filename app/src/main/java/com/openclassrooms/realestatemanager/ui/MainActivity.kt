@@ -60,6 +60,11 @@ class MainActivity : AppCompatActivity() {
                     binding.bottomNavView.visibility = View.VISIBLE
                     binding.fabAdd.visibility = View.GONE
                 }
+                R.id.addFragment, R.id.detailsFragment -> {
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.bottomNavView.visibility = View.INVISIBLE
+                    binding.fabAdd.visibility = View.INVISIBLE
+                }
                 else -> {
                     binding.toolbar.visibility = View.VISIBLE
                     binding.bottomNavView.visibility = View.VISIBLE

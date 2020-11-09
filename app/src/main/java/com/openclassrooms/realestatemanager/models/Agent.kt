@@ -5,6 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "agents")
 data class Agent (
+        var firstName: String = "",
+        var lastName: String = "",
         var username: String = "",
         var password: String = ""
 ) {

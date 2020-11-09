@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.databinding.PropertyItemBinding
+import com.openclassrooms.realestatemanager.databinding.ItemPropertyBinding
 import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.ui.fragments.ListFragment
+import timber.log.Timber
+import java.text.DecimalFormat
 
 class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {
 
@@ -28,7 +31,7 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
         set(value) = differ.submitList(value)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyViewHolder {
-        val binding = PropertyItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemPropertyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PropertyViewHolder(binding)
     }
 
@@ -48,7 +51,7 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
     }
 
 
-    inner class PropertyViewHolder(private val binding: PropertyItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PropertyViewHolder(private val binding: ItemPropertyBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.root.setOnClickListener {
@@ -61,15 +64,24 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
         fun bind(property: Property) {
             binding.apply {
                 Glide.with(itemView)
-                        .load(R.drawable.real_estate_background)
+                        .load(R.drawable.test_house_photo)
                         .centerCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .error(R.drawable.ic_error)
                         .into(ivPicture)
 
                 tvType.text = property.type
-                tvCity.text = property.address  // TODO
-                tvPrice.text = property.price.toString()
+                tvCity.text = property.city  // TODO
+                tvBedroom.text = property.nbrBedroom.toString()
+                tvBathroom.text = property.nbrBathroom.toString()
+                tvRoom.text = property.nbrRoom.toString()
+                if (ListFragment.isDollar) {
+                    tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro_focused, 0, 0, 0)
+                    tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
+                } else {
+                    tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar_focused, 0, 0, 0)
+                    tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
+                }
             }
         }
     }
