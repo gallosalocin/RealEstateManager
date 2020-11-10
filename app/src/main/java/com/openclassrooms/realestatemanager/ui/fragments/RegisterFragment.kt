@@ -14,6 +14,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentRegisterBinding
 import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
+import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,9 +43,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
 
         binding.btnRegister.setOnClickListener {
-            if (!validateFirstName() or (!validateLastName()) or (!validateUsername()) or (!validatePassword()) or (!validateConfirmPassword())) {
-                return@setOnClickListener
-            }
+
+            confirmValidation()
 
             if (agentsList.any { it.username == (binding.etUsernameRegister.text.toString().trim()) }) {
                 binding.etUsernameRegister.error = "This username already exist"
@@ -66,53 +66,13 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
     }
 
-    private fun validateFirstName(): Boolean {
-        return if (binding.etUsernameRegister.length() < 0) {
-            binding.etUsernameRegister.error = "Can't be empty"
-            false
-        } else {
-            binding.etUsernameRegister.error = null
-            true
-        }
-    }
-
-    private fun validateLastName(): Boolean {
-        return if (binding.etUsernameRegister.length() < 0) {
-            binding.etUsernameRegister.error = "Can't be empty"
-            false
-        } else {
-            binding.etUsernameRegister.error = null
-            true
-        }
-    }
-
-    private fun validateUsername(): Boolean {
-        return if (binding.etUsernameRegister.length() < 4) {
-            binding.etUsernameRegister.error = "Min. 4 chars"
-            false
-        } else {
-            binding.etUsernameRegister.error = null
-            true
-        }
-    }
-
-    private fun validatePassword(): Boolean {
-        return if (binding.etPasswordRegister.length() < 4) {
-            binding.etPasswordRegister.error = "Min. 4 chars"
-            false
-        } else {
-            binding.etPasswordRegister.error = null
-            true
-        }
-    }
-
-    private fun validateConfirmPassword(): Boolean {
-        return if (binding.etConfirmPasswordRegister.length() < 4) {
-            binding.etConfirmPasswordRegister.error = "Min. 4 chars"
-            false
-        } else {
-            binding.etConfirmPasswordRegister.error = null
-            true
-        }
+    // Validate necessary fields
+    private fun confirmValidation() {
+        if (!Utils.validateInputFieldIfNullOrEmpty(binding.etFirstName, "Can't be empty")
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etLastName, "Can't be empty"))
+                or (!Utils.validateInputFieldIfIsGreaterThan(binding.etUsernameRegister, "Min. 4 chars", 4))
+                or (!Utils.validateInputFieldIfIsGreaterThan(binding.etPasswordRegister, "Min. 4 chars", 4))
+                or (!Utils.validateInputFieldIfIsGreaterThan(binding.etConfirmPasswordRegister, "Min. 4 chars", 4))
+        ) return
     }
 }

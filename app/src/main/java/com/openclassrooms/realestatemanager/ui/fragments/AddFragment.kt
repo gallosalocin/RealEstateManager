@@ -19,6 +19,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
+import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -78,7 +79,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     }
 
     // Save property into Room
-    private fun saveProperty() : Property {
+    private fun saveProperty(): Property {
         property = Property(
                 type = type,
                 priceInDollars = binding.etPrice.text.toString().toInt(),
@@ -212,75 +213,20 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     // Validate necessary fields
     private fun confirmValidation() {
-        if (!validatePrice() or (!validateStreet()) or (!validatePostcode()) or (!validateCity())
-                or (!validateCountry()) or (!validateAvailableDate()) or (!validateType())) {
-            return
-        }
+        if (!validateType()
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPrice, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etStreet, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPostcode, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCity, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCountry, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etAvailableDate, "Can't be empty"))
+        ) return
         viewModel.insertProperty(saveProperty())
         val action = AddFragmentDirections.actionAddFragmentToListFragment()
         findNavController().navigate(action)
     }
 
-    private fun validatePrice(): Boolean {
-        return if (binding.etPrice.text.isNullOrEmpty()) {
-            binding.etPrice.error = "Can't be empty"
-            false
-        } else {
-            binding.etPrice.error = null
-            true
-        }
-    }
-
-    private fun validateStreet(): Boolean {
-        return if (binding.etStreet.text.isNullOrEmpty()) {
-            binding.etStreet.error = "Can't be empty"
-            false
-        } else {
-            binding.etStreet.error = null
-            true
-        }
-    }
-
-    private fun validatePostcode(): Boolean {
-        return if (binding.etPostcode.text.isNullOrEmpty()) {
-            binding.etPostcode.error = "Can't be empty"
-            false
-        } else {
-            binding.etPostcode.error = null
-            true
-        }
-    }
-
-    private fun validateCity(): Boolean {
-        return if (binding.etCity.text.isNullOrEmpty()) {
-            binding.etCity.error = "Can't be empty"
-            false
-        } else {
-            binding.etCity.error = null
-            true
-        }
-    }
-
-    private fun validateCountry(): Boolean {
-        return if (binding.etCountry.text.isNullOrEmpty()) {
-            binding.etCountry.error = "Can't be empty"
-            false
-        } else {
-            binding.etCountry.error = null
-            true
-        }
-    }
-
-    private fun validateAvailableDate(): Boolean {
-        return if (binding.etAvailableDate.text.isNullOrEmpty()) {
-            binding.etAvailableDate.error = "Can't be empty"
-            false
-        } else {
-            binding.etAvailableDate.error = null
-            true
-        }
-    }
-
+    // Validate property type spinner
     private fun validateType(): Boolean {
         val errorText: TextView = binding.spType.selectedView as TextView
 

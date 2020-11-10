@@ -4,9 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
+import android.widget.EditText
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -40,7 +38,7 @@ object Utils {
      */
     fun isInternetConnected(context: Context): Boolean {
         var result = false
-        val connectivityManager  =  context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val network = connectivityManager.activeNetwork ?: return false
             val networkCapabilities =
@@ -70,5 +68,31 @@ object Utils {
     fun Context.isConnectedToNetwork(): Boolean {
         val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
         return connectivityManager?.activeNetworkInfo?.isConnectedOrConnecting ?: false
+    }
+
+    /**
+     *  Check if input is not null or empty
+     */
+    fun validateInputFieldIfNullOrEmpty(field: EditText, errorText: String): Boolean {
+        return if (field.text.isNullOrEmpty()) {
+            field.error = errorText
+            false
+        } else {
+            field.error = null
+            true
+        }
+    }
+
+    /**
+     *  Check if input is greater than the number of chars specified
+     */
+    fun validateInputFieldIfIsGreaterThan(field: EditText, errorText: String, chars: Int): Boolean {
+        return if (field.length() < chars) {
+            field.error = errorText
+            false
+        } else {
+            field.error = null
+            true
+        }
     }
 }

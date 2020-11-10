@@ -52,6 +52,10 @@
     <string name="parks">Parks</string>
     <string name="schools">Schools</string>
     <string name="hospitals">Hospitals</string>
+    <string name="sold_cap">SOLD</string>
+    <string name="available_cap">AVAILABLE</string>
+    <string name="entry_date_param">Entry date: %s</string>
+    <string name="sold_date_param">Sold date: %s</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,16 +15,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoDetailsAdapter
-import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
-import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
-import timber.log.Timber
 import java.text.DecimalFormat
-import kotlin.random.Random
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.fragment_details) {
@@ -69,7 +66,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 isDollar = false
                 binding.tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro_focused, 0, 0, 0)
                 binding.tvPrice.text = DecimalFormat("#,###").format(args.currentProperty?.priceInDollars?.let { price ->
-                    Utils.convertDollarToEuro(price) })
+                    Utils.convertDollarToEuro(price)
+                })
             } else {
                 binding.tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar_focused, 0, 0, 0)
                 isDollar = true
@@ -91,6 +89,19 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private fun loadProperty() {
         binding.apply {
             tvPrice.text = DecimalFormat("#,###").format(args.currentProperty?.priceInDollars)
+
+            if (args.currentProperty?.isSold == true) {
+                tvStatus.text = getString(R.string.sold_cap)
+                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorSold))
+                tvSoldDate.visibility = View.VISIBLE
+                tvSoldDate.text = getString(R.string.sold_date_param, args.currentProperty?.soldDate)
+            } else {
+                tvStatus.text = getString(R.string.available_cap)
+                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAvailable))
+            }
+
+            tvEntryDate.text = getString(R.string.entry_date_param, args.currentProperty?.availableDate)
+
             tvDescription.text = if (args.currentProperty?.description == "") "Write something!!!" else args.currentProperty?.description
             tvArea.text = if (args.currentProperty?.areaInMeters == "") "0" else args.currentProperty?.areaInMeters
             tvRoom.text = args.currentProperty?.nbrRoom
