@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentLoginBinding
@@ -42,7 +41,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             findNavController().navigate(action)
         }
 
-        viewModel.getAllAgents.observe(viewLifecycleOwner, Observer {
+        viewModel.getAllAgents.observe(viewLifecycleOwner, {
             agentsList = it
         })
 

@@ -8,17 +8,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
+import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,8 +28,15 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     private lateinit var binding: FragmentAddBinding
     private val viewModel: MainViewModel by viewModels()
+    private lateinit var property: Property
 
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
+
+    private lateinit var type: String
+    private lateinit var room: String
+    private lateinit var bedroom: String
+    private lateinit var bathroom: String
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,21 +60,6 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.btnAddPhoto.setOnClickListener {
         }
 
-
-    }
-
-    // Display Datepicker for sold date
-    private fun displayOrHideSoldDatepicker() {
-        binding.cbIsSold.setOnCheckedChangeListener { compoundButton, isChecked ->
-            if (isChecked) {
-                binding.etSoldDate.visibility = View.VISIBLE
-                binding.etSoldDate.setOnClickListener {
-                    showDatePickerDialog(binding.etSoldDate)
-                }
-            } else {
-                binding.etSoldDate.visibility = View.INVISIBLE
-            }
-        }
     }
 
     // Setup toolbar
@@ -78,10 +71,54 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.tb_menu_save -> {
-                Toast.makeText(requireContext(), "Save", Toast.LENGTH_SHORT).show()
+                confirmValidation()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    // Save property into Room
+    private fun saveProperty() : Property {
+        property = Property(
+                type = type,
+                priceInDollars = binding.etPrice.text.toString().toInt(),
+                areaInMeters = binding.etArea.text.toString(),
+                nbrRoom = room,
+                nbrBedroom = bedroom,
+                nbrBathroom = bathroom,
+//                photo = listOf(R.drawable.test_house_photo.toString()),
+                description = binding.edDescription.text.toString(),
+                street = binding.etStreet.text.toString(),
+                postcode = binding.etPostcode.text.toString(),
+                city = binding.etCity.text.toString(),
+                country = binding.etCountry.text.toString(),
+//                poi = listOf(
+//                        binding.chipRestaurant.isChecked,
+//                        binding.chipBar.isChecked,
+//                        binding.chipStore.isChecked,
+//                        binding.chipPark.isChecked,
+//                        binding.chipSchool.isChecked,
+//                        binding.chipHospital.isChecked,
+//                ),
+                isSold = binding.cbIsSold.isChecked,
+                availableDate = binding.etAvailableDate.text.toString(),
+                soldDate = binding.etSoldDate.text.toString()
+        )
+        return property
+    }
+
+    // Display or hide Datepicker for sold date
+    private fun displayOrHideSoldDatepicker() {
+        binding.cbIsSold.setOnCheckedChangeListener { compoundButton, isChecked ->
+            if (isChecked) {
+                binding.etSoldDate.visibility = View.VISIBLE
+                binding.etSoldDate.setOnClickListener {
+                    showDatePickerDialog(binding.etSoldDate)
+                }
+            } else {
+                binding.etSoldDate.visibility = View.INVISIBLE
+            }
+        }
     }
 
     // Setup Type Spinner
@@ -100,7 +137,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
                 if (position > 0) {
-                    Toast.makeText(requireContext(), "Type is : $selectedItem", Toast.LENGTH_SHORT).show()
+                    type = selectedItem.toString()
                 }
             }
 
@@ -125,7 +162,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spRoom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                Toast.makeText(requireContext(), "Nbr is : $selectedItem", Toast.LENGTH_SHORT).show()
+                room = selectedItem.toString()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -135,7 +172,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spBedroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                Toast.makeText(requireContext(), "Nbr is : $selectedItem", Toast.LENGTH_SHORT).show()
+                bedroom = selectedItem.toString()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -145,7 +182,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spBathroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                Toast.makeText(requireContext(), "Nbr is : $selectedItem", Toast.LENGTH_SHORT).show()
+                bathroom = selectedItem.toString()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -171,5 +208,88 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
         datePicker.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         datePicker.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+    }
+
+    // Validate necessary fields
+    private fun confirmValidation() {
+        if (!validatePrice() or (!validateStreet()) or (!validatePostcode()) or (!validateCity())
+                or (!validateCountry()) or (!validateAvailableDate()) or (!validateType())) {
+            return
+        }
+        viewModel.insertProperty(saveProperty())
+        val action = AddFragmentDirections.actionAddFragmentToListFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun validatePrice(): Boolean {
+        return if (binding.etPrice.text.isNullOrEmpty()) {
+            binding.etPrice.error = "Can't be empty"
+            false
+        } else {
+            binding.etPrice.error = null
+            true
+        }
+    }
+
+    private fun validateStreet(): Boolean {
+        return if (binding.etStreet.text.isNullOrEmpty()) {
+            binding.etStreet.error = "Can't be empty"
+            false
+        } else {
+            binding.etStreet.error = null
+            true
+        }
+    }
+
+    private fun validatePostcode(): Boolean {
+        return if (binding.etPostcode.text.isNullOrEmpty()) {
+            binding.etPostcode.error = "Can't be empty"
+            false
+        } else {
+            binding.etPostcode.error = null
+            true
+        }
+    }
+
+    private fun validateCity(): Boolean {
+        return if (binding.etCity.text.isNullOrEmpty()) {
+            binding.etCity.error = "Can't be empty"
+            false
+        } else {
+            binding.etCity.error = null
+            true
+        }
+    }
+
+    private fun validateCountry(): Boolean {
+        return if (binding.etCountry.text.isNullOrEmpty()) {
+            binding.etCountry.error = "Can't be empty"
+            false
+        } else {
+            binding.etCountry.error = null
+            true
+        }
+    }
+
+    private fun validateAvailableDate(): Boolean {
+        return if (binding.etAvailableDate.text.isNullOrEmpty()) {
+            binding.etAvailableDate.error = "Can't be empty"
+            false
+        } else {
+            binding.etAvailableDate.error = null
+            true
+        }
+    }
+
+    private fun validateType(): Boolean {
+        val errorText: TextView = binding.spType.selectedView as TextView
+
+        return if (binding.spType.selectedItem.toString() == "Type") {
+            errorText.error = "Choose a type"
+            false
+        } else {
+            errorText.error = null
+            true
+        }
     }
 }

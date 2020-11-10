@@ -16,7 +16,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.random.Random
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -26,11 +26,11 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var menu: Menu
 
-    private lateinit var propertiesList: MutableList<Property>
+    private lateinit var propertiesList: List<Property>
 
 
     companion object {
-        var isDollar: Boolean = false
+        var isDollar: Boolean? = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,27 +39,24 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         setHasOptionsMenu(true)
 
         propertyAdapter = PropertyAdapter()
+        propertiesList = ArrayList()
 
         binding.apply {
             rvList.adapter = propertyAdapter
             rvList.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        propertyAdapter.properties = listProperty()
+        viewModel.getAllProperties.observe(viewLifecycleOwner, {
+            propertiesList = it
+
+            propertyAdapter.properties = propertiesList
+        })
+
 
         propertyAdapter.setOnItemClickListener {
-            val action = ListFragmentDirections.actionListFragmentToDetailsFragment()
+            val action = ListFragmentDirections.actionListFragmentToDetailsFragment(it)
             findNavController().navigate(action)
         }
-    }
-
-    private fun listProperty(): List<Property> {
-        propertiesList = ArrayList()
-        for (i in 1..25) {
-            propertiesList.add(Property(type = "Villa $i", priceInDollars = Random.nextInt(1000000, 10000000), nbrRoom = "6", nbrBedroom = "3",
-                    nbrBathroom = "2", city = "Paris $i", country = "", entryDate = "", postcode = "", street = ""))
-        }
-        return propertiesList
     }
 
     // Setup toolbar
@@ -72,15 +69,23 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.tb_menu_currency -> {
-                if (isDollar) {
-                    isDollar = false
-                    menu.getItem(0).setIcon(R.drawable.ic_euro)
-                    propertyAdapter.properties = listProperty()
-                } else {
-                    isDollar = true
-                    menu.getItem(0).setIcon(R.drawable.ic_dollar)
-                    propertyAdapter.properties = listProperty()
+                when (isDollar) {
+                    true -> {
+                        propertyAdapter.notifyDataSetChanged()
+                        isDollar = false
+                        menu.getItem(0).setIcon(R.drawable.ic_euro)
+                    }
+
+                    null, false -> {
+                        propertyAdapter.notifyDataSetChanged()
+                        isDollar = true
+                        menu.getItem(0).setIcon(R.drawable.ic_dollar)
+                    }
                 }
+            }
+
+            R.id.tb_menu_reload -> {
+                Toast.makeText(requireContext(), "List updated", Toast.LENGTH_SHORT).show()
             }
 
             R.id.tb_menu_logout -> {

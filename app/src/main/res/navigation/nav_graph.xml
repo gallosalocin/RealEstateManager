@@ -20,7 +20,7 @@
         <action
             android:id="@+id/action_loginFragment_to_listFragment"
             app:destination="@id/listFragment"
-            app:popUpTo="@id/nav_graph" />
+            app:popUpTo="@id/listFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.ListFragment"
-        android:label="List"
+        android:label="Real Estate Manager"
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_to_detailsFragment"
@@ -71,12 +71,20 @@
         <action
             android:id="@+id/action_detailsFragment_to_addFragment"
             app:destination="@id/addFragment" />
+        <argument
+            android:name="currentProperty"
+            app:argType="com.openclassrooms.realestatemanager.models.Property"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.AddFragment"
         android:label="Add New Property"
-        tools:layout="@layout/fragment_add" />
+        tools:layout="@layout/fragment_add" >
+        <action
+            android:id="@+id/action_addFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
     <fragment
         android:id="@+id/logoutFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.LogoutFragment"

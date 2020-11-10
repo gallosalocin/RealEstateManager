@@ -23,15 +23,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:drawableStart="@drawable/ic_dollar"
-        android:text="12000000"
-        android:textColor="@android:color/black"
+        android:drawableStart="@drawable/ic_dollar_focused"
+        android:textColor="@color/colorAccent"
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_status"
         app:layout_constraintTop_toBottomOf="@id/rv_details"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="12000000" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_status"
@@ -73,13 +73,13 @@
         android:ellipsize="end"
         android:maxLines="6"
         android:scrollbars="vertical"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eleifend ipsum nulla, eu imperdiet quam pretium et. Suspendisse ac dapibus ipsum, porta tempus velit. Etiam enim ligula, scelerisque eget malesuada ut, volutpat venenatis turpis. Donec efficitur, ipsum eget sodales bibendum, lectus metus tempus massa, sit amet semper magna nunc quis enim. Morbi facilisis justo tincidunt est tempor laoreet eget id neque. Aenean in justo eget purus vestibulum imperdiet. Etiam nisi sem, hendrerit vel convallis sed, tristique in urna."
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_description_title"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eleifend ipsum nulla, eu imperdiet quam pretium et. Suspendisse ac dapibus ipsum, porta tempus velit. Etiam enim ligula, scelerisque eget malesuada ut, volutpat venenatis turpis. Donec efficitur, ipsum eget sodales bibendum, lectus metus tempus massa, sit amet semper magna nunc quis enim. Morbi facilisis justo tincidunt est tempor laoreet eget id neque. Aenean in justo eget purus vestibulum imperdiet. Etiam nisi sem, hendrerit vel convallis sed, tristique in urna." />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_area"
@@ -91,13 +91,13 @@
         android:drawableStart="@drawable/ic_area"
         android:drawablePadding="5dp"
         android:paddingStart="5dp"
-        android:text="120 m²"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_description"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="120 m²" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_room"
@@ -106,13 +106,13 @@
         android:layout_marginEnd="10dp"
         android:drawableStart="@drawable/ic_room"
         android:drawablePadding="5dp"
-        android:text="6"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/tv_area"
         app:layout_constraintRight_toLeftOf="@id/tv_bedroom"
-        app:layout_constraintTop_toTopOf="@id/tv_area" />
+        app:layout_constraintTop_toTopOf="@id/tv_area"
+        tools:text="6" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_bedroom"
@@ -121,13 +121,13 @@
         android:layout_marginEnd="10dp"
         android:drawableStart="@drawable/ic_bedroom"
         android:drawablePadding="5dp"
-        android:text="3"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/tv_room"
         app:layout_constraintRight_toLeftOf="@id/tv_bathroom"
-        app:layout_constraintTop_toTopOf="@id/tv_area" />
+        app:layout_constraintTop_toTopOf="@id/tv_area"
+        tools:text="3" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_bathroom"
@@ -135,13 +135,13 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_bathroom"
         android:drawablePadding="5dp"
-        android:text="2"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/tv_bedroom"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_area" />
+        app:layout_constraintTop_toTopOf="@id/tv_area"
+        tools:text="2" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_Location"
@@ -149,14 +149,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
-        android:text="Location"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_area"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="Location" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_street"
@@ -164,12 +164,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:text="740 Park Avenue"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_Location"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="740 Park Avenue" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_postcode"
@@ -177,12 +177,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:text="10021"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_street"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="10021" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_city"
@@ -190,12 +190,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:text="New York"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_postcode"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="New York" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_country"
@@ -203,12 +203,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:text="United States"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_city"
-        tools:ignore="RtlSymmetry" />
+        tools:ignore="RtlSymmetry"
+        tools:text="United States" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_map"

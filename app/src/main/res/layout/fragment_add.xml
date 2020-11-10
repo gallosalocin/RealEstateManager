@@ -189,7 +189,7 @@
         tools:ignore="RtlSymmetry" />
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_address"
+        android:id="@+id/et_street"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -208,9 +208,9 @@
         android:hint="@string/postcode"
         android:inputType="number"
         android:textColor="@android:color/black"
-        app:layout_constraintLeft_toRightOf="@id/et_address"
+        app:layout_constraintLeft_toRightOf="@id/et_street"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/et_address" />
+        app:layout_constraintTop_toTopOf="@id/et_street" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_city"
@@ -223,7 +223,7 @@
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/et_country"
-        app:layout_constraintTop_toBottomOf="@id/et_address" />
+        app:layout_constraintTop_toBottomOf="@id/et_street" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_country"
@@ -235,7 +235,7 @@
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@id/et_city"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_address" />
+        app:layout_constraintTop_toBottomOf="@id/et_street" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_poi"
@@ -244,7 +244,7 @@
         android:layout_marginTop="20dp"
         android:drawableStart="@drawable/ic_poi"
         android:drawablePadding="5dp"
-        android:text="Points of interest"
+        android:text="@string/points_of_interest"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -258,7 +258,7 @@
         style="@style/CustomChipStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Restaurants"
+        android:text="@string/restaurants"
         android:textSize="18sp"
         app:checkedIconVisible="false"
         app:chipIcon="@drawable/ic_restaurant"
@@ -274,7 +274,7 @@
         style="@style/CustomChipStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bars"
+        android:text="@string/bars"
         android:textSize="18sp"
         app:checkedIconVisible="false"
         app:chipIcon="@drawable/ic_bar"
@@ -289,7 +289,7 @@
         style="@style/CustomChipStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stores"
+        android:text="@string/stores"
         android:textSize="18sp"
         app:checkedIconVisible="false"
         app:chipIcon="@drawable/ic_store"
@@ -304,7 +304,7 @@
         style="@style/CustomChipStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Parks"
+        android:text="@string/parks"
         android:textSize="18sp"
         app:checkedIconVisible="false"
         app:chipIcon="@drawable/ic_park"
@@ -321,7 +321,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="Schools"
+        android:text="@string/schools"
         android:textSize="18sp"
         app:checkedIconVisible="false"
         app:chipIcon="@drawable/ic_school"
@@ -337,7 +337,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="Hospitals"
+        android:text="@string/hospitals"
         android:textSize="18sp"
         app:checkedIconVisible="false"
         app:chipIcon="@drawable/ic_hospital"

@@ -44,6 +44,14 @@
     <string name="country">Country</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
+    <string name="update">update</string>
+    <string name="points_of_interest">Points of interest</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="bars">Bars</string>
+    <string name="stores">Stores</string>
+    <string name="parks">Parks</string>
+    <string name="schools">Schools</string>
+    <string name="hospitals">Hospitals</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

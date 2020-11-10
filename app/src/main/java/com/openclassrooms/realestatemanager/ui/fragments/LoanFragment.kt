@@ -34,7 +34,7 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
 
         binding.tvTotalAmount.text = resources.getString(R.string.total_amount, "", "");
         binding.tvPerYear.text = resources.getString(R.string.per_year, "", "");
-        binding.tvPerMonth?.text = resources.getString(R.string.per_month, "", "");
+        binding.tvPerMonth.text = resources.getString(R.string.per_month, "", "");
 
         val loanAmount = binding.etLoanAmount.text
         val interestedRate = binding.etInterestRate.text

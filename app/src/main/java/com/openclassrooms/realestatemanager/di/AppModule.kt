@@ -23,4 +23,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideAgentDao(database: RealEstateDatabase) = database.getAgentDao()
+
+    @Singleton
+    @Provides
+    fun providePropertyDao(database: RealEstateDatabase) = database.getPropertyDao()
 }

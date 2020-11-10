@@ -11,6 +11,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPropertyBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.ui.fragments.ListFragment
+import com.openclassrooms.realestatemanager.utils.Utils
 import timber.log.Timber
 import java.text.DecimalFormat
 
@@ -18,10 +19,10 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
 
     private val diffCallback = object : DiffUtil.ItemCallback<Property>() {
         override fun areItemsTheSame(oldItem: Property, newItem: Property) =
-                oldItem == newItem
+                oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Property, newItem: Property) =
-                oldItem == newItem
+                oldItem.hashCode() == newItem.hashCode()
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
@@ -71,16 +72,25 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
                         .into(ivPicture)
 
                 tvType.text = property.type
-                tvCity.text = property.city  // TODO
-                tvBedroom.text = property.nbrBedroom.toString()
-                tvBathroom.text = property.nbrBathroom.toString()
-                tvRoom.text = property.nbrRoom.toString()
-                if (ListFragment.isDollar) {
-                    tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro_focused, 0, 0, 0)
-                    tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
-                } else {
-                    tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar_focused, 0, 0, 0)
-                    tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
+                tvCity.text = property.city
+                tvBedroom.text = property.nbrBedroom
+                tvBathroom.text = property.nbrBathroom
+                tvRoom.text = property.nbrRoom
+
+                when (ListFragment.isDollar) {
+                    null -> {
+                        tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
+                    }
+
+                    true -> {
+                        tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro_focused, 0, 0, 0)
+                        tvPrice.text = DecimalFormat("#,###").format(Utils.convertDollarToEuro(property.priceInDollars))
+                    }
+
+                    false -> {
+                        tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar_focused, 0, 0, 0)
+                        tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
+                    }
                 }
             }
         }

@@ -10,6 +10,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/tb_menu_reload"
+        android:icon="@drawable/ic_reload"
+        android:title="@string/update"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/tb_menu_logout"
         android:title="@string/logout"
         app:showAsAction="never" />
