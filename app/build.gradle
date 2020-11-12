@@ -105,5 +105,12 @@ dependencies {
 
     // SlantedTextView
     implementation 'com.haozhang.libary:android-slanted-textview:1.2'
+
+    // Easy Permissions
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
+    // Google Maps Location Services
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 }
 

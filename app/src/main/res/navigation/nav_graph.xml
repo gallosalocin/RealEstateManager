@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.SearchFragment"
-        android:label="Search"
+        android:label="Search Property"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/listFragment"
@@ -62,7 +62,7 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.MapFragment"
-        android:label="Map"
+        android:label="Real Estate Manager"
         tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_detailsFragment"

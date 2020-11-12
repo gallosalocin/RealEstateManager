@@ -1,10 +1,12 @@
 package com.openclassrooms.realestatemanager.utils
 
+import android.Manifest
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.widget.EditText
+import pub.devrel.easypermissions.EasyPermissions
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -100,8 +102,8 @@ object Utils {
     /**
      *  Number format in dollar
      */
-    fun formatInDollar(number: Number, maxDecimal: Int) : String {
-        val numberFormat= NumberFormat.getCurrencyInstance(Locale.US)
+    fun formatInDollar(number: Number, maxDecimal: Int): String {
+        val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
         numberFormat.maximumFractionDigits = maxDecimal
         return numberFormat.format(number)
     }
@@ -109,9 +111,26 @@ object Utils {
     /**
      *  Number format in euro
      */
-    fun formatInEuro(number: Number, maxDecimal: Int) : String {
-        val numberFormat= NumberFormat.getCurrencyInstance(Locale.FRANCE)
+    fun formatInEuro(number: Number, maxDecimal: Int): String {
+        val numberFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE)
         numberFormat.maximumFractionDigits = maxDecimal
         return numberFormat.format(number)
     }
+
+    /**
+     *  Check if device has location permissions
+     */
+    fun hasLocationPermissions(context: Context) =
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                EasyPermissions.hasPermissions(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            } else {
+                EasyPermissions.hasPermissions(
+                        context,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                )
+            }
 }

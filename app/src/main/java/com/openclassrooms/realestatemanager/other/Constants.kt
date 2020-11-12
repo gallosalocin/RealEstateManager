@@ -9,6 +9,8 @@ object Constants {
 
     const val ACTION_SHOW_LIST_FRAGMENT = "ACTION_SHOW_LIST_FRAGMENT"
 
+    const val REQUEST_CODE_LOCATION_PERMISSION = 100
+
     const val NOTIFICATION_CHANNEL_ID = "property_channel"
     const val NOTIFICATION_CHANNEL_NAME = "Property"
     const val NOTIFICATION_ID = 900
