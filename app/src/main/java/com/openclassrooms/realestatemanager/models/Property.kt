@@ -8,6 +8,8 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "properties")
 @Parcelize
 data class Property(
+        @PrimaryKey(autoGenerate = true)
+        var id: Int? = null,
         var type: String,
         var priceInDollars: Int,
         var areaInMeters: String = "0",
@@ -24,7 +26,4 @@ data class Property(
         var isSold: Boolean = false,
         var availableDate: String,
         var soldDate: String = ""
-) : Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-}
+) : Parcelable

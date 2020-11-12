@@ -62,19 +62,21 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         binding.tvDescription.movementMethod = ScrollingMovementMethod()
 
         binding.tvPrice.setOnClickListener {
+            val priceInDollar = args.currentProperty?.priceInDollars
+
             if (isDollar) {
-                isDollar = false
-                binding.tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro_focused, 0, 0, 0)
-                binding.tvPrice.text = DecimalFormat("#,###").format(args.currentProperty?.priceInDollars?.let { price ->
-                    Utils.convertDollarToEuro(price)
-                })
+                if (priceInDollar != null) {
+                    Utils.convertDollarToEuro(priceInDollar)
+                    binding.tvPrice.text = Utils.formatInEuro(priceInDollar, 0)
+                    isDollar = !isDollar
+                }
             } else {
-                binding.tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar_focused, 0, 0, 0)
-                isDollar = true
-                binding.tvPrice.text = DecimalFormat("#,###").format(args.currentProperty?.priceInDollars)
+                binding.tvPrice.text = priceInDollar?.let { Utils.formatInDollar(it, 0) }
+                isDollar = !isDollar
             }
         }
     }
+
 
     // todo
     private fun listPhotoDetails(): List<Int> {
@@ -88,7 +90,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     // Load property
     private fun loadProperty() {
         binding.apply {
-            tvPrice.text = DecimalFormat("#,###").format(args.currentProperty?.priceInDollars)
+            tvPrice.text = args.currentProperty?.priceInDollars?.let { Utils.formatInDollar(it, 0) }
 
             if (args.currentProperty?.isSold == true) {
                 tvStatus.text = getString(R.string.sold_cap)
@@ -103,7 +105,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             tvEntryDate.text = getString(R.string.entry_date_param, args.currentProperty?.availableDate)
 
             tvDescription.text = if (args.currentProperty?.description == "") "Write something!!!" else args.currentProperty?.description
-            tvArea.text = if (args.currentProperty?.areaInMeters == "") "0" else args.currentProperty?.areaInMeters
+            tvArea.text = if (args.currentProperty?.areaInMeters == "") "0 m²" else args.currentProperty?.areaInMeters + " m²"
             tvRoom.text = args.currentProperty?.nbrRoom
             tvBedroom.text = args.currentProperty?.nbrBedroom
             tvBathroom.text = args.currentProperty?.nbrBathroom
@@ -124,7 +126,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         when (item.itemId) {
             R.id.tb_menu_edit -> {
                 isEditable = true
-                val action = DetailsFragmentDirections.actionDetailsFragmentToAddFragment()
+                val action = DetailsFragmentDirections.actionDetailsFragmentToAddFragment(args.currentProperty)
                 findNavController().navigate(action)
                 requireActivity().toolbar.title = "Edit property"
             }

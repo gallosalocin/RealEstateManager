@@ -12,9 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
-import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_loan.*
 
 @AndroidEntryPoint
 class MapFragment : Fragment(R.layout.fragment_map) {
@@ -34,7 +32,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu, menu)
+        inflater.inflate(R.menu.toolbar_menu_main, menu)
+        menu.getItem(0).isVisible = false
+        menu.getItem(1).isVisible = false
         this.menu = menu
     }
 

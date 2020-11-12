@@ -102,5 +102,8 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil:1.0.0")
+
+    // SlantedTextView
+    implementation 'com.haozhang.libary:android-slanted-textview:1.2'
 }
 

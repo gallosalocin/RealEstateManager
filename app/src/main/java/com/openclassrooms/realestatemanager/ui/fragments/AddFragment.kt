@@ -9,12 +9,14 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
 import com.openclassrooms.realestatemanager.models.Property
@@ -29,7 +31,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     private lateinit var binding: FragmentAddBinding
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var property: Property
+    private val args: AddFragmentArgs by navArgs()
 
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
 
@@ -46,7 +48,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
         if (DetailsFragment.isEditable) {
             binding.cbIsSold.visibility = View.VISIBLE
-            DetailsFragment.isEditable = false
+            loadProperty()
         }
 
         setupTypeSpinner()
@@ -78,9 +80,10 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         return super.onOptionsItemSelected(item)
     }
 
-    // Save property into Room
-    private fun saveProperty(): Property {
-        property = Property(
+    // Update property
+    private fun updateProperty(): Property {
+        return Property(
+                id = args.currentProperty?.id,
                 type = type,
                 priceInDollars = binding.etPrice.text.toString().toInt(),
                 areaInMeters = binding.etArea.text.toString(),
@@ -88,7 +91,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
                 nbrBedroom = bedroom,
                 nbrBathroom = bathroom,
 //                photo = listOf(R.drawable.test_house_photo.toString()),
-                description = binding.edDescription.text.toString(),
+                description = binding.etDescription.text.toString(),
                 street = binding.etStreet.text.toString(),
                 postcode = binding.etPostcode.text.toString(),
                 city = binding.etCity.text.toString(),
@@ -105,7 +108,87 @@ class AddFragment : Fragment(R.layout.fragment_add) {
                 availableDate = binding.etAvailableDate.text.toString(),
                 soldDate = binding.etSoldDate.text.toString()
         )
-        return property
+    }
+
+    // Save property into Room
+    private fun saveProperty(): Property {
+        return Property(
+                type = type,
+                priceInDollars = binding.etPrice.text.toString().toInt(),
+                areaInMeters = binding.etArea.text.toString(),
+                nbrRoom = room,
+                nbrBedroom = bedroom,
+                nbrBathroom = bathroom,
+//                photo = listOf(R.drawable.test_house_photo.toString()),
+                description = binding.etDescription.text.toString(),
+                street = binding.etStreet.text.toString(),
+                postcode = binding.etPostcode.text.toString(),
+                city = binding.etCity.text.toString(),
+                country = binding.etCountry.text.toString(),
+//                poi = listOf(
+//                        binding.chipRestaurant.isChecked,
+//                        binding.chipBar.isChecked,
+//                        binding.chipStore.isChecked,
+//                        binding.chipPark.isChecked,
+//                        binding.chipSchool.isChecked,
+//                        binding.chipHospital.isChecked,
+//                ),
+                availableDate = binding.etAvailableDate.text.toString(),
+        )
+    }
+
+    // Load property for edit
+    private fun loadProperty() {
+        val positionType = resources.getStringArray(R.array.type_of_properties).indexOf(args.currentProperty?.type)
+        val positionRoom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.nbrRoom)
+        val positionBedroom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.nbrBedroom)
+        val positionBathroom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.nbrBathroom)
+
+        binding.apply {
+            etPrice.setText(args.currentProperty?.priceInDollars.toString())
+            etArea.setText(args.currentProperty?.areaInMeters.toString())
+            etStreet.setText(args.currentProperty?.street.toString())
+            etPostcode.setText(args.currentProperty?.postcode.toString())
+            etCity.setText(args.currentProperty?.city.toString())
+            etCountry.setText(args.currentProperty?.country.toString())
+            etDescription.setText(args.currentProperty?.description.toString())
+            etAvailableDate.setText(args.currentProperty?.availableDate.toString())
+
+            spType.post { spType.setSelection(positionType) }
+            spRoom.post { spRoom.setSelection(positionRoom) }
+            spBedroom.post { spBedroom.setSelection(positionBedroom) }
+            spBathroom.post { spBathroom.setSelection(positionBathroom) }
+
+            if (args.currentProperty?.isSold == true) {
+                cbIsSold.isChecked = true
+                etSoldDate.visibility = View.VISIBLE
+                etSoldDate.setText(args.currentProperty?.soldDate.toString())
+            }
+        }
+    }
+
+    // Validate necessary fields
+    private fun confirmValidation() {
+        if (!validateType()
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPrice, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etStreet, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPostcode, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCity, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCountry, "Can't be empty"))
+                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etAvailableDate, "Can't be empty"))
+        ) return
+
+        if (DetailsFragment.isEditable) {
+            DetailsFragment.isEditable = false
+            Toast.makeText(requireContext(), "Update Successfully", Toast.LENGTH_SHORT).show()
+            viewModel.updateProperty(updateProperty())
+            val action = AddFragmentDirections.actionAddFragmentToListFragment()
+            findNavController().navigate(action)
+        } else {
+            viewModel.insertProperty(saveProperty())
+            val action = AddFragmentDirections.actionAddFragmentToListFragment()
+            findNavController().navigate(action)
+        }
     }
 
     // Display or hide Datepicker for sold date
@@ -209,21 +292,6 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
         datePicker.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         datePicker.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
-    }
-
-    // Validate necessary fields
-    private fun confirmValidation() {
-        if (!validateType()
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPrice, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etStreet, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPostcode, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCity, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCountry, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etAvailableDate, "Can't be empty"))
-        ) return
-        viewModel.insertProperty(saveProperty())
-        val action = AddFragmentDirections.actionAddFragmentToListFragment()
-        findNavController().navigate(action)
     }
 
     // Validate property type spinner

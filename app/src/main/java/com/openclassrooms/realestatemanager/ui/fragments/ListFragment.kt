@@ -16,7 +16,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -56,13 +56,14 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         propertyAdapter.setOnItemClickListener {
             val action = ListFragmentDirections.actionListFragmentToDetailsFragment(it)
             findNavController().navigate(action)
+            requireActivity().toolbar.title = it.type
         }
     }
 
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu, menu)
+        inflater.inflate(R.menu.toolbar_menu_main, menu)
         this.menu = menu
     }
 

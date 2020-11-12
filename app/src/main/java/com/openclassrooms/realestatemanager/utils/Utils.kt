@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.widget.EditText
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -30,7 +31,7 @@ object Utils {
      */
     fun getTodayDate(): String {
         val currentDate = Calendar.getInstance()
-        return SimpleDateFormat("dd-MM-yyyy").format(currentDate.time)
+        return SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(currentDate.time)
     }
 
     /**
@@ -94,5 +95,23 @@ object Utils {
             field.error = null
             true
         }
+    }
+
+    /**
+     *  Number format in dollar
+     */
+    fun formatInDollar(number: Number, maxDecimal: Int) : String {
+        val numberFormat= NumberFormat.getCurrencyInstance(Locale.US)
+        numberFormat.maximumFractionDigits = maxDecimal
+        return numberFormat.format(number)
+    }
+
+    /**
+     *  Number format in euro
+     */
+    fun formatInEuro(number: Number, maxDecimal: Int) : String {
+        val numberFormat= NumberFormat.getCurrencyInstance(Locale.FRANCE)
+        numberFormat.maximumFractionDigits = maxDecimal
+        return numberFormat.format(number)
     }
 }

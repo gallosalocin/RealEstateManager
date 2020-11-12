@@ -13,9 +13,10 @@
     <string name="map">Map</string>
     <string name="search">Search</string>
     <string name="loan">Loan</string>
-    <string name="total_amount">Total amount : %1$s %2$s</string>
-    <string name="per_year">Per year : %1$s %2$s</string>
-    <string name="per_month">Per month : %1$s %2$s</string>
+    <string name="total_amount">Total amount : %1$s</string>
+    <string name="total_interest">Total interest : %1$s</string>
+    <string name="annual_payment">Annual payment : %1$s</string>
+    <string name="monthly_payment">Monthly payment : %1$s</string>
     <string name="loan_amount">Loan Amount</string>
     <string name="interested_rate">Interested Rate</string>
     <string name="number_of_year">Number of Year(s)</string>

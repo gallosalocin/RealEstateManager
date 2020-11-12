@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -69,7 +70,7 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
                         .centerCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .error(R.drawable.ic_error)
-                        .into(ivPicture)
+                        .into(ivImage)
 
                 tvType.text = property.type
                 tvCity.text = property.city
@@ -77,9 +78,12 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
                 tvBathroom.text = property.nbrBathroom
                 tvRoom.text = property.nbrRoom
 
+                if (property.isSold) tvSoldDiagonal.visibility = View.VISIBLE else tvSoldDiagonal.visibility = View.INVISIBLE
+
                 when (ListFragment.isDollar) {
                     null -> {
-                        tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
+                        tvPrice.text = Utils.formatInDollar(property.priceInDollars, 0)
+//                        tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
                     }
 
                     true -> {

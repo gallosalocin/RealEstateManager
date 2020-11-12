@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".ui.fragments.LoanFragment">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -92,17 +93,17 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/custom_button_background"
             android:text="@string/calculate"
             android:textAllCaps="false"
             android:textSize="20sp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_total_amount"
+            android:id="@+id/tv_total_payment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="25dp"
             android:text="@string/total_amount"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -110,22 +111,33 @@
             app:layout_constraintTop_toBottomOf="@id/linear_layout" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_per_year"
+            android:id="@+id/tv_total_interest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="@string/per_year"
+            android:layout_marginTop="15dp"
+            android:text="@string/total_interest"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linear_layout" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_per_month"
+            android:id="@+id/tv_annual_payment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="@string/per_month"
+            android:layout_marginTop="15dp"
+            android:text="@string/annual_payment"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linear_layout" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_monthly_payment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/monthly_payment"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"

@@ -19,7 +19,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private lateinit var binding: FragmentSearchBinding
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var menu: Menu
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,8 +31,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu, menu)
-        this.menu = menu
+        inflater.inflate(R.menu.toolbar_menu_main, menu)
+        menu.getItem(0).isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

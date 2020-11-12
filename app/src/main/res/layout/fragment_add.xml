@@ -44,6 +44,7 @@
         android:drawablePadding="5dp"
         android:hint="@string/price"
         android:inputType="number"
+        android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/et_area"
@@ -59,6 +60,7 @@
         android:hint="@string/area_in_square_meter"
         android:importantForAutofill="no"
         android:inputType="number"
+        android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@id/et_price"
         app:layout_constraintRight_toRightOf="parent"
@@ -195,6 +197,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:hint="@string/address"
+        android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/et_postcode"
@@ -207,6 +210,7 @@
         android:layout_marginStart="5dp"
         android:hint="@string/postcode"
         android:inputType="number"
+        android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@id/et_street"
         app:layout_constraintRight_toRightOf="parent"
@@ -220,6 +224,7 @@
         android:layout_marginEnd="5dp"
         android:hint="@string/city"
         android:inputType="text"
+        android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/et_country"
@@ -232,6 +237,7 @@
         android:layout_marginTop="5dp"
         android:hint="@string/country"
         android:inputType="text"
+        android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toRightOf="@id/et_city"
         app:layout_constraintRight_toRightOf="parent"
@@ -348,11 +354,12 @@
         app:layout_constraintTop_toTopOf="@id/chip_park" />
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/ed_description"
+        android:id="@+id/et_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:hint="@string/description"
+        android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -374,7 +381,7 @@
         android:inputType="none"
         android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ed_description" />
+        app:layout_constraintTop_toBottomOf="@id/et_description" />
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/cb_is_sold"
