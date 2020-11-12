@@ -1,6 +1,8 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -20,6 +22,8 @@ import androidx.navigation.fragment.navArgs
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
 import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
+import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_USERNAME
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,9 +36,10 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     private lateinit var binding: FragmentAddBinding
     private val viewModel: MainViewModel by viewModels()
     private val args: AddFragmentArgs by navArgs()
-
+    private lateinit var sharedPref: SharedPreferences
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
 
+    private var currentAgentId: Int = 0
     private lateinit var type: String
     private lateinit var room: String
     private lateinit var bedroom: String
@@ -51,17 +56,17 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             loadProperty()
         }
 
+        sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
+
+        checkAgentId()
+
         setupTypeSpinner()
         setupRoomsSpinner()
-
         displayOrHideSoldDatepicker()
 
-        binding.etAvailableDate.setOnClickListener {
-            showDatePickerDialog(binding.etAvailableDate)
-        }
+        binding.etAvailableDate.setOnClickListener { showDatePickerDialog(binding.etAvailableDate) }
 
-        binding.btnAddPhoto.setOnClickListener {
-        }
+        binding.btnAddPhoto.setOnClickListener {}
 
     }
 
@@ -78,6 +83,17 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    // Check for agent id
+    private fun checkAgentId() {
+        viewModel.getAllAgents.observe(viewLifecycleOwner, androidx.lifecycle.Observer { agentsList ->
+            agentsList.forEachIndexed { index, agent ->
+                if (agent.username == (sharedPref.getString(SHARED_PREFERENCES_USERNAME, ""))) {
+                    currentAgentId = agent.id
+                }
+            }
+        })
     }
 
     // Update property
@@ -106,7 +122,8 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 //                ),
                 isSold = binding.cbIsSold.isChecked,
                 availableDate = binding.etAvailableDate.text.toString(),
-                soldDate = binding.etSoldDate.text.toString()
+                soldDate = binding.etSoldDate.text.toString(),
+                agentId = args.currentProperty!!.agentId
         )
     }
 
@@ -134,6 +151,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 //                        binding.chipHospital.isChecked,
 //                ),
                 availableDate = binding.etAvailableDate.text.toString(),
+                agentId = currentAgentId
         )
     }
 
@@ -179,11 +197,15 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         ) return
 
         if (DetailsFragment.isEditable) {
-            DetailsFragment.isEditable = false
+            if (binding.cbIsSold.isChecked) {
+                if (!Utils.validateInputFieldIfNullOrEmpty(binding.etSoldDate, "Can't be empty"))
+                    return
+            }
             Toast.makeText(requireContext(), "Update Successfully", Toast.LENGTH_SHORT).show()
             viewModel.updateProperty(updateProperty())
             val action = AddFragmentDirections.actionAddFragmentToListFragment()
             findNavController().navigate(action)
+            DetailsFragment.isEditable = !DetailsFragment.isEditable
         } else {
             viewModel.insertProperty(saveProperty())
             val action = AddFragmentDirections.actionAddFragmentToListFragment()

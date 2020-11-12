@@ -1,14 +1,19 @@
 package com.openclassrooms.realestatemanager.models
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
-@Entity(tableName = "properties")
+@Entity(
+        tableName = "properties",
+        foreignKeys = [ForeignKey(entity = Agent::class, parentColumns = ["agent_id"], childColumns = ["agentId"])])
 @Parcelize
 data class Property(
         @PrimaryKey(autoGenerate = true)
+        @ColumnInfo(name = "property_id")
         var id: Int? = null,
         var type: String,
         var priceInDollars: Int,
@@ -25,5 +30,6 @@ data class Property(
 //        var poi: ArrayList<Boolean> = ArrayList(),
         var isSold: Boolean = false,
         var availableDate: String,
-        var soldDate: String = ""
+        var soldDate: String = "",
+        var agentId: Int
 ) : Parcelable

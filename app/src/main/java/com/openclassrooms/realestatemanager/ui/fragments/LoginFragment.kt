@@ -15,6 +15,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentLoginBinding
 import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_IS_USER_LOGIN
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
+import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_USERNAME
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,6 +57,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 if (agentsList.any { it.password == (binding.etPassword.text.toString().trim()) }) {
                     val editor: SharedPreferences.Editor = sharedPref.edit()
                     editor.putBoolean(SHARED_PREFERENCES_IS_USER_LOGIN, true)
+                    editor.putString(SHARED_PREFERENCES_USERNAME, binding.etUsername.text.toString().trim())
                     editor.apply()
                     val action = LoginFragmentDirections.actionLoginFragmentToListFragment()
                     findNavController().navigate(action)

@@ -13,6 +13,6 @@ interface PropertyDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateProperty(property: Property)
 
-    @Query("SELECT * FROM properties ORDER BY id DESC")
+    @Query("SELECT * FROM properties ORDER BY property_id DESC")
     fun getAllProperties(): LiveData<List<Property>>
 }
