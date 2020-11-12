@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
+import com.openclassrooms.realestatemanager.other.Constants.ACTION_SHOW_LIST_FRAGMENT
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -27,11 +30,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        navigateToListFragmentIfNeeded(intent)
+
         setupNavigationComponent()
         binding.fabAdd.setOnClickListener{
             navController.navigate(R.id.addFragment)
         }
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navigateToListFragmentIfNeeded(intent)
     }
 
     // Setup Navigation Component
@@ -76,6 +86,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    private fun navigateToListFragmentIfNeeded(intent: Intent?) {
+        if (intent?.action == ACTION_SHOW_LIST_FRAGMENT) {
+            navController.navigate(R.id.action_global_list_fragment)
+        }
     }
 
     override fun onBackPressed() {

@@ -1,8 +1,16 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.app.DatePickerDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_DEFAULT
+import android.app.NotificationManager.IMPORTANCE_LOW
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,9 +20,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.getSystemServiceName
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -22,8 +34,13 @@ import androidx.navigation.fragment.navArgs
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
 import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.other.Constants.ACTION_SHOW_LIST_FRAGMENT
+import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_ID
+import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_NAME
+import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_ID
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_USERNAME
+import com.openclassrooms.realestatemanager.ui.MainActivity
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -208,6 +225,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             DetailsFragment.isEditable = !DetailsFragment.isEditable
         } else {
             viewModel.insertProperty(saveProperty())
+            sendNotification()
             val action = AddFragmentDirections.actionAddFragmentToListFragment()
             findNavController().navigate(action)
         }
@@ -327,5 +345,46 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             errorText.error = null
             true
         }
+    }
+
+    // Create Notification
+    private fun sendNotification() {
+        val city = binding.etCity.text.toString()
+
+        val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(notificationManager)
+        }
+
+        val notificationBuilder= NotificationCompat.Builder(requireContext(), NOTIFICATION_CHANNEL_ID)
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.real_estate_logo)
+                .setContentTitle("Property Saved")
+                .setContentText("The $type in $city was successfully saved")
+                .setContentIntent(getMainActivityPendingIntent())
+
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+    }
+
+    // Create Pending Intent
+    private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
+            requireContext(),
+            0,
+            Intent(requireContext(), MainActivity::class.java).also {
+                it.action = ACTION_SHOW_LIST_FRAGMENT
+            },
+            0
+    )
+
+    // Create notification channel
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(notificationManager: NotificationManager) {
+        val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                NOTIFICATION_CHANNEL_NAME,
+                IMPORTANCE_DEFAULT
+        )
+        notificationManager.createNotificationChannel(channel)
     }
 }
