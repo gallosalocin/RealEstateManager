@@ -7,19 +7,44 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:padding="10dp"
-    tools:context=".ui.fragments.AddFragment">
+    tools:context=".ui.fragments.EditFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_photo"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginBottom="10dp"
-        android:src="@drawable/ic_add_circle"
-        app:layout_constraintBottom_toTopOf="@id/et_price"
+        app:layout_constraintBottom_toTopOf="@id/rv_add"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_error" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_add"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/et_price"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_add_photo"
+        app:layout_constraintTop_toBottomOf="@id/iv_photo"
+        tools:listitem="@layout/item_photo_details" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@android:color/darker_gray"
+        android:text="@string/add_photo"
+        app:layout_constraintBottom_toBottomOf="@id/rv_add"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rv_add"
+        tools:targetApi="lollipop" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_price"
@@ -33,10 +58,11 @@
         android:maxLength="9"
         android:selectAllOnFocus="true"
         android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@id/divider_1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/et_area"
-        app:layout_constraintTop_toBottomOf="@id/iv_photo"
-        tools:text="$2,000,000"/>
+        app:layout_constraintTop_toBottomOf="@id/rv_add"
+        tools:text="$2,000,000" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_area"
@@ -53,7 +79,7 @@
         app:layout_constraintLeft_toRightOf="@id/et_price"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/et_price"
-        tools:text="500"/>
+        tools:text="500" />
 
     <View
         android:id="@+id/divider_1"
@@ -411,7 +437,7 @@
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_available_date"
-        android:layout_width="185dp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:clickable="false"
         android:cursorVisible="false"
@@ -421,7 +447,39 @@
         android:hint="@string/available_date"
         android:inputType="none"
         android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@id/et_sold_date"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_5" />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cb_is_sold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="@string/sold"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/et_available_date"
+        app:layout_constraintLeft_toRightOf="@id/et_available_date"
+        app:layout_constraintTop_toTopOf="@id/et_available_date" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_sold_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:drawableStart="@drawable/ic_calendar"
+        android:drawablePadding="10dp"
+        android:focusable="false"
+        android:hint="@string/sold_date"
+        android:inputType="none"
+        android:textColor="@android:color/black"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/et_available_date"
+        app:layout_constraintTop_toBottomOf="@id/et_available_date" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

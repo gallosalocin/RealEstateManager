@@ -59,6 +59,8 @@
     <string name="available_cap">AVAILABLE</string>
     <string name="entry_date_param">Entry date: %s</string>
     <string name="sold_date_param">Sold date: %s</string>
+    <string name="agent">Agent</string>
+    <string name="agent_name">%s %s</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

@@ -8,9 +8,8 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
+import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.databinding.FragmentRegisterBinding
 import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
@@ -43,8 +42,12 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
 
         binding.btnRegister.setOnClickListener {
-
-            confirmValidation()
+            if (!Utils.validateInputFieldIfNullOrEmpty(binding.etFirstName, "Can't be empty")
+                    or (!Utils.validateInputFieldIfNullOrEmpty(binding.etLastName, "Can't be empty"))
+                    or (!Utils.validateInputFieldIfIsGreaterThan(binding.etUsernameRegister, "Min. 4 chars", 4))
+                    or (!Utils.validateInputFieldIfIsGreaterThan(binding.etPasswordRegister, "Min. 4 chars", 4))
+                    or (!Utils.validateInputFieldIfIsGreaterThan(binding.etConfirmPasswordRegister, "Min. 4 chars", 4))
+            ) return@setOnClickListener
 
             if (agentsList.any { it.username == (binding.etUsernameRegister.text.toString().trim()) }) {
                 binding.etUsernameRegister.error = "This username already exist"
@@ -64,15 +67,5 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 }
             }
         }
-    }
-
-    // Validate necessary fields
-    private fun confirmValidation() {
-        if (!Utils.validateInputFieldIfNullOrEmpty(binding.etFirstName, "Can't be empty")
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etLastName, "Can't be empty"))
-                or (!Utils.validateInputFieldIfIsGreaterThan(binding.etUsernameRegister, "Min. 4 chars", 4))
-                or (!Utils.validateInputFieldIfIsGreaterThan(binding.etPasswordRegister, "Min. 4 chars", 4))
-                or (!Utils.validateInputFieldIfIsGreaterThan(binding.etConfirmPasswordRegister, "Min. 4 chars", 4))
-        ) return
     }
 }

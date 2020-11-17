@@ -8,14 +8,27 @@
     android:background="@android:color/white"
     tools:context=".ui.fragments.DetailsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_details"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="0dp"
         android:layout_height="200dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/rv_details"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_add_circle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_details"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_price"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_photo"
         tools:listitem="@layout/item_photo_details" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -205,13 +218,139 @@
         android:id="@+id/divider_4"
         style="@style/DividerHorizontal"
         android:layout_marginVertical="10dp"
-        app:layout_constraintBottom_toTopOf="@id/tv_Location"
+        app:layout_constraintBottom_toTopOf="@id/tv_poi"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_area" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_Location"
+        android:id="@+id/tv_poi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_poi"
+        android:drawablePadding="5dp"
+        android:text="@string/points_of_interest"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/chip_restaurant"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_3"
+        tools:ignore="RtlSymmetry" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_restaurant"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/restaurants"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_restaurant"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/chip_bar"
+        app:layout_constraintTop_toBottomOf="@id/tv_poi" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_bar"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="@string/bars"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_bar"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_restaurant"
+        app:layout_constraintRight_toLeftOf="@id/chip_store"
+        app:layout_constraintTop_toTopOf="@id/chip_restaurant" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_store"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="@string/stores"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_store"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_bar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chip_restaurant" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_park"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="@string/parks"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_park"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintBottom_toTopOf="@id/divider_5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/chip_school"
+        app:layout_constraintTop_toBottomOf="@id/chip_restaurant" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_school"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:clickable="false"
+        android:text="@string/schools"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_school"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_park"
+        app:layout_constraintRight_toLeftOf="@id/chip_hospital"
+        app:layout_constraintTop_toTopOf="@id/chip_park" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_hospital"
+        style="@style/CustomChipStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:clickable="false"
+        android:text="@string/hospitals"
+        android:textSize="18sp"
+        app:checkedIconVisible="false"
+        app:chipIcon="@drawable/ic_hospital"
+        app:chipIconEnabled="true"
+        app:iconStartPadding="2dp"
+        app:layout_constraintLeft_toRightOf="@id/chip_school"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/chip_park" />
+
+    <View
+        android:id="@+id/divider_5"
+        style="@style/DividerHorizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_location"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chip_park" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -222,7 +361,7 @@
         app:layout_constraintBottom_toTopOf="@id/tv_street"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_4"
+        app:layout_constraintTop_toBottomOf="@id/divider_5"
         tools:ignore="RtlSymmetry" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -234,7 +373,7 @@
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_Location"
+        app:layout_constraintTop_toBottomOf="@id/tv_location"
         tools:ignore="RtlSymmetry"
         tools:text="740 Park Avenue" />
 
@@ -287,7 +426,45 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_country"
         app:layout_constraintLeft_toRightOf="@id/tv_street"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_Location" />
+        app:layout_constraintTop_toTopOf="@id/tv_location" />
 
+    <View
+        android:id="@+id/divider_6"
+        style="@style/DividerHorizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_agent_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_country" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_agent_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_username"
+        android:drawablePadding="5dp"
+        android:text="@string/agent"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_agent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_6"
+        tools:ignore="RtlSymmetry" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_agent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/agent"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_agent_title"
+        tools:ignore="RtlSymmetry" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,14 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.app.DatePickerDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.NotificationManager.IMPORTANCE_DEFAULT
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -18,24 +10,18 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.models.Property
-import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_ID
-import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_NAME
-import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_ID
-import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
-import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_USERNAME
-import com.openclassrooms.realestatemanager.ui.MainActivity
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,15 +30,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class AddFragment : Fragment(R.layout.fragment_add) {
+class EditFragment : Fragment(R.layout.fragment_edit) {
 
-    private lateinit var binding: FragmentAddBinding
+    private lateinit var binding: FragmentEditBinding
     private val viewModel: MainViewModel by viewModels()
     private val args: AddFragmentArgs by navArgs()
-    private lateinit var sharedPref: SharedPreferences
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
 
-    private var currentAgentId: Int = 0
     private lateinit var type: String
     private lateinit var room: String
     private lateinit var bedroom: String
@@ -61,21 +45,18 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentAddBinding.bind(view)
+        binding = FragmentEditBinding.bind(view)
         setHasOptionsMenu(true)
 
-        sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
-
-
-        checkAgentId()
+        loadProperty()
 
         setupTypeSpinner()
         setupRoomsSpinner()
+        displayOrHideSoldDatepicker()
 
         binding.etAvailableDate.setOnClickListener { showDatePickerDialog(binding.etAvailableDate) }
-
-
     }
+
 
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -92,17 +73,6 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         return super.onOptionsItemSelected(item)
     }
 
-    // Check for agent id
-    private fun checkAgentId() {
-        viewModel.getAllAgents.observe(viewLifecycleOwner, { agentsList ->
-            agentsList.forEachIndexed { index, agent ->
-                if (agent.username == (sharedPref.getString(SHARED_PREFERENCES_USERNAME, ""))) {
-                    currentAgentId = agent.id
-                }
-            }
-        })
-    }
-
     // Validate necessary fields
     private fun confirmValidation() {
         if (!validateType()
@@ -113,10 +83,11 @@ class AddFragment : Fragment(R.layout.fragment_add) {
                 or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCountry, "Can't be empty"))
                 or (!Utils.validateInputFieldIfNullOrEmpty(binding.etAvailableDate, "Can't be empty"))
         ) Toast.makeText(requireContext(), "Please fill all the required fields", Toast.LENGTH_SHORT).show()
-        else saveProperty()
+        else updateProperty()
     }
 
-    private fun saveProperty() {
+    // Update property
+    private fun updateProperty() {
 
         val poiList = ArrayList<Boolean>()
         poiList.add(binding.chipRestaurant.isChecked)
@@ -126,8 +97,8 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         poiList.add(binding.chipSchool.isChecked)
         poiList.add(binding.chipHospital.isChecked)
 
-
-        val propertySaved = Property(
+        val propertyUpdated = Property(
+                id = args.currentProperty?.property?.id!!,
                 type = type,
                 priceInDollars = binding.etPrice.text.toString().toInt(),
                 areaInMeters = binding.etArea.text.toString(),
@@ -140,17 +111,77 @@ class AddFragment : Fragment(R.layout.fragment_add) {
                 city = binding.etCity.text.toString(),
                 country = binding.etCountry.text.toString(),
                 poi = poiList,
+                isSold = binding.cbIsSold.isChecked,
                 availableDate = binding.etAvailableDate.text.toString(),
-                agentId = currentAgentId,
-                coverPhoto = R.drawable.test_house_photo
+                soldDate = binding.etSoldDate.text.toString(),
+                agentId = args.currentProperty?.property?.agentId!!,
+                coverPhoto = args.currentProperty?.property?.coverPhoto!!
         )
 
-        viewModel.insertProperty(propertySaved)
-        sendNotification()
-        val action = AddFragmentDirections.actionAddFragmentToListFragment()
+        viewModel.updateProperty(propertyUpdated)
+
+        val action = EditFragmentDirections.actionEditFragmentToListFragment()
         findNavController().navigate(action)
     }
 
+
+    // Load property to edit
+    private fun loadProperty() {
+        val positionType = resources.getStringArray(R.array.type_of_properties).indexOf(args.currentProperty?.property?.type)
+        val positionRoom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.property?.nbrRoom)
+        val positionBedroom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.property?.nbrBedroom)
+        val positionBathroom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.property?.nbrBathroom)
+
+        binding.apply {
+            Glide.with(requireContext())
+                    .load(args.currentProperty?.property?.coverPhoto!!)
+                    .centerCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_error)
+                    .into(ivPhoto)
+
+            etPrice.setText(args.currentProperty?.property?.priceInDollars.toString())
+            etArea.setText(args.currentProperty?.property?.areaInMeters.toString())
+            etStreet.setText(args.currentProperty?.property?.street.toString())
+            etPostcode.setText(args.currentProperty?.property?.postcode.toString())
+            etCity.setText(args.currentProperty?.property?.city.toString())
+            etCountry.setText(args.currentProperty?.property?.country.toString())
+            etDescription.setText(args.currentProperty?.property?.description.toString())
+            etAvailableDate.setText(args.currentProperty?.property?.availableDate.toString())
+
+            spType.post { spType.setSelection(positionType) }
+            spRoom.post { spRoom.setSelection(positionRoom) }
+            spBedroom.post { spBedroom.setSelection(positionBedroom) }
+            spBathroom.post { spBathroom.setSelection(positionBathroom) }
+
+            chipRestaurant.isChecked = args.currentProperty?.property?.poi?.get(0).toString().toBoolean()
+            chipBar.isChecked = args.currentProperty?.property?.poi?.get(1).toString().toBoolean()
+            chipStore.isChecked = args.currentProperty?.property?.poi?.get(2).toString().toBoolean()
+            chipPark.isChecked = args.currentProperty?.property?.poi?.get(3).toString().toBoolean()
+            chipSchool.isChecked = args.currentProperty?.property?.poi?.get(4).toString().toBoolean()
+            chipHospital.isChecked = args.currentProperty?.property?.poi?.get(5).toString().toBoolean()
+
+            if (args.currentProperty?.property?.isSold == true) {
+                cbIsSold.isChecked = true
+                etSoldDate.visibility = View.VISIBLE
+                etSoldDate.setText(args.currentProperty?.property?.soldDate.toString())
+            }
+        }
+    }
+
+    // Display or hide Datepicker for sold date
+    private fun displayOrHideSoldDatepicker() {
+        binding.cbIsSold.setOnCheckedChangeListener { compoundButton, isChecked ->
+            if (isChecked) {
+                binding.etSoldDate.visibility = View.VISIBLE
+                binding.etSoldDate.setOnClickListener {
+                    showDatePickerDialog(binding.etSoldDate)
+                }
+            } else {
+                binding.etSoldDate.visibility = View.INVISIBLE
+            }
+        }
+    }
 
     // Setup Type Spinner
     private fun setupTypeSpinner() {
@@ -252,44 +283,5 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             errorText.error = null
             true
         }
-    }
-
-    // Create Notification
-    private fun sendNotification() {
-        val city = binding.etCity.text.toString()
-
-        val notificationManager = activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(notificationManager)
-        }
-
-        val notificationBuilder = NotificationCompat.Builder(requireContext(), NOTIFICATION_CHANNEL_ID)
-                .setAutoCancel(true)
-                .setSmallIcon(R.drawable.real_estate_logo)
-                .setContentTitle("Property Saved")
-                .setContentText("The $type in $city was successfully saved")
-                .setContentIntent(getMainActivityPendingIntent())
-
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
-    }
-
-    // Create Pending Intent
-    private fun getMainActivityPendingIntent() = PendingIntent.getActivity(
-            requireContext(),
-            0,
-            Intent(requireContext(), MainActivity::class.java),
-            0
-    )
-
-    // Create notification channel
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(notificationManager: NotificationManager) {
-        val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_NAME,
-                IMPORTANCE_DEFAULT
-        )
-        notificationManager.createNotificationChannel(channel)
     }
 }

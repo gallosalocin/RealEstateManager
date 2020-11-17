@@ -10,27 +10,26 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPropertyBinding
-import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.fragments.ListFragment
 import com.openclassrooms.realestatemanager.utils.Utils
-import timber.log.Timber
-import java.text.DecimalFormat
 
 class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>() {
 
-    private val diffCallback = object : DiffUtil.ItemCallback<Property>() {
-        override fun areItemsTheSame(oldItem: Property, newItem: Property) =
-                oldItem.id == newItem.id
+    private val diffCallback = object : DiffUtil.ItemCallback<PropertyWithAllData>() {
+        override fun areItemsTheSame(oldItem: PropertyWithAllData, newItem: PropertyWithAllData) =
+                oldItem.property.id == newItem.property.id
 
-        override fun areContentsTheSame(oldItem: Property, newItem: Property) =
-                oldItem.hashCode() == newItem.hashCode()
+        override fun areContentsTheSame(oldItem: PropertyWithAllData, newItem: PropertyWithAllData) =
+                oldItem.property.hashCode() == newItem.property.hashCode()
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var properties: List<Property>
+    var properties: List<PropertyWithAllData>
         get() = differ.currentList
         set(value) = differ.submitList(value)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyViewHolder {
         val binding = ItemPropertyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -46,9 +45,9 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
         return properties.size
     }
 
-    private var onItemClickListener: ((Property) -> Unit)? = null
+    private var onItemClickListener: ((PropertyWithAllData) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (Property) -> Unit) {
+    fun setOnItemClickListener(listener: (PropertyWithAllData) -> Unit) {
         onItemClickListener = listener
     }
 
@@ -63,38 +62,31 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
             }
         }
 
-        fun bind(property: Property) {
+        fun bind(propertyWithAllData: PropertyWithAllData) {
             binding.apply {
+
                 Glide.with(itemView)
-                        .load(R.drawable.test_house_photo)
+                        .load(propertyWithAllData.property.coverPhoto)
                         .centerCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
-                        .error(R.drawable.ic_error)
+                        .error(R.drawable.ic_bar)
                         .into(ivImage)
 
-                tvType.text = property.type
-                tvCity.text = property.city
-                tvBedroom.text = property.nbrBedroom
-                tvBathroom.text = property.nbrBathroom
-                tvRoom.text = property.nbrRoom
+                tvType.text = propertyWithAllData.property.type
+                tvCity.text = propertyWithAllData.property.city
+                tvBedroom.text = propertyWithAllData.property.nbrBedroom
+                tvBathroom.text = propertyWithAllData.property.nbrBathroom
+                tvRoom.text = propertyWithAllData.property.nbrRoom
 
-                if (property.isSold) tvSoldDiagonal.visibility = View.VISIBLE else tvSoldDiagonal.visibility = View.INVISIBLE
+                if (propertyWithAllData.property.isSold) tvSoldDiagonal.visibility = View.VISIBLE else tvSoldDiagonal.visibility = View.INVISIBLE
 
                 when (ListFragment.isDollar) {
-                    null -> {
-                        tvPrice.text = Utils.formatInDollar(property.priceInDollars, 0)
-//                        tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
-                    }
-
+                    null -> tvPrice.text = Utils.formatInDollar(propertyWithAllData.property.priceInDollars, 0)
                     true -> {
-                        tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_euro_focused, 0, 0, 0)
-                        tvPrice.text = DecimalFormat("#,###").format(Utils.convertDollarToEuro(property.priceInDollars))
+                        val price = Utils.convertDollarToEuro(propertyWithAllData.property.priceInDollars)
+                        tvPrice.text = Utils.formatInEuro(price, 0)
                     }
-
-                    false -> {
-                        tvPrice.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dollar_focused, 0, 0, 0)
-                        tvPrice.text = DecimalFormat("#,###").format(property.priceInDollars)
-                    }
+                    false -> tvPrice.text = Utils.formatInDollar(propertyWithAllData.property.priceInDollars, 0)
                 }
             }
         }

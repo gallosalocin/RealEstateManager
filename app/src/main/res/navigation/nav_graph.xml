@@ -5,11 +5,6 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
-    <action
-        android:id="@+id/action_global_list_fragment"
-        app:destination="@id/listFragment"
-        app:launchSingleTop="true" />
-
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.openclassrooms.realestatemanager.ui.fragments.LoginFragment"
@@ -73,13 +68,13 @@
         android:name="com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment"
         android:label="Property Details"
         tools:layout="@layout/fragment_details">
-        <action
-            android:id="@+id/action_detailsFragment_to_addFragment"
-            app:destination="@id/addFragment" />
         <argument
             android:name="currentProperty"
-            app:argType="com.openclassrooms.realestatemanager.models.Property"
+            app:argType="com.openclassrooms.realestatemanager.models.PropertyWithAllData"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_detailsFragment_to_editFragment"
+            app:destination="@id/editFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
@@ -91,7 +86,7 @@
             app:destination="@id/listFragment" />
         <argument
             android:name="currentProperty"
-            app:argType="com.openclassrooms.realestatemanager.models.Property"
+            app:argType="com.openclassrooms.realestatemanager.models.PropertyWithAllData"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -102,5 +97,17 @@
         <action
             android:id="@+id/action_logoutFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.openclassrooms.realestatemanager.ui.fragments.EditFragment"
+        android:label="fragment_edit"
+        tools:layout="@layout/fragment_edit" >
+        <argument
+            android:name="currentProperty"
+            app:argType="com.openclassrooms.realestatemanager.models.PropertyWithAllData" />
+        <action
+            android:id="@+id/action_editFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
 </navigation>

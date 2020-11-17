@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
-import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,7 +26,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var menu: Menu
 
-    private lateinit var propertiesList: List<Property>
+    private lateinit var propertiesList: List<PropertyWithAllData>
 
 
     companion object {
@@ -46,6 +46,8 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             rvList.layoutManager = LinearLayoutManager(requireContext())
         }
 
+        binding.fabAdd.setOnClickListener { findNavController().navigate(R.id.addFragment) }
+
         viewModel.getAllProperties.observe(viewLifecycleOwner, {
             propertiesList = it
 
@@ -56,8 +58,9 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         propertyAdapter.setOnItemClickListener {
             val action = ListFragmentDirections.actionListFragmentToDetailsFragment(it)
             findNavController().navigate(action)
-            requireActivity().toolbar.title = it.type
+            requireActivity().toolbar.title = it.property.type
         }
+
     }
 
     // Setup toolbar
