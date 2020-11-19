@@ -8,12 +8,13 @@ import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
 import com.openclassrooms.realestatemanager.repositories.MainRepository
 import com.openclassrooms.realestatemanager.ui.fragments.AddFragment
+import com.openclassrooms.realestatemanager.ui.fragments.EditFragment
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
 class MainViewModel @ViewModelInject constructor(
         val mainRepository: MainRepository
 ) : ViewModel() {
-
 
     val getAllAgents = mainRepository.observeAllAgents()
 
@@ -36,6 +37,8 @@ class MainViewModel @ViewModelInject constructor(
 
 
     val getAllPropertiesPhotos = mainRepository.observeAllPropertiesPhotos()
+
+//    val getPropertyPhotos = mainRepository.observePropertyPhotos(EditFragment().propertyId)
 
     fun insertPropertyPhoto(propertyPhoto: PropertyPhoto) = viewModelScope.launch {
         mainRepository.insertPropertyPhoto(propertyPhoto)

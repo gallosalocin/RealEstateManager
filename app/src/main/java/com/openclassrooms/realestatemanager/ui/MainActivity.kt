@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigationComponent()
 
-
+        binding.fabAdd.setOnClickListener { navController.navigate(R.id.addFragment) }
     }
 
     // Setup Navigation Component
@@ -50,14 +50,22 @@ class MainActivity : AppCompatActivity() {
                 R.id.loginFragment, R.id.registerFragment -> {
                     binding.toolbar.visibility = View.GONE
                     binding.bottomNavView.visibility = View.GONE
+                    binding.fabAdd.visibility = View.GONE
                 }
                 R.id.addFragment, R.id.detailsFragment, R.id.editFragment -> {
                     binding.toolbar.visibility = View.VISIBLE
                     binding.bottomNavView.visibility = View.GONE
+                    binding.fabAdd.visibility = View.GONE
+                }
+                R.id.listFragment -> {
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.bottomNavView.visibility = View.VISIBLE
+                    binding.fabAdd.visibility = View.VISIBLE
                 }
                 else -> {
                     binding.toolbar.visibility = View.VISIBLE
                     binding.bottomNavView.visibility = View.VISIBLE
+                    binding.fabAdd.visibility = View.GONE
                 }
             }
         }

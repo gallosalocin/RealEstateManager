@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.models
 
+import android.net.Uri
 import android.os.Parcelable
 import androidx.room.*
 import kotlinx.android.parcel.Parcelize
@@ -30,7 +31,7 @@ data class Property(
         var soldDate: String = "",
         @ColumnInfo(name = "agent_id")
         var agentId: Int,
-        var coverPhoto: Int
+        var coverPhoto: String
 ) : Parcelable
 
 //@Parcelize

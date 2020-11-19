@@ -61,6 +61,7 @@
     <string name="sold_date_param">Sold date: %s</string>
     <string name="agent">Agent</string>
     <string name="agent_name">%s %s</string>
+    <string name="label">Label</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

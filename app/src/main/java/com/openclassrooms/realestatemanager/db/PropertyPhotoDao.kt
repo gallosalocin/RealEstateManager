@@ -18,4 +18,7 @@ interface PropertyPhotoDao {
 
     @Query("SELECT * FROM properties_photos")
     fun getAllPropertiesPhotos(): LiveData<List<PropertyPhoto>>
+
+//    @Query("SELECT * FROM properties_photos WHERE property_id LIKE :propertyId")
+//    fun getPropertyPhotos(propertyId: Int): LiveData<List<PropertyPhoto>>
 }

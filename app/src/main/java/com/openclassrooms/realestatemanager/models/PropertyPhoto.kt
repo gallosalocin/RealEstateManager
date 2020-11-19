@@ -18,7 +18,7 @@ import kotlinx.android.parcel.Parcelize
         ])
 @Parcelize
 data class PropertyPhoto(
-        var filename: Int? = null,
+        var filename: String = "",
         var label: String = "",
         @ColumnInfo(name = "property_id")
         var propertyId: Int

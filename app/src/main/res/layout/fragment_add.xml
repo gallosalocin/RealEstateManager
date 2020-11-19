@@ -36,7 +36,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/et_area"
         app:layout_constraintTop_toBottomOf="@id/iv_photo"
-        tools:text="$2,000,000"/>
+        tools:text="$2,000,000" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_area"
@@ -53,7 +53,7 @@
         app:layout_constraintLeft_toRightOf="@id/et_price"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/et_price"
-        tools:text="500"/>
+        tools:text="500" />
 
     <View
         android:id="@+id/divider_1"

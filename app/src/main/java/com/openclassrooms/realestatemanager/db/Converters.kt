@@ -17,25 +17,5 @@ class Converters {
         return Gson().fromJson(value, listType)
     }
 
-//    @TypeConverter
-//    fun fromArrayListPropertyPhoto(list: ArrayList<PropertyPhoto>): String{
-//        return Gson().toJson(list)
-//    }
-//
-//    @TypeConverter
-//    fun toArrayListPropertyPhoto(value: String): ArrayList<PropertyPhoto>{
-//        val listType = object : TypeToken<ArrayList<PropertyPhoto>>(){}.type
-//        return Gson().fromJson(value, listType)
-//    }
 
-//    @TypeConverter
-//    fun fromArrayListPropertyPhoto(list: ArrayList<PropertyPhoto>): String {
-//        return Gson().toJson(list)
-//    }
-//
-//    @TypeConverter
-//    fun toArrayListPropertyPhoto(value: String): ArrayList<PropertyPhoto> {
-//        val listType = object : TypeToken<ArrayList<PropertyPhoto>>(){}.type
-//        return Gson().fromJson(value, listType)
-//    }
 }

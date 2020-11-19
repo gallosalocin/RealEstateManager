@@ -12,7 +12,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_photo"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="250dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/rv_add"
         app:layout_constraintHorizontal_bias="0.0"
@@ -21,29 +21,42 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_error" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_change_cover_photo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="#92FFFFFF"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintTop_toTopOf="@id/iv_photo"
+        app:layout_constraintRight_toRightOf="@id/iv_photo" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_add"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/et_price"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_add_photo"
+        app:layout_constraintRight_toLeftOf="@id/iv_add_photo"
         app:layout_constraintTop_toBottomOf="@id/iv_photo"
         tools:listitem="@layout/item_photo_details" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_add_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:backgroundTint="@android:color/darker_gray"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_add_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_add_photo"
         android:text="@string/add_photo"
         app:layout_constraintBottom_toBottomOf="@id/rv_add"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/rv_add"
+        app:layout_constraintLeft_toRightOf="@id/rv_add"
         tools:targetApi="lollipop" />
 
     <androidx.appcompat.widget.AppCompatEditText

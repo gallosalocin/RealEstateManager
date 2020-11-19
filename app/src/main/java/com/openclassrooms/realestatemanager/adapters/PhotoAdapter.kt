@@ -5,21 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPhotoDetailsBinding
+import com.openclassrooms.realestatemanager.models.PropertyPhoto
 
 class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>() {
 
-    private val diffCallback = object : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String) =
+    private val diffCallback = object : DiffUtil.ItemCallback<PropertyPhoto>() {
+        override fun areItemsTheSame(oldItem: PropertyPhoto, newItem: PropertyPhoto) =
                 oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: String, newItem: String) =
+        override fun areContentsTheSame(oldItem: PropertyPhoto, newItem: PropertyPhoto) =
                 oldItem == newItem
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
 
-    var photosListDetails: List<String>
+    var photosListDetails: List<PropertyPhoto>
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
@@ -37,9 +41,9 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
         return photosListDetails.size
     }
 
-    private var onItemClickListener: ((String) -> Unit)? = null
+    private var onItemClickListener: ((PropertyPhoto) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (String) -> Unit) {
+    fun setOnItemClickListener(listener: (PropertyPhoto) -> Unit) {
         onItemClickListener = listener
     }
 
@@ -54,21 +58,20 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
             }
         }
 
-        fun bind(photoDetails: String) {
+        fun bind(propertyPhoto: PropertyPhoto) {
             binding.apply {
 
-//                if(photoDetails.toInt() == 0) {
-//                    ivPhoto.setImageResource(R.drawable.ic_error)
-//                } else {
-//                    Glide.with(itemView)
-//                            .load(photoDetails.toInt())
-//                            .centerCrop()
-//                            .transition(DrawableTransitionOptions.withCrossFade())
-//                            .error(R.drawable.ic_bar)
-//                            .into(ivPhoto)
-//                }
-                tvPhotoDescription.text = "Outside"
+                Glide.with(itemView)
+                        .load(propertyPhoto.filename)
+                        .centerCrop()
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .error(R.drawable.ic_bar)
+                        .into(ivPhoto)
+
+                tvPhotoDescription.text = propertyPhoto.label
+
             }
+
         }
     }
 }

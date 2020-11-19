@@ -46,8 +46,6 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             rvList.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        binding.fabAdd.setOnClickListener { findNavController().navigate(R.id.addFragment) }
-
         viewModel.getAllProperties.observe(viewLifecycleOwner, {
             propertiesList = it
 

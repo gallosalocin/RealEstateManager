@@ -2,6 +2,10 @@ package com.openclassrooms.realestatemanager.di
 
 import android.content.Context
 import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.db.RealEstateDatabase
 import com.openclassrooms.realestatemanager.other.Constants.REAL_ESTATE_DATABASE_NAME
 import dagger.Module
@@ -14,6 +18,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ApplicationComponent::class)
 object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideGlideInstance(@ApplicationContext context: Context) =
+            Glide.with(context).setDefaultRequestOptions(
+                    RequestOptions()
+                            .error(R.drawable.ic_error)
+                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+            )
 
     @Singleton
     @Provides

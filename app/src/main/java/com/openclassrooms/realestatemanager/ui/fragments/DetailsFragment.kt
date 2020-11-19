@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.Menu
@@ -7,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +20,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
+import com.openclassrooms.realestatemanager.models.PropertyPhoto
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +35,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private val viewModel: MainViewModel by viewModels()
     private val args: DetailsFragmentArgs by navArgs()
     private var isDollar = true
-    private lateinit var photosDetailsList: List<String>
+    private lateinit var photosDetailsList: List<PropertyPhoto>
 
 
 
@@ -44,22 +47,30 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         photoAdapter = PhotoAdapter()
         photosDetailsList = ArrayList()
 
+        setupRecyclerView()
         loadProperty()
-
-        binding.apply {
-            rvDetails.adapter = photoAdapter
-            rvDetails.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        }
-
-        photoAdapter.setOnItemClickListener {
-            Toast.makeText(requireContext(), "Click OK", Toast.LENGTH_SHORT).show()
-        }
 
         binding.tvDescription.movementMethod = ScrollingMovementMethod()
 
         binding.tvPrice.setOnClickListener { displayConvertedAndFormattedPrice() }
+
+        photoAdapter.setOnItemClickListener {
+            Glide.with(requireContext())
+                    .load(it.filename)
+                    .centerCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_error)
+                    .into(binding.ivPhoto)
+        }
     }
 
+    // Setup recyclerview
+    private fun setupRecyclerView() {
+        binding.apply {
+            rvDetails.adapter = photoAdapter
+            rvDetails.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
 
     // Display price in Dollars or Euro
     private fun displayConvertedAndFormattedPrice() {
@@ -84,6 +95,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     .error(R.drawable.ic_error)
                     .into(ivPhoto)
 
+            photosDetailsList = args.currentProperty?.photos!!
             photoAdapter.photosListDetails = photosDetailsList
 
             tvPrice.text = Utils.formatInDollar(args.currentProperty?.property?.priceInDollars!!, 0)
@@ -132,7 +144,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 findNavController().navigate(action)
                 requireActivity().toolbar.title = "Edit property"
             }
-            R.id.tb_menu_add_photo -> Toast.makeText(requireContext(), "Photo added", Toast.LENGTH_SHORT).show()
         }
         return super.onOptionsItemSelected(item)
     }
