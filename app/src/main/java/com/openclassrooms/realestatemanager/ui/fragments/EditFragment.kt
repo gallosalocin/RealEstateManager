@@ -27,6 +27,7 @@ import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -50,11 +51,10 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private lateinit var bathroom: String
     private var croppedPhoto: String? = null
     private lateinit var labelPhoto: String
-    private lateinit var photosDetailsList: List<PropertyPhoto>
+    private lateinit var currentProperty: Property
+    private lateinit var propertyPhotosList: List<PropertyPhoto>
     private var coverPhoto: String = ""
     private var coverLabelPhoto: String = ""
-
-    private var propertyId = 0
 
 
     private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
@@ -72,14 +72,17 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private lateinit var cropPhotoLauncher: ActivityResultLauncher<Any?>
 
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("Launch : onCreate" )
+
         binding = FragmentEditBinding.bind(view)
         setHasOptionsMenu(true)
         DetailsFragment.isDetailsFragment = false
 
         photoAdapter = PhotoAdapter()
-//        propertyId = args.currentProperty?.property?.id!!
+        currentProperty = args.currentProperty?.property!!
         setupRecyclerView()
 
         loadProperty()
@@ -118,9 +121,9 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     // Setup recyclerview
     private fun setupRecyclerView() {
-        binding.apply {
-            rvAdd.adapter = photoAdapter
-            rvAdd.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvAdd.apply {
+            adapter = photoAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
@@ -180,9 +183,9 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                 isSold = binding.cbIsSold.isChecked,
                 availableDate = binding.etAvailableDate.text.toString(),
                 soldDate = binding.etSoldDate.text.toString(),
-                agentId = args.currentProperty?.property?.agentId!!,
-                coverPhoto = if (coverPhoto == "") args.currentProperty?.property?.coverPhoto!! else coverPhoto,
-                labelPhoto = if (coverLabelPhoto == "") args.currentProperty?.property?.labelPhoto!! else coverLabelPhoto
+                agentId = currentProperty.agentId,
+                coverPhoto = if (coverPhoto == "") currentProperty.coverPhoto else coverPhoto,
+                labelPhoto = if (coverLabelPhoto == "") currentProperty.labelPhoto else coverLabelPhoto
         )
 
         viewModel.updateProperty(propertyUpdated)
@@ -193,49 +196,48 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     // Load property detail photos
     private fun loadPropertyPhotos() {
-
-//        viewModel.getPropertyPhotos.observe
-
-        photosDetailsList = args.currentProperty?.photos!!
-        photoAdapter.photosListDetails = photosDetailsList.reversed()
+        viewModel.getAllPropertiesPhotos.observe(viewLifecycleOwner, { propertyPhoto ->
+            propertyPhotosList = propertyPhoto.filter { it.propertyId == currentProperty.id  }
+            photoAdapter.photosListDetails = propertyPhotosList.reversed()
+        })
     }
 
     // Load property to edit
     private fun loadProperty() {
 
-        val positionType = resources.getStringArray(R.array.type_of_properties).indexOf(args.currentProperty?.property?.type)
-        val positionRoom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.property?.nbrRoom)
-        val positionBedroom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.property?.nbrBedroom)
-        val positionBathroom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.property?.nbrBathroom)
+        val positionType = resources.getStringArray(R.array.type_of_properties).indexOf(currentProperty.type)
+        val positionRoom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrRoom)
+        val positionBedroom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrBedroom)
+        val positionBathroom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrBathroom)
 
         binding.apply {
-            glide.load(args.currentProperty?.property?.coverPhoto!!).centerCrop().into(ivPhoto)
+            glide.load(currentProperty.coverPhoto).centerCrop().into(ivPhoto)
 
-            etPrice.setText(args.currentProperty?.property?.priceInDollars.toString())
-            etArea.setText(args.currentProperty?.property?.areaInMeters.toString())
-            etStreet.setText(args.currentProperty?.property?.street.toString())
-            etPostcode.setText(args.currentProperty?.property?.postcode.toString())
-            etCity.setText(args.currentProperty?.property?.city.toString())
-            etCountry.setText(args.currentProperty?.property?.country.toString())
-            etDescription.setText(args.currentProperty?.property?.description.toString())
-            etAvailableDate.setText(args.currentProperty?.property?.availableDate.toString())
+            etPrice.setText(currentProperty.priceInDollars.toString())
+            etArea.setText(currentProperty.areaInMeters)
+            etStreet.setText(currentProperty.street)
+            etPostcode.setText(currentProperty.postcode)
+            etCity.setText(currentProperty.city)
+            etCountry.setText(currentProperty.country)
+            etDescription.setText(currentProperty.description)
+            etAvailableDate.setText(currentProperty.availableDate)
 
             spType.post { spType.setSelection(positionType) }
             spRoom.post { spRoom.setSelection(positionRoom) }
             spBedroom.post { spBedroom.setSelection(positionBedroom) }
             spBathroom.post { spBathroom.setSelection(positionBathroom) }
 
-            chipRestaurant.isChecked = args.currentProperty?.property?.poi?.get(0).toString().toBoolean()
-            chipBar.isChecked = args.currentProperty?.property?.poi?.get(1).toString().toBoolean()
-            chipStore.isChecked = args.currentProperty?.property?.poi?.get(2).toString().toBoolean()
-            chipPark.isChecked = args.currentProperty?.property?.poi?.get(3).toString().toBoolean()
-            chipSchool.isChecked = args.currentProperty?.property?.poi?.get(4).toString().toBoolean()
-            chipHospital.isChecked = args.currentProperty?.property?.poi?.get(5).toString().toBoolean()
+            chipRestaurant.isChecked = currentProperty.poi[0].toString().toBoolean()
+            chipBar.isChecked = currentProperty.poi[1].toString().toBoolean()
+            chipStore.isChecked = currentProperty.poi[2].toString().toBoolean()
+            chipPark.isChecked = currentProperty.poi[3].toString().toBoolean()
+            chipSchool.isChecked = currentProperty.poi[4].toString().toBoolean()
+            chipHospital.isChecked = currentProperty.poi[5].toString().toBoolean()
 
-            if (args.currentProperty?.property?.isSold == true) {
+            if (currentProperty.isSold) {
                 cbIsSold.isChecked = true
                 etSoldDate.visibility = View.VISIBLE
-                etSoldDate.setText(args.currentProperty?.property?.soldDate.toString())
+                etSoldDate.setText(currentProperty.soldDate)
             }
         }
     }
@@ -418,8 +420,15 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.d("Launch : onStart" )
+        DetailsFragment.isDetailsFragment = false
+    }
+
     override fun onStop() {
         super.onStop()
+        Timber.d("Launch : onStop" )
         DetailsFragment.isDetailsFragment = true
     }
 }

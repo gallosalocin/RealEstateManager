@@ -38,6 +38,6 @@ class MainRepository @Inject constructor(
 
     fun observeAllPropertiesPhotos() = propertyPhotoDao.getAllPropertiesPhotos()
 
-//    fun observePropertyPhotos(propertyId: Int) = propertyPhotoDao.getPropertyPhotos(propertyId)
+    fun observePropertyPhotos(propertyId: Int) = propertyPhotoDao.getPropertyPhotos(propertyId)
 
 }

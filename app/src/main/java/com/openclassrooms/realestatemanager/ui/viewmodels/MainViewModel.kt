@@ -38,7 +38,9 @@ class MainViewModel @ViewModelInject constructor(
 
     val getAllPropertiesPhotos = mainRepository.observeAllPropertiesPhotos()
 
-//    val getPropertyPhotos = mainRepository.observePropertyPhotos(EditFragment().propertyId)
+    fun getPropertyPhotos(propertyId: Int) = viewModelScope.launch {
+        mainRepository.observePropertyPhotos(propertyId)
+    }
 
     fun insertPropertyPhoto(propertyPhoto: PropertyPhoto) = viewModelScope.launch {
         mainRepository.insertPropertyPhoto(propertyPhoto)

@@ -180,7 +180,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             it?.let {
                 croppedPhotoUri = it
                 croppedPhoto = it.toString()
-                glide.load(croppedPhoto).centerCrop().into(addPhotoImageView)
+                glide.load(croppedPhotoUri).centerCrop().into(addPhotoImageView)
             }
         }
     }

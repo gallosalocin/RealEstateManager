@@ -48,14 +48,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         setHasOptionsMenu(true)
 
         photoAdapter = PhotoAdapter()
+        propertyPhotosList = ArrayList()
         currentProperty = args.currentProperty?.property!!
-        propertyPhotosList = args.currentProperty?.photos!!
 
         loadProperty()
+        loadPropertyPhotos()
         setupRecyclerView()
-
-        if (propertyPhotosList.none { it.propertyId == (currentProperty.id) })
-            viewModel.insertPropertyPhoto(PropertyPhoto(currentProperty.coverPhoto, currentProperty.labelPhoto, currentProperty.id))
 
         binding.tvDescription.movementMethod = ScrollingMovementMethod()
 
@@ -64,14 +62,13 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         photoAdapter.setOnItemClickListener {
             glide.load(it.filename).centerCrop().into(binding.ivPhoto)
         }
-
     }
 
     // Setup recyclerview
     private fun setupRecyclerView() {
-        binding.apply {
-            rvDetails.adapter = photoAdapter
-            rvDetails.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvDetails.apply {
+            adapter = photoAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
     }
 
@@ -87,12 +84,24 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }
     }
 
+    // Load property detail photos
+    private fun loadPropertyPhotos() {
+        viewModel.getAllPropertiesPhotos.observe(viewLifecycleOwner, { propertyPhoto ->
+
+            if (propertyPhoto.none { it.propertyId == (currentProperty.id) }) {
+                viewModel.insertPropertyPhoto(PropertyPhoto(currentProperty.coverPhoto, currentProperty.labelPhoto, currentProperty.id))
+            }
+            else {
+                propertyPhotosList = propertyPhoto.filter { it.propertyId == currentProperty.id }
+            }
+            photoAdapter.photosListDetails = propertyPhotosList.reversed()
+        })
+    }
+
     // Load property
     private fun loadProperty() {
         binding.apply {
             glide.load(currentProperty.coverPhoto).centerCrop().into(ivPhoto)
-
-            photoAdapter.photosListDetails = propertyPhotosList.reversed()
 
             tvPrice.text = Utils.formatInDollar(currentProperty.priceInDollars, 0)
 
