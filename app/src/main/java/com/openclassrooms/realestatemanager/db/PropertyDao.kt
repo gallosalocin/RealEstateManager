@@ -9,7 +9,7 @@ import java.sql.RowId
 @Dao
 interface PropertyDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertProperty(property: Property)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

@@ -31,7 +31,8 @@ data class Property(
         var soldDate: String = "",
         @ColumnInfo(name = "agent_id")
         var agentId: Int,
-        var coverPhoto: String
+        var coverPhoto: String,
+        var labelPhoto: String
 ) : Parcelable
 
 //@Parcelize

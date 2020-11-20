@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -10,15 +11,16 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPhotoDetailsBinding
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment
 
 class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<PropertyPhoto>() {
         override fun areItemsTheSame(oldItem: PropertyPhoto, newItem: PropertyPhoto) =
-                oldItem == newItem
+                oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: PropertyPhoto, newItem: PropertyPhoto) =
-                oldItem == newItem
+                oldItem.hashCode() == newItem.hashCode()
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
@@ -42,9 +44,14 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
     }
 
     private var onItemClickListener: ((PropertyPhoto) -> Unit)? = null
+    private var onItemDeleteListener: ((PropertyPhoto) -> Unit)? = null
 
     fun setOnItemClickListener(listener: (PropertyPhoto) -> Unit) {
         onItemClickListener = listener
+    }
+
+    fun setOnItemDeleteListener(listener: (PropertyPhoto) -> Unit) {
+        onItemDeleteListener = listener
     }
 
 
@@ -53,6 +60,12 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
         init {
             binding.root.setOnClickListener {
                 onItemClickListener?.let {
+                    it(photosListDetails[adapterPosition])
+                }
+            }
+
+            binding.ivDeletePhoto.setOnClickListener {
+                onItemDeleteListener?.let {
                     it(photosListDetails[adapterPosition])
                 }
             }
@@ -69,6 +82,8 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
                         .into(ivPhoto)
 
                 tvPhotoDescription.text = propertyPhoto.label
+
+                ivDeletePhoto.visibility = if (DetailsFragment.isDetailsFragment) View.INVISIBLE else View.VISIBLE
 
             }
 

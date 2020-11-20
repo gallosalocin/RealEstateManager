@@ -17,8 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.RequestManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
@@ -30,6 +29,7 @@ import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
@@ -38,17 +38,21 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private lateinit var binding: FragmentEditBinding
     private val viewModel: MainViewModel by viewModels()
     private val args: AddFragmentArgs by navArgs()
+    @Inject
+    lateinit var glide: RequestManager
     private lateinit var photoAdapter: PhotoAdapter
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
 
-    private lateinit var addPhoto: ImageView
+    private lateinit var addPhotoImageView: ImageView
     private lateinit var type: String
     private lateinit var room: String
     private lateinit var bedroom: String
     private lateinit var bathroom: String
-    private var croppedCoverPhoto: String = ""
     private var croppedPhoto: String? = null
+    private lateinit var labelPhoto: String
     private lateinit var photosDetailsList: List<PropertyPhoto>
+    private var coverPhoto: String = ""
+    private var coverLabelPhoto: String = ""
 
     private var propertyId = 0
 
@@ -65,7 +69,6 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         }
     }
 
-    private lateinit var cropCoverPhotoLauncher: ActivityResultLauncher<Any?>
     private lateinit var cropPhotoLauncher: ActivityResultLauncher<Any?>
 
 
@@ -73,10 +76,9 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentEditBinding.bind(view)
         setHasOptionsMenu(true)
-
+        DetailsFragment.isDetailsFragment = false
 
         photoAdapter = PhotoAdapter()
-        photosDetailsList = ArrayList()
 //        propertyId = args.currentProperty?.property?.id!!
         setupRecyclerView()
 
@@ -87,26 +89,21 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         setupRoomsSpinner()
         displayOrHideSoldDatepicker()
 
-        changeCoverPhotoLauncher()
         addDetailPhotoLauncher()
 
 
         binding.etAvailableDate.setOnClickListener { showDatePickerDialog(binding.etAvailableDate) }
 
-        binding.ivChangeCoverPhoto.setOnClickListener { cropCoverPhotoLauncher.launch(null) }
+        binding.ivAddPhoto.setOnClickListener { setupAddPhotoDialog() }
 
-        binding.ivAddPhoto.setOnClickListener { setupDialogAddPhoto() }
-    }
-
-    // Change cover photo
-    private fun changeCoverPhotoLauncher() {
-        cropCoverPhotoLauncher = registerForActivityResult(cropActivityResultContract) {
-            it?.let {
-                croppedCoverPhoto = it.toString()
-                binding.ivPhoto.scaleType = ImageView.ScaleType.CENTER_CROP
-                binding.ivPhoto.setImageURI(it)
-            }
+        photoAdapter.setOnItemClickListener {
+            coverPhoto = it.filename
+            coverLabelPhoto = it.label
+            glide.load(coverPhoto).centerCrop().into(binding.ivPhoto)
         }
+
+        photoAdapter.setOnItemDeleteListener { setupDeleteDialog(it, it.filename) }
+
     }
 
     // Add details photo
@@ -114,12 +111,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         cropPhotoLauncher = registerForActivityResult(cropActivityResultContract) {
             it?.let {
                 croppedPhoto = it.toString()
-                Glide.with(requireContext())
-                        .load(croppedPhoto)
-                        .centerCrop()
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .error(R.drawable.ic_error)
-                        .into(addPhoto)
+                glide.load(croppedPhoto).centerCrop().into(addPhotoImageView)
             }
         }
     }
@@ -189,7 +181,8 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                 availableDate = binding.etAvailableDate.text.toString(),
                 soldDate = binding.etSoldDate.text.toString(),
                 agentId = args.currentProperty?.property?.agentId!!,
-                coverPhoto = if (croppedCoverPhoto.isEmpty()) args.currentProperty?.property?.coverPhoto!! else croppedCoverPhoto
+                coverPhoto = if (coverPhoto == "") args.currentProperty?.property?.coverPhoto!! else coverPhoto,
+                labelPhoto = if (coverLabelPhoto == "") args.currentProperty?.property?.labelPhoto!! else coverLabelPhoto
         )
 
         viewModel.updateProperty(propertyUpdated)
@@ -204,7 +197,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 //        viewModel.getPropertyPhotos.observe
 
         photosDetailsList = args.currentProperty?.photos!!
-        photoAdapter.photosListDetails = photosDetailsList
+        photoAdapter.photosListDetails = photosDetailsList.reversed()
     }
 
     // Load property to edit
@@ -216,12 +209,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         val positionBathroom = resources.getStringArray(R.array.number_of_rooms).indexOf(args.currentProperty?.property?.nbrBathroom)
 
         binding.apply {
-            Glide.with(requireContext())
-                    .load(args.currentProperty?.property?.coverPhoto!!)
-                    .centerCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.ic_error)
-                    .into(ivPhoto)
+            glide.load(args.currentProperty?.property?.coverPhoto!!).centerCrop().into(ivPhoto)
 
             etPrice.setText(args.currentProperty?.property?.priceInDollars.toString())
             etArea.setText(args.currentProperty?.property?.areaInMeters.toString())
@@ -253,13 +241,13 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     }
 
     // Setup Alert Dialog
-    private fun setupDialogAddPhoto() {
+    private fun setupAddPhotoDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_photo, null)
 
-        addPhoto = dialogView.findViewById(R.id.iv_add_photo)
+        addPhotoImageView = dialogView.findViewById(R.id.iv_add_photo)
         val addLabel = dialogView.findViewById<EditText>(R.id.et_label)
 
-        addPhoto.setOnClickListener {
+        addPhotoImageView.setOnClickListener {
             cropPhotoLauncher.launch(null)
         }
 
@@ -278,14 +266,40 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         positiveButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
         positiveButton.setOnClickListener {
             if (addLabel.text.toString() != "" && croppedPhoto != null) {
-                viewModel.insertPropertyPhoto(PropertyPhoto(croppedPhoto!!, addLabel.text.toString(), args.currentProperty?.property?.id!!))
+                labelPhoto = addLabel.text.toString()
+                viewModel.insertPropertyPhoto(PropertyPhoto(croppedPhoto!!, labelPhoto, args.currentProperty?.property?.id!!))
                 dialog.dismiss()
             } else
                 Toast.makeText(requireContext(), "Add photo & enter label", Toast.LENGTH_SHORT).show()
         }
 
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+    }
 
+    // Setup Delete Dialog
+    private fun setupDeleteDialog(propertyPhoto: PropertyPhoto, photoToDelete: String) {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_delete_photo, null)
+
+        val deletePhotoImageView = dialogView.findViewById<ImageView>(R.id.iv_delete_photo)
+
+        val dialog = AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setIcon(R.drawable.ic_delete)
+                .setTitle("Delete photo")
+                .setMessage("Are you sure ?")
+                .setPositiveButton("Yes") { dialogInterface, _ ->
+                    viewModel.deletePropertyPhoto(propertyPhoto)
+                }
+                .setNegativeButton("Cancel") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }.create()
+
+        glide.load(photoToDelete).centerCrop().into(deletePhotoImageView)
+
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
     }
 
     // Display or hide Datepicker for sold date
@@ -402,5 +416,10 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
             errorText.error = null
             true
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        DetailsFragment.isDetailsFragment = true
     }
 }
