@@ -124,10 +124,10 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
             tvEntryDate.text = getString(R.string.entry_date_param, currentProperty.availableDate)
             tvDescription.text = if (currentProperty.description == "") "Write something!!!" else currentProperty.description
-            tvArea.text = if (currentProperty.areaInMeters == "") "0 m²" else currentProperty.areaInMeters + " m²"
-            tvRoom.text = currentProperty.nbrRoom
-            tvBedroom.text = currentProperty.nbrBedroom
-            tvBathroom.text = currentProperty.nbrBathroom
+            tvArea.text = if (currentProperty.areaInMeters.toString() == "") "0 m²" else currentProperty.areaInMeters.toString() + " m²"
+            tvRoom.text = currentProperty.nbrRoom.toString()
+            tvBedroom.text = currentProperty.nbrBedroom.toString()
+            tvBathroom.text = currentProperty.nbrBathroom.toString()
             tvStreet.text = currentProperty.street
             tvPostcode.text = currentProperty.postcode
             tvCity.text = currentProperty.city

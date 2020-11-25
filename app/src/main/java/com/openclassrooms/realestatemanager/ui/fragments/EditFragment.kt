@@ -46,9 +46,9 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     private lateinit var addPhotoImageView: ImageView
     private lateinit var type: String
-    private lateinit var room: String
-    private lateinit var bedroom: String
-    private lateinit var bathroom: String
+    private var room: Int = 0
+    private var bedroom: Int = 0
+    private var bathroom: Int = 0
     private var croppedPhoto: String? = null
     private lateinit var labelPhoto: String
     private lateinit var currentProperty: Property
@@ -170,7 +170,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                 id = args.currentProperty?.property?.id!!,
                 type = type,
                 priceInDollars = binding.etPrice.text.toString().toInt(),
-                areaInMeters = binding.etArea.text.toString(),
+                areaInMeters = binding.etArea.text.toString().toInt(),
                 nbrRoom = room,
                 nbrBedroom = bedroom,
                 nbrBathroom = bathroom,
@@ -206,15 +206,15 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private fun loadProperty() {
 
         val positionType = resources.getStringArray(R.array.type_of_properties).indexOf(currentProperty.type)
-        val positionRoom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrRoom)
-        val positionBedroom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrBedroom)
-        val positionBathroom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrBathroom)
+        val positionRoom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrRoom.toString())
+        val positionBedroom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrBedroom.toString())
+        val positionBathroom = resources.getStringArray(R.array.number_of_rooms).indexOf(currentProperty.nbrBathroom.toString())
 
         binding.apply {
             glide.load(currentProperty.coverPhoto).centerCrop().into(ivPhoto)
 
             etPrice.setText(currentProperty.priceInDollars.toString())
-            etArea.setText(currentProperty.areaInMeters)
+            etArea.setText(currentProperty.areaInMeters.toString())
             etStreet.setText(currentProperty.street)
             etPostcode.setText(currentProperty.postcode)
             etCity.setText(currentProperty.city)
@@ -359,7 +359,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         binding.spRoom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                room = selectedItem.toString()
+                room = selectedItem.toString().toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -369,7 +369,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         binding.spBedroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bedroom = selectedItem.toString()
+                bedroom = selectedItem.toString().toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -379,7 +379,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         binding.spBathroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bathroom = selectedItem.toString()
+                bathroom = selectedItem.toString().toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

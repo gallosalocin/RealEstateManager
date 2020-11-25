@@ -41,14 +41,10 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         propertyAdapter = PropertyAdapter()
         propertiesList = ArrayList()
 
-        binding.apply {
-            rvList.adapter = propertyAdapter
-            rvList.layoutManager = LinearLayoutManager(requireContext())
-        }
+        setupRecyclerView()
 
         viewModel.getAllProperties.observe(viewLifecycleOwner, {
             propertiesList = it
-
             propertyAdapter.properties = propertiesList
         })
 
@@ -61,10 +57,19 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     }
 
+    // Setup recyclerview
+    private fun setupRecyclerView() {
+        binding.apply {
+            rvList.adapter = propertyAdapter
+            rvList.layoutManager = LinearLayoutManager(requireContext())
+        }
+    }
+
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.toolbar_menu_main, menu)
+        menu.getItem(2).isVisible = false
         this.menu = menu
     }
 
@@ -85,11 +90,9 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                     }
                 }
             }
-
             R.id.tb_menu_reload -> {
                 Toast.makeText(requireContext(), "List updated", Toast.LENGTH_SHORT).show()
             }
-
             R.id.tb_menu_logout -> {
                 findNavController().navigate(R.id.logoutFragment)
             }

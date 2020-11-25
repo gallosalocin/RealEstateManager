@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
-import java.sql.RowId
 
 @Dao
 interface PropertyDao {
@@ -21,5 +20,32 @@ interface PropertyDao {
     @Transaction
     @Query("SELECT * FROM properties ORDER BY properties_id DESC")
     fun getAllProperties(): LiveData<List<PropertyWithAllData>>
+
+    @Transaction
+    @Query("SELECT * FROM properties " +
+            "INNER JOIN agents ON agent_id = agents_id WHERE " +
+            "lastName LIKE :agent" +
+            " AND priceInDollars BETWEEN :priceMin AND :priceMax" +
+            " AND type LIKE :type" +
+            " AND areaInMeters BETWEEN :areaMin AND :areaMax" +
+            " AND nbrRoom BETWEEN :roomMin AND :roomMax" +
+            " AND nbrBedroom BETWEEN :bedroomMin AND :bedroomMax" +
+            " AND nbrBathroom BETWEEN :bathroomMin AND :bathroomMax" +
+            " AND availableDate BETWEEN :entryDateMin AND :entryDateMax" +
+            " AND soldDate BETWEEN :soldDateMin AND :soldDateMax" +
+            " AND city LIKE :city" +
+            " AND country LIKE :country"
+    )
+    fun getAllFilteredProperties(
+            agent: String, type: String,
+            priceMin: String, priceMax: String,
+            areaMin: String, areaMax: String,
+            roomMin: String, roomMax: String,
+            bedroomMin: String, bedroomMax: String,
+            bathroomMin: String, bathroomMax: String,
+            entryDateMin: String, entryDateMax: String,
+            soldDateMin: String, soldDateMax: String,
+            city: String, country: String
+    ): LiveData<List<PropertyWithAllData>>
 
 }

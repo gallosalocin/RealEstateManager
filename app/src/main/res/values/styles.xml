@@ -16,6 +16,12 @@
         <item name="chipBackgroundColor">@color/custom_chip_background</item>
     </style>
 
+    <style name="CustomInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/custom_input_layout_outlined</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="hintTextColor">@android:color/black</item>
+    </style>
+
     <style name="Divider">
         <item name="android:background">@color/colorAccent</item>
     </style>

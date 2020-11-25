@@ -16,6 +16,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/tb_menu_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/tb_menu_logout"
         android:title="@string/logout"
         app:showAsAction="never" />

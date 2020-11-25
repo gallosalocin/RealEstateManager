@@ -41,6 +41,7 @@ class  MapFragment : Fragment(R.layout.fragment_map) {
         inflater.inflate(R.menu.toolbar_menu_main, menu)
         menu.getItem(0).isVisible = false
         menu.getItem(1).isVisible = false
+        menu.getItem(2).isVisible = false
         this.menu = menu
     }
 

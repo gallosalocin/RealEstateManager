@@ -56,9 +56,9 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     private lateinit var addPhotoImageView: ImageView
     private var currentAgentId: Int = 0
     private lateinit var type: String
-    private lateinit var room: String
-    private lateinit var bedroom: String
-    private lateinit var bathroom: String
+    private var room: Int = 0
+    private var bedroom: Int = 0
+    private var bathroom: Int = 0
     private var croppedPhoto: String? = null
     private lateinit var croppedPhotoUri: Uri
     private lateinit var labelPhoto: String
@@ -152,7 +152,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         val propertySaved = Property(
                 type = type,
                 priceInDollars = binding.etPrice.text.toString().toInt(),
-                areaInMeters = binding.etArea.text.toString(),
+                areaInMeters = binding.etArea.text.toString().toInt(),
                 nbrRoom = room,
                 nbrBedroom = bedroom,
                 nbrBathroom = bathroom,
@@ -264,7 +264,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spRoom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                room = selectedItem.toString()
+                room = selectedItem.toString().toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -274,7 +274,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spBedroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bedroom = selectedItem.toString()
+                bedroom = selectedItem.toString().toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -284,7 +284,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spBathroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bathroom = selectedItem.toString()
+                bathroom = selectedItem.toString().toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

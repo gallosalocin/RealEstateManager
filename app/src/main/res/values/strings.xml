@@ -62,6 +62,22 @@
     <string name="agent">Agent</string>
     <string name="agent_name">%s %s</string>
     <string name="label">Label</string>
+    <string name="price_min">Price min</string>
+    <string name="dash">-</string>
+    <string name="price_max">Price max</string>
+    <string name="area_max">Area max</string>
+    <string name="area_min">Area min</string>
+    <string name="room_min">Room min</string>
+    <string name="room_max">Room max</string>
+    <string name="bedroom_min">Bedroom min</string>
+    <string name="bedroom_max">Bedroom max</string>
+    <string name="bathroom_min">Bathroom min</string>
+    <string name="bathroom_max">Bathroom max</string>
+    <string name="entry_date_min">Entry date min</string>
+    <string name="entry_date_max">Entry date max</string>
+    <string name="sold_date_min">Sold date min</string>
+    <string name="sold_date_max">Sold date max</string>
+    <string name="no_result">No Result</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

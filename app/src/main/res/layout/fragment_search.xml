@@ -1,10 +1,511 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_orange_light"
+    android:background="@android:color/white"
     tools:context=".ui.fragments.SearchFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_search_fields"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/sp_type"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:background="@drawable/custom_spinner_search_background"
+            app:layout_constraintBottom_toBottomOf="@id/etl_agent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/etl_price_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_agent"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/etl_price_min"
+            app:layout_constraintLeft_toLeftOf="@id/etl_price_max"
+            app:layout_constraintRight_toRightOf="@id/etl_price_max"
+            app:layout_constraintTop_toTopOf="parent"
+            app:startIconDrawable="@drawable/ic_username">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_agent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/agent"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_price_min"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_1"
+            app:layout_constraintTop_toBottomOf="@id/sp_type"
+            app:startIconDrawable="@drawable/ic_dollar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_price_min"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/price_min"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_price_min"
+            app:layout_constraintLeft_toRightOf="@id/etl_price_min"
+            app:layout_constraintRight_toLeftOf="@id/etl_price_max"
+            app:layout_constraintTop_toTopOf="@id/etl_price_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_price_max"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_price_min"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_1"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_price_min"
+            app:startIconDrawable="@drawable/ic_dollar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_price_max"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/price_max"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_area_min"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_2"
+            app:layout_constraintTop_toBottomOf="@id/etl_price_min"
+            app:startIconDrawable="@drawable/ic_area">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_area_min"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/area_min"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_area_min"
+            app:layout_constraintLeft_toRightOf="@id/etl_area_min"
+            app:layout_constraintRight_toLeftOf="@id/etl_area_max"
+            app:layout_constraintTop_toTopOf="@id/etl_area_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_area_max"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_area_min"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_2"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_area_min"
+            app:startIconDrawable="@drawable/ic_area">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_area_max"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/area_max"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_room_min"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_3"
+            app:layout_constraintTop_toBottomOf="@id/etl_area_min"
+            app:startIconDrawable="@drawable/ic_room">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_room_min"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/room_min"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_room_min"
+            app:layout_constraintLeft_toRightOf="@id/etl_room_min"
+            app:layout_constraintRight_toLeftOf="@id/etl_room_max"
+            app:layout_constraintTop_toTopOf="@id/etl_room_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_room_max"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_room_min"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_room_min"
+            app:startIconDrawable="@drawable/ic_room">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_room_max"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/room_max"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_bedroom_min"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_4"
+            app:layout_constraintTop_toBottomOf="@id/etl_room_min"
+            app:startIconDrawable="@drawable/ic_bedroom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_bedroom_min"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/bedroom_min"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_bedroom_min"
+            app:layout_constraintLeft_toRightOf="@id/etl_bedroom_min"
+            app:layout_constraintRight_toLeftOf="@id/etl_bedroom_max"
+            app:layout_constraintTop_toTopOf="@id/etl_bedroom_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_bedroom_max"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_bedroom_min"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_4"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_bedroom_min"
+            app:startIconDrawable="@drawable/ic_bedroom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_bedroom_max"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/bedroom_max"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_bathroom_min"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_5"
+            app:layout_constraintTop_toBottomOf="@id/etl_bedroom_min"
+            app:startIconDrawable="@drawable/ic_bathroom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_bathroom_min"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/bathroom_min"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_bathroom_min"
+            app:layout_constraintLeft_toRightOf="@id/etl_bathroom_min"
+            app:layout_constraintRight_toLeftOf="@id/etl_bathroom_max"
+            app:layout_constraintTop_toTopOf="@id/etl_bathroom_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_bathroom_max"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_bathroom_min"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_5"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_bathroom_min"
+            app:startIconDrawable="@drawable/ic_bathroom">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_bathroom_max"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/bathroom_max"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_entry_date_min"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_6"
+            app:layout_constraintTop_toBottomOf="@id/etl_bathroom_min"
+            app:startIconDrawable="@drawable/ic_calendar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_entry_date_min"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:hint="@string/entry_date_min" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_entry_date_min"
+            app:layout_constraintLeft_toRightOf="@id/etl_entry_date_min"
+            app:layout_constraintRight_toLeftOf="@id/etl_entry_date_max"
+            app:layout_constraintTop_toTopOf="@id/etl_entry_date_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_entry_date_max"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_entry_date_min"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_6"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_entry_date_min"
+            app:startIconDrawable="@drawable/ic_calendar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_entry_date_max"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:hint="@string/entry_date_max" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_sold_date_min"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_7"
+            app:layout_constraintTop_toBottomOf="@id/etl_entry_date_min"
+            app:startIconDrawable="@drawable/ic_calendar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_sold_date_min"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:hint="@string/sold_date_min" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_sold_date_min"
+            app:layout_constraintLeft_toRightOf="@id/etl_sold_date_min"
+            app:layout_constraintRight_toLeftOf="@id/etl_sold_date_max"
+            app:layout_constraintTop_toTopOf="@id/etl_sold_date_min" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_sold_date_max"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_sold_date_min"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_7"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_sold_date_min"
+            app:startIconDrawable="@drawable/ic_calendar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_sold_date_max"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:hint="@string/sold_date_max" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_city"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_dash_8"
+            app:layout_constraintTop_toBottomOf="@id/etl_sold_date_min"
+            app:startIconDrawable="@drawable/ic_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_city"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/city"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_dash_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dash"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_city"
+            app:layout_constraintLeft_toRightOf="@id/etl_city"
+            app:layout_constraintRight_toLeftOf="@id/etl_country"
+            app:layout_constraintTop_toTopOf="@id/etl_city" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etl_country"
+            style="@style/CustomInputLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/etl_city"
+            app:layout_constraintLeft_toRightOf="@id/tv_dash_8"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etl_city"
+            app:startIconDrawable="@drawable/ic_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_country"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/country"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_search"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/custom_button_background"
+            android:text="@string/search"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etl_city" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_no_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_result"
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

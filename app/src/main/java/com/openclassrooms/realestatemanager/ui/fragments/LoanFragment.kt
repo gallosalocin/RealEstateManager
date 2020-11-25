@@ -21,10 +21,10 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     private var isDollar: Boolean = true
     private lateinit var menu: Menu
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+//        return super.onCreateView(inflater, container, savedInstanceState)
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -50,6 +50,7 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.toolbar_menu_main, menu)
+        menu.getItem(2).isVisible = false
         this.menu = menu
     }
 
