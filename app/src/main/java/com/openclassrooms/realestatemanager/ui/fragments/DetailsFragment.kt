@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
+import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
@@ -61,6 +62,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
         photoAdapter.setOnItemClickListener {
             glide.load(it.filename).centerCrop().into(binding.ivPhoto)
+        }
+
+        binding.ivMap.setOnClickListener {
+            val action = DetailsFragmentDirections.actionDetailsFragmentToMapFragment()
+            findNavController().navigate(action)
         }
     }
 
@@ -133,6 +139,18 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             tvCity.text = currentProperty.city
             tvCountry.text = currentProperty.country
             tvAgent.text = getString(R.string.agent_name, args.currentProperty?.agent?.firstName, args.currentProperty?.agent?.lastName)
+
+            val currentPropertyAddress = "${currentProperty.street}+${currentProperty.postcode}+${currentProperty.city}"
+
+            glide.load("https://maps.googleapis.com/maps/api/staticmap?" +
+                    "center=$currentPropertyAddress" +
+                    "&zoom=14" +
+                    "&size=200x200" +
+                    "&scale=2" +
+                    "&maptype=terrain" +
+                    "&markers=size:mid%7C$currentPropertyAddress" +
+                    "&key=${BuildConfig.API_KEY}")
+                    .centerCrop().into(ivMap)
         }
     }
 

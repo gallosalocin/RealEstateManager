@@ -56,6 +56,7 @@ class  MapFragment : Fragment(R.layout.fragment_map) {
     }
 
 
+
     // Handle Map's Lifecycle
     override fun onResume() {
         super.onResume()
