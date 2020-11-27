@@ -78,6 +78,10 @@
     <string name="sold_date_min">Sold date min</string>
     <string name="sold_date_max">Sold date max</string>
     <string name="no_result">No Result</string>
+    <string name="dialog_title_gps">GPS is not activated</string>
+    <string name="dialog_message_gps">To find your location, activate the GPS.</string>
+    <string name="dialog_positive">Yes</string>
+    <string name="dialog_negative">No</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

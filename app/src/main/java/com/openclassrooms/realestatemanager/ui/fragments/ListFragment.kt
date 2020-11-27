@@ -52,7 +52,6 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         propertyAdapter.setOnItemClickListener {
             val action = ListFragmentDirections.actionListFragmentToDetailsFragment(it)
             findNavController().navigate(action)
-            requireActivity().toolbar.title = it.property.type
         }
 
     }

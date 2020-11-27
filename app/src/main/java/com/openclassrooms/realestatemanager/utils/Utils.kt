@@ -3,12 +3,23 @@ package com.openclassrooms.realestatemanager.utils
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.location.Geocoder
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.os.Bundle
+import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
+import com.google.android.gms.maps.model.LatLng
+import com.openclassrooms.realestatemanager.R
 import pub.devrel.easypermissions.EasyPermissions
+import timber.log.Timber
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,6 +48,45 @@ object Utils {
         val currentDate = Calendar.getInstance()
         return SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).format(currentDate.time)
     }
+
+    /**
+     *  Convert address to LatLng
+     */
+    fun getLocationFromAddress(context: Context, address: String): LatLng {
+        val coder = Geocoder(context)
+        val currentAddress = coder.getFromLocationName(address, 1)
+
+        val location = currentAddress[0]
+        val latitude = location.latitude
+        val longitude = location.longitude
+
+        return LatLng(latitude, longitude)
+    }
+
+    /**
+     *  Check if GPS enabled
+     */
+    fun isGPSEnabled(context: Context): Boolean {
+        Timber.d("isGPSEnabled: called")
+        val locationManager = (context.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+
+    /**
+     *  Setup Alert Dialog Activate GPS
+     */
+    fun setupDialogToActivateGPS(context: Context, intent: Intent, option: Bundle?) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(R.string.dialog_title_gps).setMessage(R.string.dialog_message_gps)
+                .setPositiveButton(R.string.dialog_positive) { _, _ -> startActivity(context, intent, option) }
+                .setNegativeButton(R.string.dialog_negative) { dialog, _ -> dialog.cancel() }
+        val alert = builder.create()
+        alert.show()
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+        alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+    }
+
 
     /**
      *  Check internet connection

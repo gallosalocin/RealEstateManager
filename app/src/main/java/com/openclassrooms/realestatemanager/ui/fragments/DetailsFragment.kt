@@ -33,6 +33,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var photoAdapter: PhotoAdapter
     private val viewModel: MainViewModel by viewModels()
     private val args: DetailsFragmentArgs by navArgs()
+
     @Inject
     lateinit var glide: RequestManager
     private var isDollar = true
@@ -55,6 +56,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         loadProperty()
         loadPropertyPhotos()
         setupRecyclerView()
+
+        requireActivity().toolbar.title = currentProperty.type
 
         binding.tvDescription.movementMethod = ScrollingMovementMethod()
 
@@ -96,8 +99,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
             if (propertyPhoto.none { it.propertyId == (currentProperty.id) }) {
                 viewModel.insertPropertyPhoto(PropertyPhoto(currentProperty.coverPhoto, currentProperty.labelPhoto, currentProperty.id))
-            }
-            else {
+            } else {
                 propertyPhotosList = propertyPhoto.filter { it.propertyId == currentProperty.id }
             }
             photoAdapter.photosListDetails = propertyPhotosList.reversed()
