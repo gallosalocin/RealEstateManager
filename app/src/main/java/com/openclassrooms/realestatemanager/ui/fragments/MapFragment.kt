@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -22,12 +23,12 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
-import com.openclassrooms.realestatemanager.utils.Utils
 import com.openclassrooms.realestatemanager.utils.Utils.formatInDollar
+import com.openclassrooms.realestatemanager.utils.Utils.getLocationFromAddress
 import com.openclassrooms.realestatemanager.utils.Utils.isGPSEnabled
+import com.openclassrooms.realestatemanager.utils.Utils.isInternetConnected
 import com.openclassrooms.realestatemanager.utils.Utils.setupDialogToActivateGPS
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -37,11 +38,11 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModels()
+    private val args: DetailsFragmentArgs by navArgs()
     private var map: GoogleMap? = null
     private lateinit var menu: Menu
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var propertiesList: List<PropertyWithAllData>
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
@@ -52,7 +53,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         propertiesList = ArrayList()
 
-
+        Timber.d("${isInternetConnected(requireContext())}")
 
         return binding.root
     }
@@ -89,8 +90,17 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         map?.apply {
             isMyLocationEnabled = true
             uiSettings?.isMyLocationButtonEnabled = false
-            val defaultCameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(39.868, -102.93), 3F)
-            moveCamera(defaultCameraUpdate)
+            if (DetailsFragment.isFromDetailsFragment) {
+                val currentProperty = args.currentProperty?.property
+                val propertyAddress =
+                        "${currentProperty?.street} + ${currentProperty?.postcode} + ${currentProperty?.city} + ${currentProperty?.country}"
+                val propertyLatLng = getLocationFromAddress(requireContext(), propertyAddress)
+                val cameraZoomProperty = CameraUpdateFactory.newLatLngZoom(propertyLatLng, 16F)
+                moveCamera(cameraZoomProperty)
+            } else {
+                val defaultCameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(39.868, -102.93), 3F)
+                moveCamera(defaultCameraUpdate)
+            }
         }
 
         binding.ivFindLocation.setOnClickListener {
@@ -115,7 +125,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         for (property in propertiesList) {
             val currentProperty = property.property
             val propertyAddress = "${currentProperty.street} + ${currentProperty.postcode} + ${currentProperty.city} + ${currentProperty.country}"
-            val propertyLatLng = Utils.getLocationFromAddress(requireContext(), propertyAddress)
+            val propertyLatLng = getLocationFromAddress(requireContext(), propertyAddress)
 
             val marker = map?.addMarker(MarkerOptions()
                     .position(propertyLatLng)
@@ -143,7 +153,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
                     val currentLatLng = LatLng(latitude, longitude)
                     val cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLatLng, 8F)
                     map?.animateCamera(cameraUpdate)
-                } //else Utils.setupDialogToActivateGPS(requireContext(), Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), null)
+                }
             }
         } catch (error: SecurityException) {
             Timber.e("Exception: ${error.message}");
@@ -168,6 +178,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         super.onStop()
         Timber.d("onStop")
         binding.mapView.onStop()
+        DetailsFragment.isFromDetailsFragment = false
     }
 
     override fun onPause() {

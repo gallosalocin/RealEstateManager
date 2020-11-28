@@ -83,7 +83,7 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
 
                 tvPhotoDescription.text = propertyPhoto.label
 
-                ivDeletePhoto.visibility = if (DetailsFragment.isDetailsFragment) View.INVISIBLE else View.VISIBLE
+                ivDeletePhoto.visibility = if (DetailsFragment.isFromDetailsFragment) View.INVISIBLE else View.VISIBLE
 
             }
 

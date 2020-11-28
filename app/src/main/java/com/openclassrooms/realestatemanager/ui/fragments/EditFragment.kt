@@ -79,7 +79,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
         binding = FragmentEditBinding.bind(view)
         setHasOptionsMenu(true)
-        DetailsFragment.isDetailsFragment = false
+        DetailsFragment.isFromDetailsFragment = false
 
         photoAdapter = PhotoAdapter()
         currentProperty = args.currentProperty?.property!!
@@ -423,12 +423,12 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     override fun onStart() {
         super.onStart()
         Timber.d("Launch : onStart" )
-        DetailsFragment.isDetailsFragment = false
+        DetailsFragment.isFromDetailsFragment = false
     }
 
     override fun onStop() {
         super.onStop()
         Timber.d("Launch : onStop" )
-        DetailsFragment.isDetailsFragment = true
+        DetailsFragment.isFromDetailsFragment = true
     }
 }

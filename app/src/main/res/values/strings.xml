@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Real Estate Manager</string>
-    <string name="google_maps_key">AIzaSyDYkgdSxfI3_uIXGnb3CeJgODbqUyvzoeo</string>
 
     <string name="username">Username</string>
     <string name="password">Password</string>

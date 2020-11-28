@@ -41,7 +41,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var currentProperty: Property
 
     companion object {
-        var isDetailsFragment = true
+        var isFromDetailsFragment = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,8 +68,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }
 
         binding.ivMap.setOnClickListener {
-            val action = DetailsFragmentDirections.actionDetailsFragmentToMapFragment()
+            val action = DetailsFragmentDirections.actionDetailsFragmentToMapFragment(args.currentProperty)
             findNavController().navigate(action)
+            isFromDetailsFragment = true
         }
     }
 
@@ -151,7 +152,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     "&scale=2" +
                     "&maptype=terrain" +
                     "&markers=size:mid%7C$currentPropertyAddress" +
-                    "&key=${BuildConfig.API_KEY}")
+                    "&key=${BuildConfig.ApiKey}")
                     .centerCrop().into(ivMap)
         }
     }

@@ -70,6 +70,10 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right"/>
+        <argument
+            android:name="currentProperty"
+            app:argType="com.openclassrooms.realestatemanager.models.PropertyWithAllData"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
