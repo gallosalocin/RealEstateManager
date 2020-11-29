@@ -79,8 +79,12 @@
     <string name="no_result">No Result</string>
     <string name="dialog_title_gps">GPS is not activated</string>
     <string name="dialog_message_gps">To find your location, activate the GPS.</string>
+    <string name="dialog_title_internet">Internet is not activated</string>
+    <string name="dialog_message_internet">To display all properties, activate internet.</string>
     <string name="dialog_positive">Yes</string>
     <string name="dialog_negative">No</string>
+    <string name="dialog_button_wifi">Wifi</string>
+    <string name="dialog_button_data">Data</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

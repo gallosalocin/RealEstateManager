@@ -5,14 +5,18 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentLoanBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.utils.Utils
 import timber.log.Timber
 import kotlin.math.pow
 
 class LoanFragment : Fragment(R.layout.fragment_loan) {
 
-    private lateinit var binding: FragmentLoanBinding
+    private var _binding: FragmentLoanBinding? = null
+    private val binding get() = _binding!!
+
     private var totalPayment: Float = 0f
     private var annualPayment: Float = 0f
     private var totalInterest: Float = 0f
@@ -26,9 +30,14 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
 //        return super.onCreateView(inflater, container, savedInstanceState)
 //    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentLoanBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentLoanBinding.bind(view)
 
         setHasOptionsMenu(true)
 
@@ -164,5 +173,10 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
             tvAnnualPayment.text = resources.getString(R.string.annual_payment, "");
             tvMonthlyPayment.text = resources.getString(R.string.monthly_payment, "");
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

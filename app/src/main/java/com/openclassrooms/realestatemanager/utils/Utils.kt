@@ -88,11 +88,26 @@ object Utils {
     /**
      *  Setup Alert Dialog to Activate GPS
      */
-    fun setupDialogToActivateGPS(context: Context, intent: Intent, option: Bundle?) {
+    fun setupAlertDialogToActivateGPS(context: Context, intent: Intent, option: Bundle?) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle(R.string.dialog_title_gps).setMessage(R.string.dialog_message_gps)
                 .setPositiveButton(R.string.dialog_positive) { _, _ -> startActivity(context, intent, option) }
                 .setNegativeButton(R.string.dialog_negative) { dialog, _ -> dialog.cancel() }
+        val alert = builder.create()
+        alert.show()
+        alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+        alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+    }
+
+
+    /**
+     *  Setup Alert Dialog to Activate Internet
+     */
+    fun setupAlertDialogToActivateInternet(context: Context, intent1: Intent, intent2: Intent, option: Bundle?) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(R.string.dialog_title_internet).setMessage(R.string.dialog_message_internet)
+                .setPositiveButton(R.string.dialog_button_wifi) { _, _ -> startActivity(context, intent1, option) }
+                .setNegativeButton(R.string.dialog_button_data) { _, _ -> startActivity(context, intent2, option) }
         val alert = builder.create()
         alert.show()
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))

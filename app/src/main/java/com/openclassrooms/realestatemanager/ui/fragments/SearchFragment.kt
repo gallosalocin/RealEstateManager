@@ -2,10 +2,7 @@ package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
+import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentSearchBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
@@ -30,7 +29,9 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var propertyAdapter: PropertyAdapter
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
     private val viewModel: MainViewModel by viewModels()
@@ -55,9 +56,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private var isResult = false
     private var filteredPropertiesList: List<PropertyWithAllData> = ArrayList()
 
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentSearchBinding.bind(view)
         setHasOptionsMenu(true)
 
         setupTypeSpinner()
@@ -248,5 +256,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             etCity.text?.clear()
             etCountry.text?.clear()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

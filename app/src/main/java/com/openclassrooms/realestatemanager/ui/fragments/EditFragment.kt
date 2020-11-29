@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
+import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
@@ -36,7 +38,9 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class EditFragment : Fragment(R.layout.fragment_edit) {
 
-    private lateinit var binding: FragmentEditBinding
+    private var _binding: FragmentEditBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: MainViewModel by viewModels()
     private val args: AddFragmentArgs by navArgs()
     @Inject
@@ -71,13 +75,16 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     private lateinit var cropPhotoLauncher: ActivityResultLauncher<Any?>
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentEditBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.d("Launch : onCreate" )
 
-        binding = FragmentEditBinding.bind(view)
         setHasOptionsMenu(true)
         DetailsFragment.isFromDetailsFragment = false
 
@@ -430,5 +437,10 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         super.onStop()
         Timber.d("Launch : onStop" )
         DetailsFragment.isFromDetailsFragment = true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

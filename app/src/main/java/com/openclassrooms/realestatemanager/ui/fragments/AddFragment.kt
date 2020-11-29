@@ -27,6 +27,8 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.RequestManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_NAME
@@ -46,7 +48,9 @@ import kotlin.collections.ArrayList
 @AndroidEntryPoint
 class AddFragment : Fragment(R.layout.fragment_add) {
 
-    private lateinit var binding: FragmentAddBinding
+    private var _binding: FragmentAddBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: MainViewModel by viewModels()
     @Inject
     lateinit var glide: RequestManager
@@ -77,10 +81,14 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     private lateinit var cropCoverPhotoLauncher: ActivityResultLauncher<Any?>
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentAddBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentAddBinding.bind(view)
         setHasOptionsMenu(true)
 
         sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
@@ -362,5 +370,10 @@ class AddFragment : Fragment(R.layout.fragment_add) {
                 IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(channel)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

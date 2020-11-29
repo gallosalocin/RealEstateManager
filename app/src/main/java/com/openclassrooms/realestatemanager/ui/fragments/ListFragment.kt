@@ -1,10 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,7 +9,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
+import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +20,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 @AndroidEntryPoint
 class ListFragment : Fragment(R.layout.fragment_list) {
 
-    private lateinit var binding: FragmentListBinding
+    private var _binding: FragmentListBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var propertyAdapter: PropertyAdapter
     private val viewModel: MainViewModel by viewModels()
     private lateinit var menu: Menu
@@ -33,9 +34,14 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         var isDollar: Boolean? = null
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentListBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentListBinding.bind(view)
         setHasOptionsMenu(true)
 
         propertyAdapter = PropertyAdapter()
@@ -68,6 +74,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.toolbar_menu_main, menu)
+        menu.getItem(1).isVisible = false
         menu.getItem(2).isVisible = false
         this.menu = menu
     }
@@ -89,13 +96,15 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                     }
                 }
             }
-            R.id.tb_menu_reload -> {
-                Toast.makeText(requireContext(), "List updated", Toast.LENGTH_SHORT).show()
-            }
             R.id.tb_menu_logout -> {
                 findNavController().navigate(R.id.logoutFragment)
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

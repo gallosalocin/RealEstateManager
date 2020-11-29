@@ -27,7 +27,8 @@ import com.openclassrooms.realestatemanager.utils.Utils.formatInDollar
 import com.openclassrooms.realestatemanager.utils.Utils.getLocationFromAddress
 import com.openclassrooms.realestatemanager.utils.Utils.isGPSEnabled
 import com.openclassrooms.realestatemanager.utils.Utils.isInternetConnected
-import com.openclassrooms.realestatemanager.utils.Utils.setupDialogToActivateGPS
+import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateGPS
+import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateInternet
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -42,18 +43,21 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     private var map: GoogleMap? = null
     private lateinit var menu: Menu
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var propertiesList: List<PropertyWithAllData>
+    private var propertiesList: List<PropertyWithAllData> = ArrayList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
-
+        Timber.d("onCreateView")
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        propertiesList = ArrayList()
 
-        Timber.d("${isInternetConnected(requireContext())}")
+        viewModel.getAllProperties.observe(viewLifecycleOwner, {
+            propertiesList = it
+            if (isInternetConnected(requireContext()))
+                setupMarker()
+        })
 
         return binding.root
     }
@@ -61,7 +65,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-
     }
 
     // Setup toolbar
@@ -69,7 +72,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.toolbar_menu_main, menu)
         menu.getItem(0).isVisible = false
-        menu.getItem(1).isVisible = false
         menu.getItem(2).isVisible = false
         this.menu = menu
     }
@@ -78,6 +80,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         when (item.itemId) {
             R.id.tb_menu_currency -> Toast.makeText(requireContext(), "currency", Toast.LENGTH_SHORT).show()
             R.id.tb_menu_logout -> findNavController().navigate(R.id.logoutFragment)
+            R.id.tb_menu_reload -> if (isInternetConnected(requireContext())) setupMarker()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -90,17 +93,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         map?.apply {
             isMyLocationEnabled = true
             uiSettings?.isMyLocationButtonEnabled = false
-            if (DetailsFragment.isFromDetailsFragment) {
-                val currentProperty = args.currentProperty?.property
-                val propertyAddress =
-                        "${currentProperty?.street} + ${currentProperty?.postcode} + ${currentProperty?.city} + ${currentProperty?.country}"
-                val propertyLatLng = getLocationFromAddress(requireContext(), propertyAddress)
-                val cameraZoomProperty = CameraUpdateFactory.newLatLngZoom(propertyLatLng, 16F)
-                moveCamera(cameraZoomProperty)
-            } else {
-                val defaultCameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(39.868, -102.93), 3F)
-                moveCamera(defaultCameraUpdate)
-            }
         }
 
         binding.ivFindLocation.setOnClickListener {
@@ -109,15 +101,36 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
                 getDeviceLocation()
             } else {
                 binding.ivFindLocation.setImageResource(R.drawable.ic_no_gps)
-                setupDialogToActivateGPS(requireContext(), Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), null)
+                setupAlertDialogToActivateGPS(requireContext(), Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), null)
             }
         }
 
-        viewModel.getAllProperties.observe(viewLifecycleOwner, {
-            propertiesList = it
-            setupMarker()
-        })
+        if (isInternetConnected(requireContext())) {
+            setupMapLocation()
+        } else {
+            setupAlertDialogToActivateInternet(
+                    requireContext(),
+                    Intent(Settings.ACTION_WIFI_SETTINGS),
+                    Intent(Settings.ACTION_DATA_ROAMING_SETTINGS),
+                    null)
+        }
+
         map?.setOnInfoWindowClickListener(this)
+    }
+
+    // setup map location displayed
+    private fun setupMapLocation() {
+        if (DetailsFragment.isFromDetailsFragment) {
+            val currentProperty = args.currentProperty?.property
+            val propertyAddress =
+                    "${currentProperty?.street} + ${currentProperty?.postcode} + ${currentProperty?.city} + ${currentProperty?.country}"
+            val propertyLatLng = getLocationFromAddress(requireContext(), propertyAddress)
+            val cameraZoomProperty = CameraUpdateFactory.newLatLngZoom(propertyLatLng, 16F)
+            map?.animateCamera(cameraZoomProperty)
+        } else {
+            val defaultCameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(39.868, -102.93), 3F)
+            map?.moveCamera(defaultCameraUpdate)
+        }
     }
 
     // setup markers
@@ -139,6 +152,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     override fun onInfoWindowClick(marker: Marker?) {
         val action = MapFragmentDirections.actionMapFragmentToDetailsFragment(marker?.tag as PropertyWithAllData?)
         findNavController().navigate(action)
+        DetailsFragment.isFromDetailsFragment = false
     }
 
     // Find device location
