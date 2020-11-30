@@ -27,7 +27,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var agentsList: List<Agent>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         return binding.root

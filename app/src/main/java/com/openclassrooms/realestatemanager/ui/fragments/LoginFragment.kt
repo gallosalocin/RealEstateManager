@@ -23,7 +23,6 @@ import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login), EasyPermissions.PermissionCallbacks {

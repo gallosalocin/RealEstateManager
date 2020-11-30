@@ -30,7 +30,7 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
 //        return super.onCreateView(inflater, container, savedInstanceState)
 //    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLoanBinding.inflate(inflater, container, false)
 
         return binding.root

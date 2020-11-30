@@ -81,7 +81,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     private lateinit var cropCoverPhotoLauncher: ActivityResultLauncher<Any?>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
 
         return binding.root

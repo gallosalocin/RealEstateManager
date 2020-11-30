@@ -57,7 +57,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private var filteredPropertiesList: List<PropertyWithAllData> = ArrayList()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         return binding.root

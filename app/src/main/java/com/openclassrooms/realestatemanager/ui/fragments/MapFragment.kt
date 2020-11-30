@@ -45,7 +45,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var propertiesList: List<PropertyWithAllData> = ArrayList()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         Timber.d("onCreateView")
         binding.mapView.onCreate(savedInstanceState)
@@ -170,7 +170,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
                 }
             }
         } catch (error: SecurityException) {
-            Timber.e("Exception: ${error.message}");
+            Timber.e("Exception: ${error.message}")
         }
     }
 

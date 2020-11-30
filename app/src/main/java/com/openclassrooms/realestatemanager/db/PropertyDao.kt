@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.db
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.openclassrooms.realestatemanager.models.Property
@@ -47,5 +48,9 @@ interface PropertyDao {
             soldDateMin: String, soldDateMax: String,
             city: String, country: String
     ): LiveData<List<PropertyWithAllData>>
+
+
+    @Query("SELECT * FROM properties WHERE properties_id LIKE :propertyId")
+    fun getPropertyWithCursor(propertyId: Long): Cursor
 
 }
