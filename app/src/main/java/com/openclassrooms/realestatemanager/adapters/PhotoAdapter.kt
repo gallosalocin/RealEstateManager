@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPhotoDetailsBinding
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
-import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
 
 class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>() {
 
@@ -83,7 +83,7 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
 
                 tvPhotoDescription.text = propertyPhoto.label
 
-                ivDeletePhoto.visibility = if (DetailsFragment.isFromDetailsFragment) View.INVISIBLE else View.VISIBLE
+                ivDeletePhoto.visibility = if (isForDetailsFragment) View.INVISIBLE else View.VISIBLE
 
             }
 

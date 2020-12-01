@@ -25,10 +25,6 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     private var isDollar: Boolean = true
     private lateinit var menu: Menu
 
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-//        return super.onCreateView(inflater, container, savedInstanceState)
-//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLoanBinding.inflate(inflater, container, false)

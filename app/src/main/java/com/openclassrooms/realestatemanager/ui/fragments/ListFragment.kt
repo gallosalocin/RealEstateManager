@@ -2,20 +2,20 @@ package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
-import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isFromDetailsFragment
+import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -36,7 +36,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
-
+        isFromDetailsFragment = false
         return binding.root
     }
 
@@ -56,6 +56,8 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
 
         propertyAdapter.setOnItemClickListener {
+            isFromMapFragment = false
+            isForDetailsFragment = true
             val action = ListFragmentDirections.actionListFragmentToDetailsFragment(it)
             findNavController().navigate(action)
         }

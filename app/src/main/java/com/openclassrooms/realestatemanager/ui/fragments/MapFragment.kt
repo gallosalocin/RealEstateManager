@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isFromDetailsFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.formatInDollar
 import com.openclassrooms.realestatemanager.utils.Utils.getLocationFromAddress
@@ -45,9 +47,13 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var propertiesList: List<PropertyWithAllData> = ArrayList()
 
+    companion object {
+        var isFromMapFragment: Boolean = false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
-        Timber.d("onCreateView")
+
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
 
@@ -106,6 +112,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         }
 
         if (isInternetConnected(requireContext())) {
+            setupMarker()
             setupMapLocation()
         } else {
             setupAlertDialogToActivateInternet(
@@ -120,7 +127,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
 
     // setup map location displayed
     private fun setupMapLocation() {
-        if (DetailsFragment.isFromDetailsFragment) {
+        if (isFromDetailsFragment) {
             val currentProperty = args.currentProperty?.property
             val propertyAddress =
                     "${currentProperty?.street} + ${currentProperty?.postcode} + ${currentProperty?.city} + ${currentProperty?.country}"
@@ -150,9 +157,11 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
 
     // Info Window callback
     override fun onInfoWindowClick(marker: Marker?) {
+        isFromMapFragment = true
+        isForDetailsFragment = true
         val action = MapFragmentDirections.actionMapFragmentToDetailsFragment(marker?.tag as PropertyWithAllData?)
         findNavController().navigate(action)
-        DetailsFragment.isFromDetailsFragment = false
+
     }
 
     // Find device location
@@ -192,7 +201,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         super.onStop()
         Timber.d("onStop")
         binding.mapView.onStop()
-        DetailsFragment.isFromDetailsFragment = false
     }
 
     override fun onPause() {

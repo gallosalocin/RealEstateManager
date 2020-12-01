@@ -20,13 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
-import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
-import com.openclassrooms.realestatemanager.utils.Utils
+import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -43,6 +42,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     private val viewModel: MainViewModel by viewModels()
     private val args: AddFragmentArgs by navArgs()
+
     @Inject
     lateinit var glide: RequestManager
     private lateinit var photoAdapter: PhotoAdapter
@@ -75,7 +75,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     private lateinit var cropPhotoLauncher: ActivityResultLauncher<Any?>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -83,10 +83,10 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.d("Launch : onCreate" )
+        Timber.d("Launch : onCreate")
 
         setHasOptionsMenu(true)
-        DetailsFragment.isFromDetailsFragment = false
+        isForDetailsFragment = false
 
         photoAdapter = PhotoAdapter()
         currentProperty = args.currentProperty?.property!!
@@ -94,10 +94,10 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
         loadProperty()
         loadPropertyPhotos()
+        displayOrHideSoldDatePicker()
 
         setupTypeSpinner()
         setupRoomsSpinner()
-        displayOrHideSoldDatepicker()
 
         addDetailPhotoLauncher()
 
@@ -152,14 +152,23 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     // Validate necessary fields
     private fun confirmValidation() {
         if (!validateType()
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPrice, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etStreet, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etPostcode, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCity, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etCountry, "Can't be empty"))
-                or (!Utils.validateInputFieldIfNullOrEmpty(binding.etAvailableDate, "Can't be empty"))
+                or (!validateInputFieldIfNullOrEmpty(binding.etPrice, "Can't be empty"))
+                or (!validateInputFieldIfNullOrEmpty(binding.etStreet, "Can't be empty"))
+                or (!validateInputFieldIfNullOrEmpty(binding.etPostcode, "Can't be empty"))
+                or (!validateInputFieldIfNullOrEmpty(binding.etCity, "Can't be empty"))
+                or (!validateInputFieldIfNullOrEmpty(binding.etCountry, "Can't be empty"))
+                or (!validateInputFieldIfNullOrEmpty(binding.etAvailableDate, "Can't be empty"))
         ) Toast.makeText(requireContext(), "Please fill all the required fields", Toast.LENGTH_SHORT).show()
-        else updateProperty()
+        else {
+            if (binding.cbIsSold.isChecked) {
+                if (binding.etSoldDate.text.toString().isEmpty())
+                    !validateInputFieldIfNullOrEmpty(binding.etSoldDate, "Can't be empty")
+                else
+                    updateProperty()
+            } else {
+                updateProperty()
+            }
+        }
     }
 
     // Update property
@@ -189,7 +198,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                 poi = poiList,
                 isSold = binding.cbIsSold.isChecked,
                 availableDate = binding.etAvailableDate.text.toString(),
-                soldDate = binding.etSoldDate.text.toString(),
+                soldDate = if (binding.cbIsSold.isChecked) binding.etSoldDate.text.toString() else "",
                 agentId = currentProperty.agentId,
                 coverPhoto = if (coverPhoto == "") currentProperty.coverPhoto else coverPhoto,
                 labelPhoto = if (coverLabelPhoto == "") currentProperty.labelPhoto else coverLabelPhoto
@@ -204,7 +213,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     // Load property detail photos
     private fun loadPropertyPhotos() {
         viewModel.getAllPropertiesPhotos.observe(viewLifecycleOwner, { propertyPhoto ->
-            propertyPhotosList = propertyPhoto.filter { it.propertyId == currentProperty.id  }
+            propertyPhotosList = propertyPhoto.filter { it.propertyId == currentProperty.id }
             photoAdapter.photosListDetails = propertyPhotosList.reversed()
         })
     }
@@ -245,6 +254,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                 cbIsSold.isChecked = true
                 etSoldDate.visibility = View.VISIBLE
                 etSoldDate.setText(currentProperty.soldDate)
+                etSoldDate.setOnClickListener { showDatePickerDialog(binding.etSoldDate) }
             }
         }
     }
@@ -311,14 +321,12 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAccent))
     }
 
-    // Display or hide Datepicker for sold date
-    private fun displayOrHideSoldDatepicker() {
-        binding.cbIsSold.setOnCheckedChangeListener { compoundButton, isChecked ->
+    // Display or hide Date Picker for sold date
+    private fun displayOrHideSoldDatePicker() {
+        binding.cbIsSold.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 binding.etSoldDate.visibility = View.VISIBLE
-                binding.etSoldDate.setOnClickListener {
-                    showDatePickerDialog(binding.etSoldDate)
-                }
+                binding.etSoldDate.setOnClickListener { showDatePickerDialog(binding.etSoldDate) }
             } else {
                 binding.etSoldDate.visibility = View.INVISIBLE
             }
@@ -429,14 +437,14 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     override fun onStart() {
         super.onStart()
-        Timber.d("Launch : onStart" )
-        DetailsFragment.isFromDetailsFragment = false
+        Timber.d("Launch : onStart")
+        isForDetailsFragment = false
     }
 
     override fun onStop() {
         super.onStop()
-        Timber.d("Launch : onStop" )
-        DetailsFragment.isFromDetailsFragment = true
+        Timber.d("Launch : onStop")
+        isForDetailsFragment = true
     }
 
     override fun onDestroyView() {

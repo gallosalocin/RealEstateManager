@@ -10,14 +10,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
-import com.google.android.gms.location.LocationServices
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,12 +42,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var currentProperty: Property
 
     companion object {
+        var isForDetailsFragment = false
         var isFromDetailsFragment = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -74,11 +73,14 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             glide.load(it.filename).centerCrop().into(binding.ivPhoto)
         }
 
-        binding.ivMap.setOnClickListener {
-            val action = DetailsFragmentDirections.actionDetailsFragmentToMapFragment(args.currentProperty)
-            findNavController().navigate(action)
-            isFromDetailsFragment = true
+        if (!isFromMapFragment) {
+            binding.ivMap.setOnClickListener {
+                isFromDetailsFragment = true
+                val action = DetailsFragmentDirections.actionDetailsFragmentToMapFragment(args.currentProperty)
+                findNavController().navigate(action)
+            }
         }
+
     }
 
     // Setup recyclerview

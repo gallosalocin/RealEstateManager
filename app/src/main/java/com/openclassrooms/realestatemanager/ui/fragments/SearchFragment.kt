@@ -18,10 +18,13 @@ import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentSearchBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
+import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
+import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -59,7 +62,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         return binding.root
     }
 
@@ -109,10 +112,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         propertyAdapter.setOnItemClickListener {
+            isResult = true
+            isFromMapFragment = false
+            isForDetailsFragment = true
             val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(it)
             findNavController().navigate(action)
             requireActivity().toolbar.title = it.property.type
-            isResult = true
+
         }
     }
 
