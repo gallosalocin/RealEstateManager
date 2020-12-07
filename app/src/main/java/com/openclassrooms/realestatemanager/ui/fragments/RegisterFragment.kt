@@ -4,18 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.openclassrooms.realestatemanager.R
 import androidx.navigation.fragment.findNavController
-import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
+import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentRegisterBinding
 import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
-import com.openclassrooms.realestatemanager.utils.Utils
+import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfIsGreaterThan
+import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,11 +44,11 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
 
         binding.btnRegister.setOnClickListener {
-            if (!Utils.validateInputFieldIfNullOrEmpty(binding.etFirstName, "Can't be empty")
-                    or (!Utils.validateInputFieldIfNullOrEmpty(binding.etLastName, "Can't be empty"))
-                    or (!Utils.validateInputFieldIfIsGreaterThan(binding.etUsernameRegister, "Min. 4 chars", 4))
-                    or (!Utils.validateInputFieldIfIsGreaterThan(binding.etPasswordRegister, "Min. 4 chars", 4))
-                    or (!Utils.validateInputFieldIfIsGreaterThan(binding.etConfirmPasswordRegister, "Min. 4 chars", 4))
+            if (!validateInputFieldIfNullOrEmpty(binding.etFirstName, "Can't be empty")
+                    or (!validateInputFieldIfNullOrEmpty(binding.etLastName, "Can't be empty"))
+                    or (!validateInputFieldIfIsGreaterThan(binding.etUsernameRegister, "Min. 4 chars", 4))
+                    or (!validateInputFieldIfIsGreaterThan(binding.etPasswordRegister, "Min. 4 chars", 4))
+                    or (!validateInputFieldIfIsGreaterThan(binding.etConfirmPasswordRegister, "Min. 4 chars", 4))
             ) return@setOnClickListener
 
             if (agentsList.any { it.username == (binding.etUsernameRegister.text.toString().trim()) }) {

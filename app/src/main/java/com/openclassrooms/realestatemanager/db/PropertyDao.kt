@@ -15,9 +15,6 @@ interface PropertyDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateProperty(property: Property)
 
-    @Query("SELECT * FROM properties ORDER BY properties_id DESC LIMIT 1")
-    fun getLastPropertyAdded(): LiveData<Property>
-
     @Transaction
     @Query("SELECT * FROM properties ORDER BY properties_id DESC")
     fun getAllProperties(): LiveData<List<PropertyWithAllData>>
@@ -50,7 +47,7 @@ interface PropertyDao {
     ): LiveData<List<PropertyWithAllData>>
 
 
-    @Query("SELECT * FROM properties WHERE properties_id LIKE :propertyId")
+    @Query("SELECT * FROM properties INNER JOIN agents ON agent_id = agents_id WHERE properties_id LIKE :propertyId")
     fun getPropertyWithCursor(propertyId: Long): Cursor
 
 }

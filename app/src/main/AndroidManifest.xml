@@ -43,10 +43,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />
 
-<!--        <provider-->
-<!--            android:name=".provider.PropertyContentProvider"-->
-<!--            android:authorities="com.openclassrooms.realestatemanager.provider"-->
-<!--            android:exported="true" />-->
+        <provider
+            android:name=".provider.PropertyContentProvider"
+            android:authorities="com.openclassrooms.realestatemanager.provider"
+            android:exported="true" />
 
     </application>
 
