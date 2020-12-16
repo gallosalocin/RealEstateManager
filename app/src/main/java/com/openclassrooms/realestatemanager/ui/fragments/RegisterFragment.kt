@@ -12,7 +12,7 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentRegisterBinding
-import com.openclassrooms.realestatemanager.models.Agent
+import com.openclassrooms.realestatemanager.models.database.Agent
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfIsGreaterThan
 import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty
@@ -107,7 +107,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 //import androidx.navigation.fragment.findNavController
 //import com.openclassrooms.realestatemanager.R
 //import com.openclassrooms.realestatemanager.databinding.FragmentRegisterBinding
-//import com.openclassrooms.realestatemanager.models.Agent
+//import com.openclassrooms.realestatemanager.models.database.Agent
 //import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 //import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfIsGreaterThan
 //import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty

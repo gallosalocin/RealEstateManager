@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,9 +14,10 @@ import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
-import com.openclassrooms.realestatemanager.models.Property
-import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.database.Property
+import com.openclassrooms.realestatemanager.models.database.PropertyPhoto
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
+import com.openclassrooms.realestatemanager.ui.viewmodels.DetailsViewModel
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,13 +36,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var editFragment: EditFragment
 
     private lateinit var photoAdapter: PhotoAdapter
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: DetailsViewModel by viewModels()
 
     @Inject
     lateinit var glide: RequestManager
     private var isDollar = true
     private lateinit var propertyPhotosList: List<PropertyPhoto>
-    private lateinit var currentProperty: Property
 
     companion object {
         var isForDetailsFragment = false
@@ -65,14 +64,71 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         photoAdapter = PhotoAdapter()
         propertyPhotosList = ArrayList()
 
-//        currentProperty = args.currentProperty?.property!!
         editFragment = EditFragment()
 
-        loadProperty()
         loadPropertyPhotos()
         setupRecyclerView()
 
-        requireActivity().toolbar.title = currentProperty.type
+        viewModel.getViewStateLiveData().observe(viewLifecycleOwner) { currentPropertyWithAllData ->
+            requireActivity().toolbar.title = currentPropertyWithAllData.property.type
+
+            if (currentPropertyWithAllData.photos.none { it.propertyId == (currentPropertyWithAllData.property.id) }) {
+                //viewModel.insertPropertyPhoto(PropertyPhoto(currentProperty.coverPhoto, currentProperty.labelPhoto, currentProperty.id))
+            } else {
+                //propertyPhotosList = propertyPhoto.filter { it.propertyId == currentProperty.id }
+            }
+            photoAdapter.photosListDetails = propertyPhotosList.reversed()
+
+            val currentProperty = currentPropertyWithAllData.property
+
+            binding.apply {
+                glide.load(currentProperty.coverPhoto).centerCrop().into(ivPhoto)
+
+                tvPrice.text = Utils.formatInDollar(currentProperty.priceInDollars, 0)
+
+                if (currentProperty.isSold) {
+                    tvStatus.text = getString(R.string.sold_cap)
+                    tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorSold))
+                    tvSoldDate.visibility = View.VISIBLE
+                    tvSoldDate.text = getString(R.string.sold_date_param, currentProperty.soldDate)
+                } else {
+                    tvStatus.text = getString(R.string.available_cap)
+                    tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAvailable))
+                }
+
+                chip_restaurant.isChecked = currentProperty.poi[0].toString().toBoolean()
+                chip_bar.isChecked = currentProperty.poi[1].toString().toBoolean()
+                chip_store.isChecked = currentProperty.poi[2].toString().toBoolean()
+                chip_park.isChecked = currentProperty.poi[3].toString().toBoolean()
+                chip_school.isChecked = currentProperty.poi[4].toString().toBoolean()
+                chip_hospital.isChecked = currentProperty.poi[5].toString().toBoolean()
+
+                tvEntryDate.text = getString(R.string.entry_date_param, currentProperty.availableDate)
+                tvDescription.text = if (currentProperty.description == "") "Write something!!!" else currentProperty.description
+                tvArea.text = if (currentProperty.areaInMeters.toString() == "") "0 m²" else currentProperty.areaInMeters.toString() + " m²"
+                tvRoom.text = currentProperty.nbrRoom.toString()
+                tvBedroom.text = currentProperty.nbrBedroom.toString()
+                tvBathroom.text = currentProperty.nbrBathroom.toString()
+                tvStreet.text = currentProperty.street
+                tvPostcode.text = currentProperty.postcode
+                tvCity.text = currentProperty.city
+                tvCountry.text = currentProperty.country
+//            tvAgent.text = getString(R.string.agent_name, args.currentProperty?.agent?.firstName, args.currentProperty?.agent?.lastName)
+
+                val currentPropertyAddress = "${currentProperty.street}+${currentProperty.postcode}+${currentProperty.city}"
+
+                glide.load("https://maps.googleapis.com/maps/api/staticmap?" +
+                    "center=$currentPropertyAddress" +
+                    "&zoom=14" +
+                    "&size=200x200" +
+                    "&scale=2" +
+                    "&maptype=terrain" +
+                    "&markers=size:mid%7C$currentPropertyAddress" +
+                    "&key=${BuildConfig.ApiKey}")
+                    .centerCrop().into(ivMap)
+            }
+        }
+
 
         binding.tvDescription.movementMethod = ScrollingMovementMethod()
 
@@ -126,56 +182,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             }
             photoAdapter.photosListDetails = propertyPhotosList.reversed()
         })
-    }
-
-    // Load property
-    private fun loadProperty() {
-        binding.apply {
-            glide.load(currentProperty.coverPhoto).centerCrop().into(ivPhoto)
-
-            tvPrice.text = Utils.formatInDollar(currentProperty.priceInDollars, 0)
-
-            if (currentProperty.isSold) {
-                tvStatus.text = getString(R.string.sold_cap)
-                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorSold))
-                tvSoldDate.visibility = View.VISIBLE
-                tvSoldDate.text = getString(R.string.sold_date_param, currentProperty.soldDate)
-            } else {
-                tvStatus.text = getString(R.string.available_cap)
-                tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAvailable))
-            }
-
-            chip_restaurant.isChecked = currentProperty.poi[0].toString().toBoolean()
-            chip_bar.isChecked = currentProperty.poi[1].toString().toBoolean()
-            chip_store.isChecked = currentProperty.poi[2].toString().toBoolean()
-            chip_park.isChecked = currentProperty.poi[3].toString().toBoolean()
-            chip_school.isChecked = currentProperty.poi[4].toString().toBoolean()
-            chip_hospital.isChecked = currentProperty.poi[5].toString().toBoolean()
-
-            tvEntryDate.text = getString(R.string.entry_date_param, currentProperty.availableDate)
-            tvDescription.text = if (currentProperty.description == "") "Write something!!!" else currentProperty.description
-            tvArea.text = if (currentProperty.areaInMeters.toString() == "") "0 m²" else currentProperty.areaInMeters.toString() + " m²"
-            tvRoom.text = currentProperty.nbrRoom.toString()
-            tvBedroom.text = currentProperty.nbrBedroom.toString()
-            tvBathroom.text = currentProperty.nbrBathroom.toString()
-            tvStreet.text = currentProperty.street
-            tvPostcode.text = currentProperty.postcode
-            tvCity.text = currentProperty.city
-            tvCountry.text = currentProperty.country
-//            tvAgent.text = getString(R.string.agent_name, args.currentProperty?.agent?.firstName, args.currentProperty?.agent?.lastName)
-
-            val currentPropertyAddress = "${currentProperty.street}+${currentProperty.postcode}+${currentProperty.city}"
-
-            glide.load("https://maps.googleapis.com/maps/api/staticmap?" +
-                    "center=$currentPropertyAddress" +
-                    "&zoom=14" +
-                    "&size=200x200" +
-                    "&scale=2" +
-                    "&maptype=terrain" +
-                    "&markers=size:mid%7C$currentPropertyAddress" +
-                    "&key=${BuildConfig.ApiKey}")
-                    .centerCrop().into(ivMap)
-        }
     }
 
     // Setup toolbar

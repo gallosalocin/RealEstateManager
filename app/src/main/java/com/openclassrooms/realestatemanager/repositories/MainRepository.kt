@@ -1,17 +1,19 @@
 package com.openclassrooms.realestatemanager.repositories
 
+import androidx.lifecycle.LiveData
 import com.openclassrooms.realestatemanager.db.AgentDao
 import com.openclassrooms.realestatemanager.db.PropertyDao
 import com.openclassrooms.realestatemanager.db.PropertyPhotoDao
-import com.openclassrooms.realestatemanager.models.Agent
-import com.openclassrooms.realestatemanager.models.Property
-import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.database.Agent
+import com.openclassrooms.realestatemanager.models.database.Property
+import com.openclassrooms.realestatemanager.models.database.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.database.PropertyWithAllData
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
-        val agentDao: AgentDao,
-        val propertyDao: PropertyDao,
-        val propertyPhotoDao: PropertyPhotoDao
+       private val agentDao: AgentDao,
+       private val propertyDao: PropertyDao,
+       private val propertyPhotoDao: PropertyPhotoDao
 ) {
 
 // Agent
@@ -45,6 +47,9 @@ class MainRepository @Inject constructor(
 
     fun observeAllProperties() = propertyDao.getAllProperties()
 
+    fun getPropertyForId(propertyId: Int) : LiveData<PropertyWithAllData> {
+        return propertyDao.getPropertyForId(propertyId)
+    }
 
     // Property Photo
 

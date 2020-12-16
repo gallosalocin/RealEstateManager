@@ -5,7 +5,7 @@ import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import com.openclassrooms.realestatemanager.getOrAwaitValue
 import com.openclassrooms.realestatemanager.launchFragmentInHiltContainer
-import com.openclassrooms.realestatemanager.models.Agent
+import com.openclassrooms.realestatemanager.models.database.Agent
 import com.openclassrooms.realestatemanager.ui.fragments.RegisterFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

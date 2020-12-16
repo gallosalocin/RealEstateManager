@@ -10,12 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentLoginBinding
-import com.openclassrooms.realestatemanager.models.Agent
+import com.openclassrooms.realestatemanager.models.database.Agent
 import com.openclassrooms.realestatemanager.other.Constants.REQUEST_CODE_LOCATION_PERMISSION
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_IS_USER_LOGIN
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
@@ -166,7 +165,7 @@ class LoginFragment : Fragment(R.layout.fragment_login), EasyPermissions.Permiss
 //import androidx.navigation.fragment.findNavController
 //import com.openclassrooms.realestatemanager.R
 //import com.openclassrooms.realestatemanager.databinding.FragmentLoginBinding
-//import com.openclassrooms.realestatemanager.models.Agent
+//import com.openclassrooms.realestatemanager.models.database.Agent
 //import com.openclassrooms.realestatemanager.other.Constants.REQUEST_CODE_LOCATION_PERMISSION
 //import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_IS_USER_LOGIN
 //import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN

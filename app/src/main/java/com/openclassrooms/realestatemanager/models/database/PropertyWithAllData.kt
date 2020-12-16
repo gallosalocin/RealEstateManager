@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.models
+package com.openclassrooms.realestatemanager.models.database
 
 import android.os.Parcelable
 import androidx.room.Embedded

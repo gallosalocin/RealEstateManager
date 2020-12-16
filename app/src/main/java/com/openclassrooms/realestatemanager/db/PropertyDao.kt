@@ -3,8 +3,8 @@ package com.openclassrooms.realestatemanager.db
 import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.openclassrooms.realestatemanager.models.Property
-import com.openclassrooms.realestatemanager.models.PropertyWithAllData
+import com.openclassrooms.realestatemanager.models.database.Property
+import com.openclassrooms.realestatemanager.models.database.PropertyWithAllData
 
 @Dao
 interface PropertyDao {
@@ -49,5 +49,9 @@ interface PropertyDao {
 
     @Query("SELECT * FROM properties INNER JOIN agents ON agent_id = agents_id WHERE properties_id LIKE :propertyId")
     fun getPropertyWithCursor(propertyId: Long): Cursor
+
+    // TODO UPDATE REQUEST TO GET PropertyWithAllData INSTEAD OF Property
+    @Query("SELECT * FROM properties WHERE properties_id LIKE :propertyId")
+    fun getPropertyForId(propertyId: Int): LiveData<PropertyWithAllData>
 
 }

@@ -2,7 +2,7 @@ package com.openclassrooms.realestatemanager.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.database.PropertyPhoto
 
 @Dao
 interface PropertyPhotoDao {

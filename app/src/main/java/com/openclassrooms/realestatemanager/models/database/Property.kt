@@ -1,6 +1,5 @@
-package com.openclassrooms.realestatemanager.models
+package com.openclassrooms.realestatemanager.models.database
 
-import android.net.Uri
 import android.os.Parcelable
 import androidx.room.*
 import kotlinx.android.parcel.Parcelize
