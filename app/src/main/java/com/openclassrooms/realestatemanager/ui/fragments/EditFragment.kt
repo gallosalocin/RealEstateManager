@@ -374,7 +374,8 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         binding.spRoom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                room = selectedItem.toString().toInt()
+                val text = selectedItem.toString()
+                room = text.replace("+", "").toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -384,7 +385,8 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         binding.spBedroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bedroom = selectedItem.toString().toInt()
+                val text = selectedItem.toString()
+                bedroom = text.replace("+", "").toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -394,7 +396,8 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         binding.spBathroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bathroom = selectedItem.toString().toInt()
+                val text = selectedItem.toString()
+                bathroom = text.replace("+", "").toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

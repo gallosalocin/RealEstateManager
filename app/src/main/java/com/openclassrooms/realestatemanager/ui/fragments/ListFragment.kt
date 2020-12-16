@@ -3,9 +3,11 @@ package com.openclassrooms.realestatemanager.ui.fragments
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+//import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
@@ -23,26 +25,33 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var logoutFragment: LogoutFragment
+    private lateinit var addFragment: AddFragment
+    private lateinit var detailFragment: DetailsFragment
+
     private lateinit var propertyAdapter: PropertyAdapter
     private val viewModel: MainViewModel by viewModels()
     private lateinit var menu: Menu
-
     private lateinit var propertiesList: List<PropertyWithAllData>
 
 
     companion object {
         var isDollar: Boolean? = null
+        var isBundle: Boolean? = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
+
         isFromDetailsFragment = false
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        Timber.d("onViewCreated")
 
         propertyAdapter = PropertyAdapter()
         propertiesList = ArrayList()
@@ -54,14 +63,25 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             propertyAdapter.properties = propertiesList
         })
 
-
         propertyAdapter.setOnItemClickListener {
             isFromMapFragment = false
             isForDetailsFragment = true
-            val action = ListFragmentDirections.actionListFragmentToDetailsFragment(it)
-            findNavController().navigate(action)
+            detailFragment = DetailsFragment()
+            parentFragmentManager.beginTransaction().apply {
+                replace(R.id.fl_container, detailFragment)
+                addToBackStack(null)
+                commit()
+            }
         }
 
+        binding.fabAdd.setOnClickListener {
+            addFragment = AddFragment()
+            parentFragmentManager.beginTransaction().apply {
+                replace(R.id.fl_container, addFragment)
+                addToBackStack(null)
+                commit()
+            }
+        }
     }
 
     // Setup recyclerview
@@ -99,7 +119,11 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                 }
             }
             R.id.tb_menu_logout -> {
-                findNavController().navigate(R.id.logoutFragment)
+                logoutFragment = LogoutFragment()
+                parentFragmentManager.beginTransaction().apply {
+                    replace(R.id.fl_container, logoutFragment)
+                    commit()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -109,4 +133,100 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         super.onDestroyView()
         _binding = null
     }
+
+
+//    @AndroidEntryPoint
+//    class ListFragment : Fragment(R.layout.fragment_list) {
+//
+//        private var _binding: FragmentListBinding? = null
+//        private val binding get() = _binding!!
+//
+//        private lateinit var propertyAdapter: PropertyAdapter
+//        private val viewModel: MainViewModel by viewModels()
+//        private lateinit var menu: Menu
+//
+//        private lateinit var propertiesList: List<PropertyWithAllData>
+//        private var isTablet = false
+//
+//        companion object {
+//            var isDollar: Boolean? = null
+//        }
+//
+//        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+//        _binding = FragmentListBinding.inflate(inflater, container, false)
+//            isFromDetailsFragment = false
+//            isTablet = resources.getBoolean(R.bool.isTablet)
+//            return binding.root
+//        }
+//
+//        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//            super.onViewCreated(view, savedInstanceState)
+//            setHasOptionsMenu(true)
+//            Timber.d("onViewCreated")
+//
+//            propertyAdapter = PropertyAdapter()
+//            propertiesList = ArrayList()
+//
+//            setupRecyclerView()
+//
+//            viewModel.getAllProperties.observe(viewLifecycleOwner, {
+//                propertiesList = it
+//                propertyAdapter.properties = propertiesList
+//            })
+//
+//
+//            propertyAdapter.setOnItemClickListener {
+//                isFromMapFragment = false
+//                isForDetailsFragment = true
+//                val action = ListFragmentDirections.actionListFragmentToDetailsFragment(it)
+//                findNavController().navigate(action)
+//            }
+//
+//        }
+//
+//        // Setup recyclerview
+//        private fun setupRecyclerView() {
+//            binding.apply {
+//                rvList.adapter = propertyAdapter
+//                rvList.layoutManager = LinearLayoutManager(requireContext())
+//            }
+//        }
+//
+//        // Setup toolbar
+//        override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//            super.onCreateOptionsMenu(menu, inflater)
+//            inflater.inflate(R.menu.toolbar_menu_main, menu)
+//            menu.getItem(1).isVisible = false
+//            menu.getItem(2).isVisible = false
+//            this.menu = menu
+//        }
+//
+//        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//            when (item.itemId) {
+//                R.id.tb_menu_currency -> {
+//                    when (isDollar) {
+//                        true -> {
+//                            propertyAdapter.notifyDataSetChanged()
+//                            isDollar = false
+//                            menu.getItem(0).setIcon(R.drawable.ic_euro)
+//                        }
+//
+//                        null, false -> {
+//                            propertyAdapter.notifyDataSetChanged()
+//                            isDollar = true
+//                            menu.getItem(0).setIcon(R.drawable.ic_dollar)
+//                        }
+//                    }
+//                }
+//                R.id.tb_menu_logout -> {
+//                    findNavController().navigate(R.id.logoutFragment)
+//                }
+//            }
+//            return super.onOptionsItemSelected(item)
+//        }
+//
+//        override fun onDestroyView() {
+//            super.onDestroyView()
+//            _binding = null
+//        }
 }

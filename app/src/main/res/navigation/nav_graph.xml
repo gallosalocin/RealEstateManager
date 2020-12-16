@@ -83,7 +83,8 @@
         <argument
             android:name="currentProperty"
             app:argType="com.openclassrooms.realestatemanager.models.PropertyWithAllData"
-            app:nullable="true" />
+            app:nullable="true"
+            />
         <action
             android:id="@+id/action_detailsFragment_to_editFragment"
             app:destination="@id/editFragment" />

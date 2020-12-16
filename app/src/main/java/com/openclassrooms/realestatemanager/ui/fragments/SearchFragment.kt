@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +36,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var logoutFragment: LogoutFragment
+    private lateinit var scrollView: ScrollView
+    private var isTablet = false
 
     private lateinit var propertyAdapter: PropertyAdapter
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
@@ -63,6 +69,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        isTablet = resources.getBoolean(R.bool.isTablet)
+
+        if (isTablet) {
+            scrollView  = requireActivity().findViewById(R.id.sv_right)
+            scrollView.visibility = View.GONE
+        }
+
         return binding.root
     }
 
@@ -70,6 +83,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        Timber.d("onViewCreated")
 
         setupTypeSpinner()
         setupRecyclerView()
@@ -115,9 +129,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             isResult = true
             isFromMapFragment = false
             isForDetailsFragment = true
-            val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(it)
-            findNavController().navigate(action)
-            requireActivity().toolbar.title = it.property.type
+//            val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(it)
+//            findNavController().navigate(action)
+//            requireActivity().toolbar.title = it.property.type
 
         }
     }
@@ -178,7 +192,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 binding.clSearchFields.visibility = View.VISIBLE
             }
             R.id.tb_menu_logout -> {
-                findNavController().navigate(R.id.logoutFragment)
+                logoutFragment = LogoutFragment()
+                parentFragmentManager.beginTransaction().apply {
+                    replace(R.id.fl_container, logoutFragment)
+                    commit()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -262,6 +280,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             etCity.text?.clear()
             etCountry.text?.clear()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isTablet) scrollView.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

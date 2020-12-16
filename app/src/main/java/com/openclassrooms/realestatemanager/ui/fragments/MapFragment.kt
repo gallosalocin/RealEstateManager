@@ -1,13 +1,17 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
+import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -39,6 +43,8 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
 
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var logoutFragment: LogoutFragment
 
     private val viewModel: MainViewModel by viewModels()
     private val args: DetailsFragmentArgs by navArgs()
@@ -85,7 +91,14 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.tb_menu_currency -> Toast.makeText(requireContext(), "currency", Toast.LENGTH_SHORT).show()
-            R.id.tb_menu_logout -> findNavController().navigate(R.id.logoutFragment)
+            R.id.tb_menu_logout -> {
+                logoutFragment = LogoutFragment()
+                parentFragmentManager.beginTransaction().apply {
+                    replace(R.id.fl_container, logoutFragment)
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    commit()
+                }
+            }
             R.id.tb_menu_reload -> if (isInternetConnected(requireContext())) setupMarker()
         }
         return super.onOptionsItemSelected(item)
@@ -159,8 +172,8 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     override fun onInfoWindowClick(marker: Marker?) {
         isFromMapFragment = true
         isForDetailsFragment = true
-        val action = MapFragmentDirections.actionMapFragmentToDetailsFragment(marker?.tag as PropertyWithAllData?)
-        findNavController().navigate(action)
+//        val action = MapFragmentDirections.actionMapFragmentToDetailsFragment(marker?.tag as PropertyWithAllData?)
+//        findNavController().navigate(action)
 
     }
 

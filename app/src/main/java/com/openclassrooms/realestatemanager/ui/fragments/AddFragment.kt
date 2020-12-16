@@ -13,18 +13,23 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.RequestManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
@@ -40,6 +45,7 @@ import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -50,6 +56,10 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     private var _binding: FragmentAddBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var bottomNavigationView: BottomNavigationView
+
+    private lateinit var listFragment: ListFragment
 
     private val viewModel: MainViewModel by viewModels()
     @Inject
@@ -66,6 +76,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     private var croppedPhoto: String? = null
     private lateinit var croppedPhotoUri: Uri
     private lateinit var labelPhoto: String
+    private var isTablet = false
 
     private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
         override fun createIntent(context: Context, input: Any?): Intent {
@@ -84,15 +95,25 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
 
+        sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
+        isTablet = resources.getBoolean(R.bool.isTablet)
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+
+        if (isTablet) {
+            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            bottomNavigationView.visibility = View.VISIBLE
+        } else {
+            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            bottomNavigationView.visibility = View.GONE
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setHasOptionsMenu(true)
-
-        sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
-
 
         checkAgentId()
 
@@ -178,8 +199,11 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
         viewModel.insertProperty(propertySaved)
         sendNotification()
-        val action = AddFragmentDirections.actionAddFragmentToListFragment()
-        findNavController().navigate(action)
+        listFragment = ListFragment()
+        parentFragmentManager.beginTransaction().apply {
+            replace(R.id.fl_container, listFragment)
+            commit()
+        }
     }
 
     // Change cover photo
@@ -272,7 +296,8 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spRoom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                room = selectedItem.toString().toInt()
+                val text = selectedItem.toString()
+                room = text.replace("+", "").toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -282,7 +307,8 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spBedroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bedroom = selectedItem.toString().toInt()
+                val text = selectedItem.toString()
+                bedroom = text.replace("+", "").toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -292,7 +318,8 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         binding.spBathroom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent!!.getItemAtPosition(position)
-                bathroom = selectedItem.toString().toInt()
+                val text = selectedItem.toString()
+                bathroom = text.replace("+", "").toInt()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -370,6 +397,12 @@ class AddFragment : Fragment(R.layout.fragment_add) {
                 IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(channel)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        bottomNavigationView.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

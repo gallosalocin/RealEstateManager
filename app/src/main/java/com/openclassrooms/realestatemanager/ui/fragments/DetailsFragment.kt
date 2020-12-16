@@ -3,13 +3,14 @@ package com.openclassrooms.realestatemanager.ui.fragments
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.BuildConfig
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
@@ -23,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_add.*
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,9 +33,10 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var editFragment: EditFragment
+
     private lateinit var photoAdapter: PhotoAdapter
     private val viewModel: MainViewModel by viewModels()
-    private val args: DetailsFragmentArgs by navArgs()
 
     @Inject
     lateinit var glide: RequestManager
@@ -48,16 +51,22 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        val bottomNavigationView: BottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+        bottomNavigationView.visibility = View.GONE
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-
         photoAdapter = PhotoAdapter()
         propertyPhotosList = ArrayList()
-        currentProperty = args.currentProperty?.property!!
+
+//        currentProperty = args.currentProperty?.property!!
+        editFragment = EditFragment()
 
         loadProperty()
         loadPropertyPhotos()
@@ -76,8 +85,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         if (!isFromMapFragment) {
             binding.ivMap.setOnClickListener {
                 isFromDetailsFragment = true
-                val action = DetailsFragmentDirections.actionDetailsFragmentToMapFragment(args.currentProperty)
-                findNavController().navigate(action)
+                parentFragmentManager.beginTransaction().apply {
+                    replace(R.id.fl_container, editFragment)
+                    addToBackStack(null)
+                    commit()
+                }
             }
         }
 
@@ -150,7 +162,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             tvPostcode.text = currentProperty.postcode
             tvCity.text = currentProperty.city
             tvCountry.text = currentProperty.country
-            tvAgent.text = getString(R.string.agent_name, args.currentProperty?.agent?.firstName, args.currentProperty?.agent?.lastName)
+//            tvAgent.text = getString(R.string.agent_name, args.currentProperty?.agent?.firstName, args.currentProperty?.agent?.lastName)
 
             val currentPropertyAddress = "${currentProperty.street}+${currentProperty.postcode}+${currentProperty.city}"
 
@@ -175,12 +187,20 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.tb_menu_edit -> {
-                val action = DetailsFragmentDirections.actionDetailsFragmentToEditFragment(args.currentProperty!!)
-                findNavController().navigate(action)
+                parentFragmentManager.beginTransaction().apply {
+                    replace(R.id.fl_container, editFragment)
+                    addToBackStack(null)
+                    commit()
+                }
                 requireActivity().toolbar.title = "Edit property"
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
     override fun onDestroyView() {
