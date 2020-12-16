@@ -4,15 +4,17 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.openclassrooms.realestatemanager.models.Agent
-import com.openclassrooms.realestatemanager.models.Property
-import com.openclassrooms.realestatemanager.models.PropertyPhoto
-import com.openclassrooms.realestatemanager.models.PropertyWithAllData
+import com.openclassrooms.realestatemanager.models.database.Agent
+import com.openclassrooms.realestatemanager.models.database.Property
+import com.openclassrooms.realestatemanager.models.database.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.database.PropertyWithAllData
+import com.openclassrooms.realestatemanager.repositories.CurrentPropertyIdRepository
 import com.openclassrooms.realestatemanager.repositories.MainRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject constructor(
-        private val mainRepository: MainRepository
+        private val mainRepository: MainRepository,
+        private val currentPropertyIdRepository : CurrentPropertyIdRepository
 ) : ViewModel() {
 
     val getAllAgents: LiveData<List<Agent>> = mainRepository.observeAllAgents()
@@ -65,5 +67,9 @@ class MainViewModel @ViewModelInject constructor(
 
     fun deletePropertyPhoto(propertyPhoto: PropertyPhoto) = viewModelScope.launch {
         mainRepository.deletePropertyPhoto(propertyPhoto)
+    }
+
+    fun setCurrentPropertyId(id: Int) {
+        currentPropertyIdRepository.setCurrentPropertyId(id)
     }
 }

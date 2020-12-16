@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPhotoDetailsBinding
-import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.database.PropertyPhoto
 import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
 
 class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>() {

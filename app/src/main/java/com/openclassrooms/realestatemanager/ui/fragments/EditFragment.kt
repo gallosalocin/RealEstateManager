@@ -21,8 +21,8 @@ import com.bumptech.glide.RequestManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PhotoAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
-import com.openclassrooms.realestatemanager.models.Property
-import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.database.Property
+import com.openclassrooms.realestatemanager.models.database.PropertyPhoto
 import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty

@@ -8,6 +8,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.db.RealEstateDatabase
 import com.openclassrooms.realestatemanager.other.Constants.REAL_ESTATE_DATABASE_NAME
+import com.openclassrooms.realestatemanager.repositories.CurrentPropertyIdRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +29,10 @@ object AppModule {
                             .error(R.drawable.ic_error)
                             .diskCacheStrategy(DiskCacheStrategy.DATA)
             )
+
+    @Singleton
+    @Provides
+    fun provideCurrentPropertyRepository() = CurrentPropertyIdRepository()
 
     @Singleton
     @Provides

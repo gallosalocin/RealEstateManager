@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ItemPropertyBinding
-import com.openclassrooms.realestatemanager.models.PropertyWithAllData
+import com.openclassrooms.realestatemanager.models.database.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.fragments.ListFragment
 import com.openclassrooms.realestatemanager.utils.Utils
 

@@ -6,7 +6,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 import com.openclassrooms.realestatemanager.db.RealEstateDatabase
-import com.openclassrooms.realestatemanager.models.Property
+import com.openclassrooms.realestatemanager.models.database.Property
 
 
 class PropertyContentProvider : ContentProvider() {

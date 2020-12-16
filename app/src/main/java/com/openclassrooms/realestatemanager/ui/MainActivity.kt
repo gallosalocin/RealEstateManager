@@ -2,90 +2,55 @@ package com.openclassrooms.realestatemanager.ui
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding
 import com.openclassrooms.realestatemanager.ui.fragments.*
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var listFragment: ListFragment
-    private lateinit var mapFragment: MapFragment
-    private lateinit var searchFragment: SearchFragment
-    private lateinit var loanFragment: LoanFragment
-    private lateinit var loginFragment: LoginFragment
-    private lateinit var addFragment: AddFragment
-
-    private var isTablet = false
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppTheme)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        isTablet = resources.getBoolean(R.bool.isTablet)
 
         setSupportActionBar(binding.toolbar)
 
-        loginFragment = LoginFragment()
-        addFragment = AddFragment()
-
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fl_container, loginFragment)
-            commit()
+        supportFragmentManager.commit {
+            replace(R.id.fl_container, LoginFragment())
         }
 
-        if (isTablet) {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fl_container_details, addFragment)
-                commit()
+        if (resources.getBoolean(R.bool.isTablet)) {
+            supportFragmentManager.commit  {
+                replace(R.id.fl_container_details, AddFragment())
             }
         }
 
-        setupBottomNavigation()
+        setupBottomNavigation(binding)
     }
 
     // Setup Bottom Navigation
-    private fun setupBottomNavigation() {
-        binding.bottomNavView.setOnNavigationItemReselectedListener { /* */ }
+    private fun setupBottomNavigation(binding: ActivityMainBinding) {
+        binding.bottomNavView.setOnNavigationItemReselectedListener { /*  */ }
 
         binding.bottomNavView.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.listFragment -> {
-                    listFragment = ListFragment()
-                    supportFragmentManager.beginTransaction().apply {
-                        replace(R.id.fl_container, listFragment)
-                        commit()
-                    }
+                R.id.listFragment -> supportFragmentManager.commit {
+                    replace(R.id.fl_container, ListFragment())
                 }
-                R.id.mapFragment -> {
-                    mapFragment = MapFragment()
-                    supportFragmentManager.beginTransaction().apply {
-                        replace(R.id.fl_container, mapFragment)
-                        commit()
-                    }
+                R.id.mapFragment -> supportFragmentManager.commit {
+                    replace(R.id.fl_container, MapFragment())
                 }
-                R.id.searchFragment -> {
-                    searchFragment = SearchFragment()
-                    supportFragmentManager.beginTransaction().apply {
-                        replace(R.id.fl_container, searchFragment)
-                        commit()
-                    }
+                R.id.searchFragment -> supportFragmentManager.commit {
+                    replace(R.id.fl_container, SearchFragment())
                 }
-                R.id.loanFragment -> {
-                    loanFragment = LoanFragment()
-                    supportFragmentManager.beginTransaction().apply {
-                        replace(R.id.fl_container, loanFragment)
-                        commit()
-                    }
+                R.id.loanFragment -> supportFragmentManager.commit {
+                    replace(R.id.fl_container, LoanFragment())
                 }
             }
             true
