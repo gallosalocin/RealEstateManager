@@ -85,6 +85,9 @@
     <string name="dialog_negative">No</string>
     <string name="dialog_button_wifi">Wifi</string>
     <string name="dialog_button_data">Data</string>
+    <string name="search_property">Search Property</string>
+    <string name="loan_calculator">Loan Calculator</string>
+    <string name="edit_property">Edit property</string>
 
     <string-array name="type_of_properties">
         <item>Type</item>

@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentRegisterBinding
 import com.openclassrooms.realestatemanager.models.Agent
-import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
+import com.openclassrooms.realestatemanager.ui.viewmodels.RegisterViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfIsGreaterThan
 import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,9 +24,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var loginFragment: LoginFragment
-
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: RegisterViewModel by viewModels()
     private lateinit var agentsList: List<Agent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -48,11 +46,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         })
 
         binding.tvLogin.setOnClickListener {
-            loginFragment = LoginFragment()
-            parentFragmentManager.beginTransaction().apply {
-                replace(R.id.fl_container, loginFragment)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                commit()
+            parentFragmentManager.commit {
+                replace(R.id.fl_container, LoginFragment())
             }
         }
 
@@ -76,11 +71,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                     viewModel.insertAgent(newAgent)
                     Toast.makeText(requireContext(), "You are registered now", Toast.LENGTH_SHORT).show()
 
-                    loginFragment = LoginFragment()
-                    parentFragmentManager.beginTransaction().apply {
-                        replace(R.id.fl_container, loginFragment)
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        commit()
+                    parentFragmentManager.commit {
+                        replace(R.id.fl_container, LoginFragment())
                     }
                 } else {
                     binding.etConfirmPasswordRegister.error = "Your passwords don't match"

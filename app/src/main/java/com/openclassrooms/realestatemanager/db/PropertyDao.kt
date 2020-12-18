@@ -46,6 +46,8 @@ interface PropertyDao {
             city: String, country: String
     ): LiveData<List<PropertyWithAllData>>
 
+    @Query("SELECT * FROM properties WHERE properties_id LIKE :propertyId")
+    fun getPropertyForId(propertyId: Int): LiveData<PropertyWithAllData>
 
     @Query("SELECT * FROM properties INNER JOIN agents ON agent_id = agents_id WHERE properties_id LIKE :propertyId")
     fun getPropertyWithCursor(propertyId: Long): Cursor

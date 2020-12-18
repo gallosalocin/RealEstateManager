@@ -11,6 +11,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentLoanBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.utils.Utils
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import kotlin.math.pow
 
@@ -19,7 +20,6 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     private var _binding: FragmentLoanBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var logoutFragment: LogoutFragment
     private lateinit var scrollView: ScrollView
 
     private var totalPayment: Float = 0f
@@ -29,15 +29,13 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     private var nbrYear: Int = 0
     private var isDollar: Boolean = true
     private lateinit var menu: Menu
-    private var isTablet = false
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLoanBinding.inflate(inflater, container, false)
+        requireActivity().toolbar.title = getString(R.string.loan_calculator)
 
-        isTablet = resources.getBoolean(R.bool.isTablet)
-
-        if (isTablet) {
+        if (resources.getBoolean(R.bool.isTablet)) {
             scrollView  = requireActivity().findViewById(R.id.sv_right)
             scrollView.visibility = View.GONE
         }
@@ -95,11 +93,8 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
             R.id.tb_menu_reload -> clearAllFields()
 
             R.id.tb_menu_logout -> {
-                logoutFragment = LogoutFragment()
                 parentFragmentManager.beginTransaction().apply {
-                    replace(R.id.fl_container, logoutFragment)
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    commit()
+                    replace(R.id.fl_container, LogoutFragment())
                 }
             }
         }
@@ -191,7 +186,7 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
 
     override fun onStop() {
         super.onStop()
-        if (isTablet) scrollView.visibility = View.VISIBLE
+        if (resources.getBoolean(R.bool.isTablet)) scrollView.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

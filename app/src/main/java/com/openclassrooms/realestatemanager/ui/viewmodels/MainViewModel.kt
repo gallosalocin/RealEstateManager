@@ -8,12 +8,14 @@ import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
+import com.openclassrooms.realestatemanager.repositories.CurrentPropertyIdRepository
 import com.openclassrooms.realestatemanager.repositories.MainRepository
 import kotlinx.coroutines.launch
 
 class MainViewModel @ViewModelInject constructor(
-        private val mainRepository: MainRepository
-) : ViewModel() {
+        private val mainRepository: MainRepository,
+        private val currentPropertyIdRepository: CurrentPropertyIdRepository,
+        ) : ViewModel() {
 
     val getAllAgents: LiveData<List<Agent>> = mainRepository.observeAllAgents()
 
@@ -29,6 +31,10 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     // Property
+
+    fun setCurrentPropertyId(id: Int) {
+        currentPropertyIdRepository.setCurrentPropertyId(id)
+    }
 
     fun getAllFilteredProperties(
             agent: String, type: String, priceMin: String, priceMax: String, areaMin: String, areaMax: String, roomMin: String, roomMax: String,

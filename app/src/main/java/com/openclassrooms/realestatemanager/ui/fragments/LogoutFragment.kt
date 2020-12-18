@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentLogoutBinding
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_IS_USER_LOGIN
@@ -19,7 +20,6 @@ class LogoutFragment : Fragment(R.layout.fragment_logout) {
     private var _binding: FragmentLogoutBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var loginFragment: LoginFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLogoutBinding.inflate(inflater, container, false)
@@ -37,11 +37,8 @@ class LogoutFragment : Fragment(R.layout.fragment_logout) {
             apply()
         }
 
-        loginFragment = LoginFragment()
-        parentFragmentManager.beginTransaction().apply {
-            replace(R.id.fl_container, loginFragment)
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            commit()
+        parentFragmentManager.commit {
+            replace(R.id.fl_container, LoginFragment())
         }
     }
 

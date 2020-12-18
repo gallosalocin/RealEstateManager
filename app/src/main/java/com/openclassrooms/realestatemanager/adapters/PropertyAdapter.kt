@@ -74,9 +74,22 @@ class PropertyAdapter : RecyclerView.Adapter<PropertyAdapter.PropertyViewHolder>
 
                 tvType.text = propertyWithAllData.property.type
                 tvCity.text = propertyWithAllData.property.city
-                tvBedroom.text = propertyWithAllData.property.nbrBedroom.toString()
-                tvBathroom.text = propertyWithAllData.property.nbrBathroom.toString()
-                tvRoom.text = propertyWithAllData.property.nbrRoom.toString()
+
+                tvRoom.text = if (propertyWithAllData.property.nbrRoom >= 10) {
+                    "${propertyWithAllData.property.nbrRoom}+"
+                } else {
+                    propertyWithAllData.property.nbrRoom.toString()
+                }
+                tvBedroom.text = if (propertyWithAllData.property.nbrBedroom >= 10) {
+                    "${propertyWithAllData.property.nbrBedroom}+"
+                } else {
+                    propertyWithAllData.property.nbrBedroom.toString()
+                }
+                tvBathroom.text = if (propertyWithAllData.property.nbrBathroom >= 10) {
+                    "${propertyWithAllData.property.nbrBathroom}+"
+                } else {
+                    propertyWithAllData.property.nbrBathroom.toString()
+                }
 
                 if (propertyWithAllData.property.isSold) tvSoldDiagonal.visibility = View.VISIBLE else tvSoldDiagonal.visibility = View.INVISIBLE
 

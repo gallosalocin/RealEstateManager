@@ -1,17 +1,19 @@
 package com.openclassrooms.realestatemanager.repositories
 
+import androidx.lifecycle.LiveData
 import com.openclassrooms.realestatemanager.db.AgentDao
 import com.openclassrooms.realestatemanager.db.PropertyDao
 import com.openclassrooms.realestatemanager.db.PropertyPhotoDao
 import com.openclassrooms.realestatemanager.models.Agent
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.models.PropertyPhoto
+import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
-        val agentDao: AgentDao,
-        val propertyDao: PropertyDao,
-        val propertyPhotoDao: PropertyPhotoDao
+        private val agentDao: AgentDao,
+        private val propertyDao: PropertyDao,
+        private val propertyPhotoDao: PropertyPhotoDao
 ) {
 
 // Agent
@@ -22,6 +24,10 @@ class MainRepository @Inject constructor(
 
 
     // Property
+
+    fun getPropertyForId(propertyId: Int) : LiveData<PropertyWithAllData> {
+        return propertyDao.getPropertyForId(propertyId)
+    }
 
     fun observeAllFilteredProperties(
             agent: String, type: String,

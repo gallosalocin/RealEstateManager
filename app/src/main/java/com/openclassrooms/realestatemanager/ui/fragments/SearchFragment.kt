@@ -10,19 +10,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
-import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentSearchBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
-import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
+import com.openclassrooms.realestatemanager.ui.viewmodels.SearchViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,13 +34,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var logoutFragment: LogoutFragment
+    private val viewModel: SearchViewModel by viewModels()
+
     private lateinit var scrollView: ScrollView
-    private var isTablet = false
 
     private lateinit var propertyAdapter: PropertyAdapter
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
-    private val viewModel: MainViewModel by viewModels()
     private lateinit var type: String
     private var agent: String = ""
     private var priceMin: String = ""
@@ -68,11 +64,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        isTablet = resources.getBoolean(R.bool.isTablet)
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        requireActivity().toolbar.title = getString(R.string.search_property)
 
-        if (isTablet) {
-            scrollView  = requireActivity().findViewById(R.id.sv_right)
+
+        if (resources.getBoolean(R.bool.isTablet)) {
+            scrollView = requireActivity().findViewById(R.id.sv_right)
             scrollView.visibility = View.GONE
         }
 
@@ -126,13 +123,15 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         propertyAdapter.setOnItemClickListener {
+            viewModel.setCurrentPropertyId(it.property.id)
             isResult = true
             isFromMapFragment = false
             isForDetailsFragment = true
-//            val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(it)
-//            findNavController().navigate(action)
-//            requireActivity().toolbar.title = it.property.type
-
+            parentFragmentManager.commit {
+                replace(R.id.fl_container, DetailsFragment())
+                addToBackStack(null)
+            }
+            requireActivity().toolbar.title = it.property.type
         }
     }
 
@@ -192,10 +191,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 binding.clSearchFields.visibility = View.VISIBLE
             }
             R.id.tb_menu_logout -> {
-                logoutFragment = LogoutFragment()
-                parentFragmentManager.beginTransaction().apply {
-                    replace(R.id.fl_container, logoutFragment)
-                    commit()
+                parentFragmentManager.commit {
+                    replace(R.id.fl_container, LogoutFragment())
                 }
             }
         }
@@ -284,7 +281,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onStop() {
         super.onStop()
-        if (isTablet) scrollView.visibility = View.VISIBLE
+        if (resources.getBoolean(R.bool.isTablet)) scrollView.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

@@ -1,20 +1,15 @@
 package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
-import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -23,12 +18,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.PropertyWithAllData
 import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isForDetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isFromDetailsFragment
-import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
+import com.openclassrooms.realestatemanager.ui.viewmodels.MapViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.formatInDollar
 import com.openclassrooms.realestatemanager.utils.Utils.getLocationFromAddress
 import com.openclassrooms.realestatemanager.utils.Utils.isGPSEnabled
@@ -36,6 +32,7 @@ import com.openclassrooms.realestatemanager.utils.Utils.isInternetConnected
 import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateGPS
 import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateInternet
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -44,10 +41,9 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var logoutFragment: LogoutFragment
+    private val viewModel: MapViewModel by viewModels()
 
-    private val viewModel: MainViewModel by viewModels()
-    private val args: DetailsFragmentArgs by navArgs()
+    private lateinit var bottomNavigationView: BottomNavigationView
     private var map: GoogleMap? = null
     private lateinit var menu: Menu
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -60,16 +56,25 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
 
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+
+        if (isFromDetailsFragment) {
+            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            bottomNavigationView.visibility = View.GONE
+        } else {
+            requireActivity().toolbar.title = getString(R.string.app_name)
+        }
+
         binding.mapView.onCreate(savedInstanceState)
         binding.mapView.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
-        viewModel.getAllProperties.observe(viewLifecycleOwner, {
+        viewModel.getAllProperties.observe(viewLifecycleOwner) {
             propertiesList = it
             if (isInternetConnected(requireContext()))
                 setupMarker()
-        })
+        }
 
         return binding.root
     }
@@ -90,13 +95,9 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.tb_menu_currency -> Toast.makeText(requireContext(), "currency", Toast.LENGTH_SHORT).show()
             R.id.tb_menu_logout -> {
-                logoutFragment = LogoutFragment()
-                parentFragmentManager.beginTransaction().apply {
-                    replace(R.id.fl_container, logoutFragment)
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    commit()
+                parentFragmentManager.commit {
+                    replace(R.id.fl_container, LogoutFragment())
                 }
             }
             R.id.tb_menu_reload -> if (isInternetConnected(requireContext())) setupMarker()
@@ -135,18 +136,26 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
                     null)
         }
 
-        map?.setOnInfoWindowClickListener(this)
+        if (!isFromDetailsFragment) {
+            map?.setOnInfoWindowClickListener(this)
+        }
     }
 
     // setup map location displayed
     private fun setupMapLocation() {
         if (isFromDetailsFragment) {
-            val currentProperty = args.currentProperty?.property
-            val propertyAddress =
-                    "${currentProperty?.street} + ${currentProperty?.postcode} + ${currentProperty?.city} + ${currentProperty?.country}"
-            val propertyLatLng = getLocationFromAddress(requireContext(), propertyAddress)
-            val cameraZoomProperty = CameraUpdateFactory.newLatLngZoom(propertyLatLng, 16F)
-            map?.animateCamera(cameraZoomProperty)
+            viewModel.getViewStateLiveData().observe(viewLifecycleOwner) { currentPropertyWithAllData ->
+
+                val currentProperty = currentPropertyWithAllData.property
+
+                requireActivity().toolbar.title = currentProperty.type
+
+                val propertyAddress =
+                        "${currentProperty.street} + ${currentProperty.postcode} + ${currentProperty.city} + ${currentProperty.country}"
+                val propertyLatLng = getLocationFromAddress(requireContext(), propertyAddress)
+                val cameraZoomProperty = CameraUpdateFactory.newLatLngZoom(propertyLatLng, 16F)
+                map?.animateCamera(cameraZoomProperty)
+            }
         } else {
             val defaultCameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(39.868, -102.93), 3F)
             map?.moveCamera(defaultCameraUpdate)
@@ -164,17 +173,19 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
                     .position(propertyLatLng)
                     .title(if (currentProperty.isSold) "Sold" else "Available")
                     .snippet(formatInDollar(currentProperty.priceInDollars, 0)))
-            marker?.tag = property
+            marker?.tag = property.property.id
         }
     }
 
     // Info Window callback
     override fun onInfoWindowClick(marker: Marker?) {
-        isFromMapFragment = true
-        isForDetailsFragment = true
-//        val action = MapFragmentDirections.actionMapFragmentToDetailsFragment(marker?.tag as PropertyWithAllData?)
-//        findNavController().navigate(action)
-
+            viewModel.setCurrentPropertyId(marker?.tag as Int)
+            isFromMapFragment = true
+            isForDetailsFragment = true
+            parentFragmentManager.commit {
+                replace(R.id.fl_container, DetailsFragment())
+                addToBackStack(null)
+            }
     }
 
     // Find device location
@@ -195,7 +206,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
             Timber.e("Exception: ${error.message}")
         }
     }
-
 
     // Handle Map's Lifecycle
     override fun onResume() {

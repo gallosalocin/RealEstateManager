@@ -13,27 +13,21 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.RequestManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentAddBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentDetailsBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.models.Property
 import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_CHANNEL_NAME
@@ -41,11 +35,10 @@ import com.openclassrooms.realestatemanager.other.Constants.NOTIFICATION_ID
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_LOGIN
 import com.openclassrooms.realestatemanager.other.Constants.SHARED_PREFERENCES_USERNAME
 import com.openclassrooms.realestatemanager.ui.MainActivity
-import com.openclassrooms.realestatemanager.ui.viewmodels.MainViewModel
+import com.openclassrooms.realestatemanager.ui.viewmodels.AddViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -59,9 +52,8 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
-    private lateinit var listFragment: ListFragment
+    private val viewModel: AddViewModel by viewModels()
 
-    private val viewModel: MainViewModel by viewModels()
     @Inject
     lateinit var glide: RequestManager
     private lateinit var sharedPref: SharedPreferences
@@ -76,7 +68,6 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     private var croppedPhoto: String? = null
     private lateinit var croppedPhotoUri: Uri
     private lateinit var labelPhoto: String
-    private var isTablet = false
 
     private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
         override fun createIntent(context: Context, input: Any?): Intent {
@@ -96,10 +87,9 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
 
         sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
-        isTablet = resources.getBoolean(R.bool.isTablet)
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
 
-        if (isTablet) {
+        if (resources.getBoolean(R.bool.isTablet)) {
             (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
             bottomNavigationView.visibility = View.VISIBLE
         } else {
@@ -199,10 +189,8 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
         viewModel.insertProperty(propertySaved)
         sendNotification()
-        listFragment = ListFragment()
-        parentFragmentManager.beginTransaction().apply {
-            replace(R.id.fl_container, listFragment)
-            commit()
+        parentFragmentManager.commit {
+            replace(R.id.fl_container, ListFragment())
         }
     }
 
