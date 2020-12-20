@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -42,9 +43,10 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     private val binding get() = _binding!!
 
     private val viewModel: MapViewModel by viewModels()
+    private var scrollView: ScrollView? = null
 
-    private lateinit var bottomNavigationView: BottomNavigationView
     private var map: GoogleMap? = null
+    private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var menu: Menu
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var propertiesList: List<PropertyWithAllData> = ArrayList()
@@ -57,6 +59,8 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         _binding = FragmentMapBinding.inflate(inflater, container, false)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+        scrollView  = requireActivity().findViewById(R.id.sv_right)
+        scrollView?.visibility = View.GONE
 
         if (isFromDetailsFragment) {
             (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -87,9 +91,13 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu_main, menu)
+        inflater.inflate(R.menu.custom_toolbar, menu)
         menu.getItem(0).isVisible = false
+        menu.getItem(1).isVisible = true
         menu.getItem(2).isVisible = false
+        menu.getItem(3).isVisible = false
+        menu.getItem(4).isVisible = false
+        menu.getItem(5).isVisible = true
         this.menu = menu
     }
 
@@ -183,7 +191,12 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
             isFromMapFragment = true
             isForDetailsFragment = true
             parentFragmentManager.commit {
-                replace(R.id.fl_container, DetailsFragment())
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    scrollView?.visibility = View.VISIBLE
+                    replace(R.id.fl_container_tablet, DetailsFragment())
+                } else {
+                    replace(R.id.fl_container, DetailsFragment())
+                }
                 addToBackStack(null)
             }
     }

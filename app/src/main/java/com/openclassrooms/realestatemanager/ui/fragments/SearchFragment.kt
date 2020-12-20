@@ -36,7 +36,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private val viewModel: SearchViewModel by viewModels()
 
-    private lateinit var scrollView: ScrollView
+    private var scrollView: ScrollView? = null
 
     private lateinit var propertyAdapter: PropertyAdapter
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
@@ -70,7 +70,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         if (resources.getBoolean(R.bool.isTablet)) {
             scrollView = requireActivity().findViewById(R.id.sv_right)
-            scrollView.visibility = View.GONE
+            scrollView?.visibility = View.GONE
         }
 
         return binding.root
@@ -88,7 +88,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         if (isResult) {
             binding.rvSearch.visibility = View.VISIBLE
             binding.clSearchFields.visibility = View.INVISIBLE
-            propertyAdapter.properties = filteredPropertiesList
+            propertyAdapter.submitList(filteredPropertiesList)
         }
 
 
@@ -116,7 +116,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                         binding.rvSearch.visibility = View.VISIBLE
                         isResult = true
                     }
-                    propertyAdapter.properties = filteredPropertiesList
+                    propertyAdapter.submitList(filteredPropertiesList)
                 })
             }
 
@@ -128,10 +128,15 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             isFromMapFragment = false
             isForDetailsFragment = true
             parentFragmentManager.commit {
-                replace(R.id.fl_container, DetailsFragment())
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    scrollView?.visibility = View.VISIBLE
+                    replace(R.id.fl_container_tablet, DetailsFragment())
+                } else {
+                    replace(R.id.fl_container, DetailsFragment())
+                }
                 addToBackStack(null)
+                requireActivity().toolbar.title = it.property.type
             }
-            requireActivity().toolbar.title = it.property.type
         }
     }
 
@@ -173,8 +178,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu_main, menu)
+        inflater.inflate(R.menu.custom_toolbar, menu)
         menu.getItem(0).isVisible = false
+        menu.getItem(1).isVisible = true
+        menu.getItem(2).isVisible = true
+        menu.getItem(3).isVisible = false
+        menu.getItem(4).isVisible = false
+        menu.getItem(5).isVisible = true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -281,7 +291,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onStop() {
         super.onStop()
-        if (resources.getBoolean(R.bool.isTablet)) scrollView.visibility = View.VISIBLE
+        if (resources.getBoolean(R.bool.isTablet)) scrollView?.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {

@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.ui.fragments
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.*
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -23,6 +24,7 @@ import com.openclassrooms.realestatemanager.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_add.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -33,8 +35,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private val binding get() = _binding!!
 
     private val viewModel: DetailsViewModel by viewModels()
+    private var scrollView: ScrollView? = null
+
     private lateinit var photoAdapter: PhotoAdapter
     private lateinit var currentProperty: Property
+    private lateinit var menu: Menu
 
     @Inject
     lateinit var glide: RequestManager
@@ -49,17 +54,26 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-        bottomNavigationView.visibility = View.GONE
+        scrollView = requireActivity().findViewById(R.id.sv_right)
+        setHasOptionsMenu(true)
+
+        if (resources.getBoolean(R.bool.isTablet)) {
+            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            bottomNavigationView.visibility = View.VISIBLE
+        } else {
+            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            bottomNavigationView.visibility = View.GONE
+        }
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
+
+        Timber.d("test-> onViewCreated")
+
         photoAdapter = PhotoAdapter()
         propertyPhotosList = ArrayList()
 
@@ -84,10 +98,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     // Display price in Dollars or Euro
     private fun displayConvertedAndFormattedPrice(currentPropertyPrice: Int) {
         if (isDollar) {
+            menu.getItem(0).setIcon(R.drawable.ic_dollar)
             val price = Utils.convertDollarToEuro(currentPropertyPrice)
             binding.tvPrice.text = Utils.formatInEuro(price, 0)
             isDollar = !isDollar
         } else {
+            menu.getItem(0).setIcon(R.drawable.ic_euro)
             binding.tvPrice.text = Utils.formatInDollar(currentPropertyPrice, 0)
             isDollar = !isDollar
         }
@@ -154,9 +170,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         .centerCrop().into(ivMap)
             }
 
-            binding.tvPrice.setOnClickListener { displayConvertedAndFormattedPrice(currentProperty.priceInDollars) }
-
-
             if (!isFromMapFragment) {
                 binding.ivMap.setOnClickListener {
                     viewModel.setCurrentPropertyId(currentProperty.id)
@@ -174,18 +187,30 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_detais_fragment, menu)
+        Timber.d("test-> onCreateOptionsMenu")
+
+        inflater.inflate(R.menu.custom_toolbar, menu)
+        menu.getItem(0).isVisible = true
+        menu.getItem(1).isVisible = false
+        menu.getItem(2).isVisible = false
+        menu.getItem(3).isVisible = true
+        menu.getItem(4).isVisible = false
+        menu.getItem(5).isVisible = true
+        this.menu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.tb_menu_currency -> displayConvertedAndFormattedPrice(currentProperty.priceInDollars)
             R.id.tb_menu_edit -> {
                 viewModel.setCurrentPropertyId(currentProperty.id)
                 parentFragmentManager.commit {
                     replace(R.id.fl_container, EditFragment())
                     addToBackStack(null)
                 }
-                requireActivity().toolbar.title = getString(R.string.edit_property)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    scrollView?.visibility = View.GONE
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -193,6 +218,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     override fun onStop() {
         super.onStop()
+        Timber.d("test-> onStop")
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         bottomNavigationView.visibility = View.VISIBLE
     }
@@ -200,5 +226,20 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("test-> onResume")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Timber.d("test-> onStart")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.d("test-> onPause")
     }
 }

@@ -29,6 +29,8 @@ import com.openclassrooms.realestatemanager.ui.viewmodels.EditViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -90,6 +92,8 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Timber.d("test-> onViewCreated")
+
         setHasOptionsMenu(true)
         isForDetailsFragment = false
 
@@ -103,6 +107,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         setupRoomsSpinner()
 
         addDetailPhotoLauncher()
+        requireActivity().toolbar.title = getString(R.string.edit_property)
 
 
         binding.etAvailableDate.setOnClickListener { showDatePickerDialog(binding.etAvailableDate) }
@@ -140,7 +145,14 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_add_fragment, menu)
+        Timber.d("test-> onCreateOptionsMenu")
+        inflater.inflate(R.menu.custom_toolbar, menu)
+        menu.getItem(0).isVisible = false
+        menu.getItem(1).isVisible = false
+        menu.getItem(2).isVisible = false
+        menu.getItem(3).isVisible = false
+        menu.getItem(4).isVisible = true
+        menu.getItem(5).isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -466,17 +478,31 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     override fun onStart() {
         super.onStart()
+        Timber.d("test-> onStart")
         isForDetailsFragment = false
     }
 
     override fun onStop() {
         super.onStop()
+        Timber.d("test-> onStop")
         isForDetailsFragment = true
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        requireActivity().toolbar.title = getString(R.string.app_name)
+        bottomNavigationView.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("test-> onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.d("test-> onPause")
     }
 }

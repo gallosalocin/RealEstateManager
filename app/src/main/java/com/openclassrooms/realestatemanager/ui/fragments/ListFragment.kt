@@ -2,6 +2,8 @@ package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ScrollView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -16,6 +18,7 @@ import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.i
 import com.openclassrooms.realestatemanager.ui.viewmodels.ListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -25,6 +28,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     private val viewModel: ListViewModel by viewModels()
     private lateinit var propertyAdapter: PropertyAdapter
+    private var scrollView: ScrollView? = null
 
     private lateinit var menu: Menu
     private lateinit var propertiesList: List<PropertyWithAllData>
@@ -36,7 +40,8 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
-        requireActivity().toolbar.title = getString(R.string.app_name)
+        scrollView  = requireActivity().findViewById(R.id.sv_right)
+        scrollView?.visibility = View.GONE
 
         isFromDetailsFragment = false
 
@@ -45,7 +50,9 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("test-> onViewCreated")
         setHasOptionsMenu(true)
+        requireActivity().toolbar.title = getString(R.string.app_name)
 
         propertyAdapter = PropertyAdapter()
         propertiesList = ArrayList()
@@ -54,7 +61,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
         viewModel.getAllProperties.observe(viewLifecycleOwner) {
             propertiesList = it
-            propertyAdapter.properties = propertiesList
+            propertyAdapter.submitList(it)
         }
 
         propertyAdapter.setOnItemClickListener {
@@ -62,7 +69,12 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             isFromMapFragment = false
             isForDetailsFragment = true
             parentFragmentManager.commit {
-                replace(R.id.fl_container, DetailsFragment())
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    scrollView?.visibility = View.VISIBLE
+                    replace(R.id.fl_container_tablet, DetailsFragment())
+                } else {
+                    replace(R.id.fl_container, DetailsFragment())
+                }
                 addToBackStack(null)
             }
         }
@@ -72,6 +84,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                 replace(R.id.fl_container, AddFragment())
                 addToBackStack(null)
             }
+            scrollView?.visibility = View.GONE
         }
     }
 
@@ -86,9 +99,14 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu_main, menu)
+        Timber.d("test-> onCreateOptionsMenu")
+        inflater.inflate(R.menu.custom_toolbar, menu)
+        menu.getItem(0).isVisible = true
         menu.getItem(1).isVisible = false
         menu.getItem(2).isVisible = false
+        menu.getItem(3).isVisible = false
+        menu.getItem(4).isVisible = false
+        menu.getItem(5).isVisible = true
         this.menu = menu
     }
 
@@ -121,5 +139,25 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("test-> onResume")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Timber.d("test-> onStart")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.d("test-> onPause")
+    }
+    override fun onStop() {
+        super.onStop()
+        Timber.d("test-> onStop")
     }
 }

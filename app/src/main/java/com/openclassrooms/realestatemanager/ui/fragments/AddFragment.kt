@@ -39,6 +39,7 @@ import com.openclassrooms.realestatemanager.ui.viewmodels.AddViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -85,17 +86,13 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
+        requireActivity().toolbar.title = getString(R.string.add_new_property)
 
         sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (resources.getBoolean(R.bool.isTablet)) {
-            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            bottomNavigationView.visibility = View.VISIBLE
-        } else {
-            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            bottomNavigationView.visibility = View.GONE
-        }
+        bottomNavigationView.visibility = if (resources.getBoolean(R.bool.isTablet)) View.VISIBLE else View.GONE
 
         return binding.root
     }
@@ -121,7 +118,14 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_add_fragment, menu)
+        inflater.inflate(R.menu.custom_toolbar, menu)
+        menu.getItem(0).isVisible = false
+        menu.getItem(1).isVisible = false
+        menu.getItem(2).isVisible = false
+        menu.getItem(3).isVisible = false
+        menu.getItem(4).isVisible = true
+        menu.getItem(5).isVisible = false
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

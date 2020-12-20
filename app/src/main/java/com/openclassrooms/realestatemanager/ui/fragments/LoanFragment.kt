@@ -4,15 +4,10 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ScrollView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.fragment.findNavController
 import com.openclassrooms.realestatemanager.R
-import com.openclassrooms.realestatemanager.databinding.FragmentEditBinding
 import com.openclassrooms.realestatemanager.databinding.FragmentLoanBinding
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding
 import com.openclassrooms.realestatemanager.utils.Utils
 import kotlinx.android.synthetic.main.activity_main.*
-import timber.log.Timber
 import kotlin.math.pow
 
 class LoanFragment : Fragment(R.layout.fragment_loan) {
@@ -63,8 +58,13 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     // Setup toolbar
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu_main, menu)
+        inflater.inflate(R.menu.custom_toolbar, menu)
+        menu.getItem(0).isVisible = true
+        menu.getItem(1).isVisible = true
         menu.getItem(2).isVisible = false
+        menu.getItem(3).isVisible = false
+        menu.getItem(4).isVisible = false
+        menu.getItem(5).isVisible = true
         this.menu = menu
     }
 
