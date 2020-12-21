@@ -52,7 +52,6 @@ class PropertyAdapter : ListAdapter<PropertyWithAllData, PropertyAdapter.Propert
 
                 Glide.with(itemView)
                         .load(propertyWithAllData.property.coverPhoto)
-                        .centerCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .error(R.drawable.ic_bar)
                         .into(ivImage)

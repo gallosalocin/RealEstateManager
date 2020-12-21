@@ -45,12 +45,6 @@ class AgentDaoTest {
         database.close()
     }
 
-    @Test
-    fun insertTestAgent() {
-        launchFragmentInHiltContainer<RegisterFragment> {
-
-        }
-    }
 
     @Test
     fun insertAgent() = runBlockingTest {

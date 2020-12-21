@@ -29,7 +29,6 @@ import com.openclassrooms.realestatemanager.ui.viewmodels.EditViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.validateInputFieldIfNullOrEmpty
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -83,6 +82,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
 
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        requireActivity().title = getString(R.string.edit_property)
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
         bottomNavigationView.visibility = View.GONE
 
@@ -107,8 +107,6 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         setupRoomsSpinner()
 
         addDetailPhotoLauncher()
-        requireActivity().toolbar.title = getString(R.string.edit_property)
-
 
         binding.etAvailableDate.setOnClickListener { showDatePickerDialog(binding.etAvailableDate) }
 
@@ -117,7 +115,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         photoAdapter.setOnItemClickListener {
             coverPhoto = it.filename
             coverLabelPhoto = it.label
-            glide.load(coverPhoto).centerCrop().into(binding.ivPhoto)
+            glide.load(coverPhoto).into(binding.ivPhoto)
         }
 
         photoAdapter.setOnItemDeleteListener { setupDeleteDialog(it, it.filename) }
@@ -129,7 +127,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         cropPhotoLauncher = registerForActivityResult(cropActivityResultContract) {
             it?.let {
                 croppedPhoto = it.toString()
-                glide.load(croppedPhoto).centerCrop().into(addPhotoImageView)
+                glide.load(croppedPhoto).into(addPhotoImageView)
             }
         }
     }
@@ -264,7 +262,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
 
             binding.apply {
-                glide.load(currentProperty.coverPhoto).centerCrop().into(ivPhoto)
+                glide.load(currentProperty.coverPhoto).into(ivPhoto)
 
                 etPrice.setText(currentProperty.priceInDollars.toString())
                 etArea.setText(currentProperty.areaInMeters.toString())
@@ -351,7 +349,7 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                     dialogInterface.dismiss()
                 }.create()
 
-        glide.load(photoToDelete).centerCrop().into(deletePhotoImageView)
+        glide.load(photoToDelete).into(deletePhotoImageView)
 
         dialog.show()
 
@@ -487,7 +485,6 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         Timber.d("test-> onStop")
         isForDetailsFragment = true
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        requireActivity().toolbar.title = getString(R.string.app_name)
         bottomNavigationView.visibility = View.VISIBLE
     }
 

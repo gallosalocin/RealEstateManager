@@ -11,9 +11,11 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_photo"
         android:layout_width="0dp"
-        android:layout_height="250dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="10dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@id/rv_details"
+        app:layout_constraintDimensionRatio="H, 5:2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

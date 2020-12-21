@@ -6,7 +6,6 @@ import android.location.Location
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
-import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -28,12 +27,13 @@ import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Compani
 import com.openclassrooms.realestatemanager.ui.viewmodels.MapViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.formatInDollar
 import com.openclassrooms.realestatemanager.utils.Utils.getLocationFromAddress
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
 import com.openclassrooms.realestatemanager.utils.Utils.isGPSEnabled
 import com.openclassrooms.realestatemanager.utils.Utils.isInternetConnected
 import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateGPS
 import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateInternet
+import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainerTabletLandscape
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -43,7 +43,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
     private val binding get() = _binding!!
 
     private val viewModel: MapViewModel by viewModels()
-    private var scrollView: ScrollView? = null
 
     private var map: GoogleMap? = null
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -59,14 +58,13 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         _binding = FragmentMapBinding.inflate(inflater, container, false)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-        scrollView  = requireActivity().findViewById(R.id.sv_right)
-        scrollView?.visibility = View.GONE
+        hideDetailsContainerTabletLandscape(requireActivity())
 
         if (isFromDetailsFragment) {
             (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             bottomNavigationView.visibility = View.GONE
         } else {
-            requireActivity().toolbar.title = getString(R.string.app_name)
+            requireActivity().title = getString(R.string.app_name)
         }
 
         binding.mapView.onCreate(savedInstanceState)
@@ -156,7 +154,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
 
                 val currentProperty = currentPropertyWithAllData.property
 
-                requireActivity().toolbar.title = currentProperty.type
+                requireActivity().title = currentProperty.type
 
                 val propertyAddress =
                         "${currentProperty.street} + ${currentProperty.postcode} + ${currentProperty.city} + ${currentProperty.country}"
@@ -187,18 +185,18 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
 
     // Info Window callback
     override fun onInfoWindowClick(marker: Marker?) {
-            viewModel.setCurrentPropertyId(marker?.tag as Int)
-            isFromMapFragment = true
-            isForDetailsFragment = true
-            parentFragmentManager.commit {
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    scrollView?.visibility = View.VISIBLE
-                    replace(R.id.fl_container_tablet, DetailsFragment())
-                } else {
-                    replace(R.id.fl_container, DetailsFragment())
-                }
-                addToBackStack(null)
+        viewModel.setCurrentPropertyId(marker?.tag as Int)
+        isFromMapFragment = true
+        isForDetailsFragment = true
+        parentFragmentManager.commit {
+            if (resources.getBoolean(R.bool.isTablet)) {
+                showDetailsContainerTabletLandscape(requireActivity())
+                replace(R.id.fl_container_tablet, DetailsFragment())
+            } else {
+                replace(R.id.fl_container, DetailsFragment())
             }
+            addToBackStack(null)
+        }
     }
 
     // Find device location

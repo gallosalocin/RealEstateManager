@@ -10,9 +10,12 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.maps.model.LatLng
@@ -69,7 +72,6 @@ object Utils {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
-
     /**
      *  Setup Alert Dialog to Activate GPS
      */
@@ -84,7 +86,6 @@ object Utils {
         alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
     }
 
-
     /**
      *  Setup Alert Dialog to Activate Internet
      */
@@ -98,7 +99,6 @@ object Utils {
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
         alert.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
     }
-
 
     /**
      *  Check internet connection
@@ -129,7 +129,6 @@ object Utils {
         }
         return result
     }
-
 
     /**
      *  Check if input is not null or empty
@@ -173,6 +172,30 @@ object Utils {
         val numberFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE)
         numberFormat.maximumFractionDigits = maxDecimal
         return numberFormat.format(number)
+    }
+
+    /**
+     *  Hide Details Container in Tablet Landscape Mode
+     */
+    fun hideDetailsContainerTabletLandscape(activity: Activity) {
+        val guideline: Guideline? = activity.findViewById(R.id.guideline)
+        val scrollView: ScrollView? = activity.findViewById(R.id.sv_right)
+        val divider: View? = activity.findViewById(R.id.divider)
+        guideline?.setGuidelinePercent(1F)
+        scrollView?.visibility = View.GONE
+        divider?.visibility = View.GONE
+    }
+
+    /**
+     *  Show Details Container in Tablet Landscape Mode
+     */
+    fun showDetailsContainerTabletLandscape(activity: Activity) {
+        val guideline: Guideline? = activity.findViewById(R.id.guideline)
+        val scrollView: ScrollView? = activity.findViewById(R.id.sv_right)
+        val divider: View? = activity.findViewById(R.id.divider)
+        guideline?.setGuidelinePercent(0.33F)
+        scrollView?.visibility = View.VISIBLE
+        divider?.visibility = View.VISIBLE
     }
 
     /**

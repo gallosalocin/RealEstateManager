@@ -2,8 +2,6 @@ package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.os.Bundle
 import android.view.*
-import android.widget.ScrollView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -16,8 +14,9 @@ import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Compani
 import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isFromDetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.ListViewModel
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainerTabletLandscape
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -28,7 +27,6 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     private val viewModel: ListViewModel by viewModels()
     private lateinit var propertyAdapter: PropertyAdapter
-    private var scrollView: ScrollView? = null
 
     private lateinit var menu: Menu
     private lateinit var propertiesList: List<PropertyWithAllData>
@@ -40,9 +38,9 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
-        scrollView  = requireActivity().findViewById(R.id.sv_right)
-        scrollView?.visibility = View.GONE
+        requireActivity().title = getString(R.string.app_name)
 
+        hideDetailsContainerTabletLandscape(requireActivity())
         isFromDetailsFragment = false
 
         return binding.root
@@ -52,7 +50,6 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         super.onViewCreated(view, savedInstanceState)
         Timber.d("test-> onViewCreated")
         setHasOptionsMenu(true)
-        requireActivity().toolbar.title = getString(R.string.app_name)
 
         propertyAdapter = PropertyAdapter()
         propertiesList = ArrayList()
@@ -70,7 +67,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             isForDetailsFragment = true
             parentFragmentManager.commit {
                 if (resources.getBoolean(R.bool.isTablet)) {
-                    scrollView?.visibility = View.VISIBLE
+                    showDetailsContainerTabletLandscape(requireActivity())
                     replace(R.id.fl_container_tablet, DetailsFragment())
                 } else {
                     replace(R.id.fl_container, DetailsFragment())
@@ -84,7 +81,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                 replace(R.id.fl_container, AddFragment())
                 addToBackStack(null)
             }
-            scrollView?.visibility = View.GONE
+            hideDetailsContainerTabletLandscape(requireActivity())
         }
     }
 
@@ -156,6 +153,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         super.onPause()
         Timber.d("test-> onPause")
     }
+
     override fun onStop() {
         super.onStop()
         Timber.d("test-> onStop")

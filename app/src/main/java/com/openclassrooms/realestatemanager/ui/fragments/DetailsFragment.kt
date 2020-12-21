@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.ui.fragments
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.*
-import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,9 +20,8 @@ import com.openclassrooms.realestatemanager.models.PropertyPhoto
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.DetailsViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_add.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -35,7 +33,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private val binding get() = _binding!!
 
     private val viewModel: DetailsViewModel by viewModels()
-    private var scrollView: ScrollView? = null
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     private lateinit var photoAdapter: PhotoAdapter
     private lateinit var currentProperty: Property
@@ -45,7 +43,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     lateinit var glide: RequestManager
     private var isDollar = true
     private lateinit var propertyPhotosList: List<PropertyPhoto>
-    private lateinit var bottomNavigationView: BottomNavigationView
+
 
     companion object {
         var isForDetailsFragment = false
@@ -55,7 +53,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-        scrollView = requireActivity().findViewById(R.id.sv_right)
+
         setHasOptionsMenu(true)
 
         if (resources.getBoolean(R.bool.isTablet)) {
@@ -83,7 +81,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         binding.tvDescription.movementMethod = ScrollingMovementMethod()
 
         photoAdapter.setOnItemClickListener {
-            glide.load(it.filename).centerCrop().into(binding.ivPhoto)
+            glide.load(it.filename).into(binding.ivPhoto)
         }
     }
 
@@ -114,7 +112,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         viewModel.getViewStateLiveData().observe(viewLifecycleOwner) { currentPropertyWithAllData ->
             currentProperty = currentPropertyWithAllData.property
 
-            requireActivity().toolbar.title = currentPropertyWithAllData.property.type
+            requireActivity().title = currentProperty.type
 
             if (currentPropertyWithAllData.photos.none { it.propertyId == (currentPropertyWithAllData.property.id) }) {
                 viewModel.insertPropertyPhoto(PropertyPhoto(currentProperty.coverPhoto, currentProperty.labelPhoto, currentProperty.id))
@@ -124,7 +122,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             photoAdapter.photosListDetails = propertyPhotosList.reversed()
 
             binding.apply {
-                glide.load(currentProperty.coverPhoto).centerCrop().into(ivPhoto)
+                glide.load(currentProperty.coverPhoto).into(ivPhoto)
 
                 tvPrice.text = Utils.formatInDollar(currentProperty.priceInDollars, 0)
 
@@ -138,12 +136,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAvailable))
                 }
 
-                chip_restaurant.isChecked = currentProperty.poi[0].toString().toBoolean()
-                chip_bar.isChecked = currentProperty.poi[1].toString().toBoolean()
-                chip_store.isChecked = currentProperty.poi[2].toString().toBoolean()
-                chip_park.isChecked = currentProperty.poi[3].toString().toBoolean()
-                chip_school.isChecked = currentProperty.poi[4].toString().toBoolean()
-                chip_hospital.isChecked = currentProperty.poi[5].toString().toBoolean()
+                chipRestaurant.isChecked = currentProperty.poi[0].toString().toBoolean()
+                chipBar.isChecked = currentProperty.poi[1].toString().toBoolean()
+                chipStore.isChecked = currentProperty.poi[2].toString().toBoolean()
+                chipPark.isChecked = currentProperty.poi[3].toString().toBoolean()
+                chipSchool.isChecked = currentProperty.poi[4].toString().toBoolean()
+                chipHospital.isChecked = currentProperty.poi[5].toString().toBoolean()
 
                 tvEntryDate.text = getString(R.string.entry_date_param, currentProperty.availableDate)
                 tvDescription.text = if (currentProperty.description == "") "Write something!!!" else currentProperty.description
@@ -203,13 +201,13 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         when (item.itemId) {
             R.id.tb_menu_currency -> displayConvertedAndFormattedPrice(currentProperty.priceInDollars)
             R.id.tb_menu_edit -> {
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    hideDetailsContainerTabletLandscape(requireActivity())
+                }
                 viewModel.setCurrentPropertyId(currentProperty.id)
                 parentFragmentManager.commit {
                     replace(R.id.fl_container, EditFragment())
                     addToBackStack(null)
-                }
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    scrollView?.visibility = View.GONE
                 }
             }
         }

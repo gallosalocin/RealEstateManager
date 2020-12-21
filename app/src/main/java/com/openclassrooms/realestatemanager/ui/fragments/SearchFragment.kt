@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
@@ -21,8 +20,9 @@ import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Compani
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.SearchViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainerTabletLandscape
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,8 +35,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private val binding get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModels()
-
-    private var scrollView: ScrollView? = null
 
     private lateinit var propertyAdapter: PropertyAdapter
     private var formatDate = SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE)
@@ -65,12 +63,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        requireActivity().toolbar.title = getString(R.string.search_property)
-
+        requireActivity().title = getString(R.string.search_property)
 
         if (resources.getBoolean(R.bool.isTablet)) {
-            scrollView = requireActivity().findViewById(R.id.sv_right)
-            scrollView?.visibility = View.GONE
+            hideDetailsContainerTabletLandscape(requireActivity())
         }
 
         return binding.root
@@ -129,13 +125,12 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             isForDetailsFragment = true
             parentFragmentManager.commit {
                 if (resources.getBoolean(R.bool.isTablet)) {
-                    scrollView?.visibility = View.VISIBLE
+                    showDetailsContainerTabletLandscape(requireActivity())
                     replace(R.id.fl_container_tablet, DetailsFragment())
                 } else {
                     replace(R.id.fl_container, DetailsFragment())
                 }
                 addToBackStack(null)
-                requireActivity().toolbar.title = it.property.type
             }
         }
     }
@@ -291,7 +286,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onStop() {
         super.onStop()
-        if (resources.getBoolean(R.bool.isTablet)) scrollView?.visibility = View.VISIBLE
+        if (resources.getBoolean(R.bool.isTablet)) {
+            showDetailsContainerTabletLandscape(requireActivity())
+        }
     }
 
     override fun onDestroyView() {
