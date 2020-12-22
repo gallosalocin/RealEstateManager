@@ -27,12 +27,12 @@ import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Compani
 import com.openclassrooms.realestatemanager.ui.viewmodels.MapViewModel
 import com.openclassrooms.realestatemanager.utils.Utils.formatInDollar
 import com.openclassrooms.realestatemanager.utils.Utils.getLocationFromAddress
-import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainer
 import com.openclassrooms.realestatemanager.utils.Utils.isGPSEnabled
 import com.openclassrooms.realestatemanager.utils.Utils.isInternetConnected
 import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateGPS
 import com.openclassrooms.realestatemanager.utils.Utils.setupAlertDialogToActivateInternet
-import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainer
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -56,15 +56,24 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
 
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-        hideDetailsContainerTabletLandscape(requireActivity())
+        hideDetailsContainer(requireActivity())
 
+        Timber.d("test-> isFromDetailsFragment $isFromDetailsFragment")
         if (isFromDetailsFragment) {
             (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             bottomNavigationView.visibility = View.GONE
         } else {
             requireActivity().title = getString(R.string.app_name)
+            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            bottomNavigationView.visibility = View.VISIBLE
         }
 
         binding.mapView.onCreate(savedInstanceState)
@@ -77,13 +86,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
             if (isInternetConnected(requireContext()))
                 setupMarker()
         }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
     }
 
     // Setup toolbar
@@ -190,10 +192,11 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback, GoogleM
         isForDetailsFragment = true
         parentFragmentManager.commit {
             if (resources.getBoolean(R.bool.isTablet)) {
-                showDetailsContainerTabletLandscape(requireActivity())
-                replace(R.id.fl_container_tablet, DetailsFragment())
+                showDetailsContainer(requireActivity())
+                replace(R.id.fl_container_tablet, DetailsFragment(), "detailsFragmentTablet")
             } else {
-                replace(R.id.fl_container, DetailsFragment())
+                setCustomAnimations(R.anim.from_right, R.anim.to_right, R.anim.from_right, R.anim.to_right)
+                replace(R.id.fl_container, DetailsFragment(), "detailsFragment")
             }
             addToBackStack(null)
         }

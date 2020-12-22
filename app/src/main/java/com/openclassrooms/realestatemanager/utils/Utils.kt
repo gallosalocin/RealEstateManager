@@ -177,7 +177,7 @@ object Utils {
     /**
      *  Hide Details Container in Tablet Landscape Mode
      */
-    fun hideDetailsContainerTabletLandscape(activity: Activity) {
+    fun hideDetailsContainer(activity: Activity) {
         val guideline: Guideline? = activity.findViewById(R.id.guideline)
         val scrollView: ScrollView? = activity.findViewById(R.id.sv_right)
         val divider: View? = activity.findViewById(R.id.divider)
@@ -189,7 +189,7 @@ object Utils {
     /**
      *  Show Details Container in Tablet Landscape Mode
      */
-    fun showDetailsContainerTabletLandscape(activity: Activity) {
+    fun showDetailsContainer(activity: Activity) {
         val guideline: Guideline? = activity.findViewById(R.id.guideline)
         val scrollView: ScrollView? = activity.findViewById(R.id.sv_right)
         val divider: View? = activity.findViewById(R.id.divider)

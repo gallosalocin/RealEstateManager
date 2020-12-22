@@ -20,7 +20,7 @@ import com.openclassrooms.realestatemanager.models.PropertyPhoto
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.DetailsViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
-import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainer
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
@@ -52,25 +52,35 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
-        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-
-        setHasOptionsMenu(true)
-
-        if (resources.getBoolean(R.bool.isTablet)) {
-            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            bottomNavigationView.visibility = View.VISIBLE
-        } else {
-            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            bottomNavigationView.visibility = View.GONE
-        }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         Timber.d("test-> onViewCreated")
+
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+
+        setHasOptionsMenu(true)
+
+        val detailsFragment: Fragment? = parentFragmentManager.findFragmentByTag("detailsFragment")
+        val detailsFragmentTablet: Fragment? = parentFragmentManager.findFragmentByTag("detailsFragmentTablet")
+
+        if (resources.getBoolean(R.bool.isTablet)) {
+            (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            bottomNavigationView.visibility = View.VISIBLE
+        } else {
+            if (detailsFragment != null) {
+                (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                bottomNavigationView.visibility = View.GONE
+            } else if (detailsFragmentTablet != null) {
+                (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                bottomNavigationView.visibility = View.VISIBLE
+                parentFragmentManager.commit {
+                    remove(detailsFragmentTablet)
+                }
+            }
+        }
 
         photoAdapter = PhotoAdapter()
         propertyPhotosList = ArrayList()
@@ -202,10 +212,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             R.id.tb_menu_currency -> displayConvertedAndFormattedPrice(currentProperty.priceInDollars)
             R.id.tb_menu_edit -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
-                    hideDetailsContainerTabletLandscape(requireActivity())
+                    hideDetailsContainer(requireActivity())
                 }
                 viewModel.setCurrentPropertyId(currentProperty.id)
                 parentFragmentManager.commit {
+                    setCustomAnimations(R.anim.from_right, R.anim.to_right, R.anim.from_right, R.anim.to_right)
                     replace(R.id.fl_container, EditFragment())
                     addToBackStack(null)
                 }
@@ -214,30 +225,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onStop() {
-        super.onStop()
-        Timber.d("test-> onStop")
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        bottomNavigationView.visibility = View.VISIBLE
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Timber.d("test-> onResume")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Timber.d("test-> onStart")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Timber.d("test-> onPause")
     }
 }

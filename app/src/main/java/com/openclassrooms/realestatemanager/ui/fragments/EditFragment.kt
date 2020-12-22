@@ -46,7 +46,6 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
     private lateinit var currentProperty: Property
     private lateinit var bottomNavigationView: BottomNavigationView
 
-
     @Inject
     lateinit var glide: RequestManager
     private lateinit var photoAdapter: PhotoAdapter
@@ -80,22 +79,30 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentEditBinding.inflate(inflater, container, false)
-
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        requireActivity().title = getString(R.string.edit_property)
-        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-        bottomNavigationView.visibility = View.GONE
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         Timber.d("test-> onViewCreated")
-
         setHasOptionsMenu(true)
+        requireActivity().title = getString(R.string.edit_property)
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+
+
+        val detailsFragmentTablet: Fragment? = parentFragmentManager.findFragmentByTag("detailsFragmentTablet")
+        if (resources.getBoolean(R.bool.isTablet)) {
+            if (detailsFragmentTablet != null) {
+                parentFragmentManager.commit {
+                    remove(detailsFragmentTablet)
+                }
+            }
+        }
+
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        bottomNavigationView.visibility = View.GONE
         isForDetailsFragment = false
+        Timber.d("test-> isForDetailsFragment $isForDetailsFragment")
 
         photoAdapter = PhotoAdapter()
         setupRecyclerView()
@@ -488,18 +495,4 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         bottomNavigationView.visibility = View.VISIBLE
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Timber.d("test-> onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Timber.d("test-> onPause")
-    }
 }

@@ -20,8 +20,8 @@ import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Compani
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.SearchViewModel
 import com.openclassrooms.realestatemanager.utils.Utils
-import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
-import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainer
+import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainer
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -62,13 +62,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        requireActivity().title = getString(R.string.search_property)
-
-        if (resources.getBoolean(R.bool.isTablet)) {
-            hideDetailsContainerTabletLandscape(requireActivity())
-        }
-
         return binding.root
     }
 
@@ -76,7 +69,14 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        Timber.d("onViewCreated")
+        Timber.d("test-> onViewCreated")
+
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+        requireActivity().title = getString(R.string.search_property)
+
+        if (resources.getBoolean(R.bool.isTablet)) {
+            hideDetailsContainer(requireActivity())
+        }
 
         setupTypeSpinner()
         setupRecyclerView()
@@ -116,22 +116,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 })
             }
 
-        }
-
-        propertyAdapter.setOnItemClickListener {
-            viewModel.setCurrentPropertyId(it.property.id)
-            isResult = true
-            isFromMapFragment = false
-            isForDetailsFragment = true
-            parentFragmentManager.commit {
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    showDetailsContainerTabletLandscape(requireActivity())
-                    replace(R.id.fl_container_tablet, DetailsFragment())
-                } else {
-                    replace(R.id.fl_container, DetailsFragment())
-                }
-                addToBackStack(null)
-            }
         }
     }
 
@@ -206,7 +190,22 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     // Setup recyclerview
     private fun setupRecyclerView() {
-        propertyAdapter = PropertyAdapter()
+        propertyAdapter = PropertyAdapter{
+            viewModel.setCurrentPropertyId(it.property.id)
+            isResult = true
+            isFromMapFragment = false
+            isForDetailsFragment = true
+            parentFragmentManager.commit {
+                setCustomAnimations(R.anim.from_right, R.anim.to_right, R.anim.from_right, R.anim.to_right)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    showDetailsContainer(requireActivity())
+                    replace(R.id.fl_container_tablet, DetailsFragment())
+                } else {
+                    replace(R.id.fl_container, DetailsFragment())
+                }
+                addToBackStack(null)
+            }
+        }
 
         binding.apply {
             rvSearch.adapter = propertyAdapter
@@ -287,7 +286,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onStop() {
         super.onStop()
         if (resources.getBoolean(R.bool.isTablet)) {
-            showDetailsContainerTabletLandscape(requireActivity())
+            showDetailsContainer(requireActivity())
         }
     }
 

@@ -2,10 +2,12 @@ package com.openclassrooms.realestatemanager.ui.fragments
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.adapters.PropertyAdapter
 import com.openclassrooms.realestatemanager.databinding.FragmentListBinding
@@ -14,8 +16,8 @@ import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Compani
 import com.openclassrooms.realestatemanager.ui.fragments.DetailsFragment.Companion.isFromDetailsFragment
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.isFromMapFragment
 import com.openclassrooms.realestatemanager.ui.viewmodels.ListViewModel
-import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
-import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainer
+import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainer
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -38,11 +40,6 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
-        requireActivity().title = getString(R.string.app_name)
-
-        hideDetailsContainerTabletLandscape(requireActivity())
-        isFromDetailsFragment = false
-
         return binding.root
     }
 
@@ -51,38 +48,25 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         Timber.d("test-> onViewCreated")
         setHasOptionsMenu(true)
 
-        propertyAdapter = PropertyAdapter()
+        requireActivity().title = getString(R.string.app_name)
+        val bottomNavigationView: BottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+
+        hideDetailsContainer(requireActivity())
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        bottomNavigationView.visibility = View.VISIBLE
+
+        isFromDetailsFragment = false
         propertiesList = ArrayList()
 
+        setupClickOnProperty()
         setupRecyclerView()
+        setupClickFabButton()
 
         viewModel.getAllProperties.observe(viewLifecycleOwner) {
             propertiesList = it
             propertyAdapter.submitList(it)
         }
 
-        propertyAdapter.setOnItemClickListener {
-            viewModel.setCurrentPropertyId(it.property.id)
-            isFromMapFragment = false
-            isForDetailsFragment = true
-            parentFragmentManager.commit {
-                if (resources.getBoolean(R.bool.isTablet)) {
-                    showDetailsContainerTabletLandscape(requireActivity())
-                    replace(R.id.fl_container_tablet, DetailsFragment())
-                } else {
-                    replace(R.id.fl_container, DetailsFragment())
-                }
-                addToBackStack(null)
-            }
-        }
-
-        binding.fabAdd.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(R.id.fl_container, AddFragment())
-                addToBackStack(null)
-            }
-            hideDetailsContainerTabletLandscape(requireActivity())
-        }
     }
 
     // Setup recyclerview
@@ -90,6 +74,36 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         binding.apply {
             rvList.adapter = propertyAdapter
             rvList.layoutManager = LinearLayoutManager(requireContext())
+        }
+    }
+
+    // Setup click on property
+    private fun setupClickOnProperty() {
+        propertyAdapter = PropertyAdapter {
+            viewModel.setCurrentPropertyId(it.property.id)
+            isFromMapFragment = false
+            isForDetailsFragment = true
+            parentFragmentManager.commit {
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    showDetailsContainer(requireActivity())
+                    replace(R.id.fl_container_tablet, DetailsFragment(), "detailsFragmentTablet")
+                } else {
+                    setCustomAnimations(R.anim.from_right, R.anim.to_right, R.anim.from_right, R.anim.to_right)
+                    replace(R.id.fl_container, DetailsFragment(), "detailsFragment")
+                }
+                addToBackStack(null)
+            }
+        }
+    }
+
+    // Setup click on Fab button
+    private fun setupClickFabButton() {
+        binding.fabAdd.setOnClickListener {
+            parentFragmentManager.commit {
+                replace(R.id.fl_container, AddFragment())
+                addToBackStack(null)
+            }
+            hideDetailsContainer(requireActivity())
         }
     }
 
@@ -136,26 +150,5 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        Timber.d("test-> onResume")
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Timber.d("test-> onStart")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Timber.d("test-> onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Timber.d("test-> onStop")
     }
 }

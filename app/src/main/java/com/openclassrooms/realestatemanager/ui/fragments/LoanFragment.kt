@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.databinding.FragmentLoanBinding
 import com.openclassrooms.realestatemanager.utils.Utils
-import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainerTabletLandscape
-import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainerTabletLandscape
+import com.openclassrooms.realestatemanager.utils.Utils.hideDetailsContainer
+import com.openclassrooms.realestatemanager.utils.Utils.showDetailsContainer
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.pow
 
@@ -27,18 +27,18 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLoanBinding.inflate(inflater, container, false)
-        requireActivity().title = getString(R.string.loan_calculator)
-
-        if (resources.getBoolean(R.bool.isTablet)) {
-            hideDetailsContainerTabletLandscape(requireActivity())
-        }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+
+        requireActivity().title = getString(R.string.loan_calculator)
+
+        if (resources.getBoolean(R.bool.isTablet)) {
+            hideDetailsContainer(requireActivity())
+        }
 
         clearAllFields()
 
@@ -185,7 +185,7 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
     override fun onStop() {
         super.onStop()
         if (resources.getBoolean(R.bool.isTablet)) {
-            showDetailsContainerTabletLandscape(requireActivity())
+            showDetailsContainer(requireActivity())
         }
     }
 

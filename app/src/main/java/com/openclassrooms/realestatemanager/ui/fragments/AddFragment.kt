@@ -86,6 +86,15 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddBinding.inflate(inflater, container, false)
+
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+
         requireActivity().toolbar.title = getString(R.string.add_new_property)
 
         sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
@@ -93,14 +102,6 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         bottomNavigationView.visibility = if (resources.getBoolean(R.bool.isTablet)) View.VISIBLE else View.GONE
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setHasOptionsMenu(true)
 
         checkAgentId()
 

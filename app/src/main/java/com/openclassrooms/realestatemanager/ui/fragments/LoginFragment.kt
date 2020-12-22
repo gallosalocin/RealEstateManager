@@ -41,20 +41,18 @@ class LoginFragment : Fragment(R.layout.fragment_login), EasyPermissions.Permiss
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
-
-        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-        toolbar = requireActivity().findViewById(R.id.toolbar)
-        bottomNavigationView.visibility = View.GONE
-        toolbar.visibility = View.GONE
-
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.clLogin.visibility = View.VISIBLE
+
         requestPermissions()
+        bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
+        toolbar = requireActivity().findViewById(R.id.toolbar)
+        bottomNavigationView.visibility = View.GONE
+        toolbar.visibility = View.GONE
+        binding.clLogin.visibility = View.VISIBLE
 
         sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
         if (sharedPref.contains(SHARED_PREFERENCES_IS_USER_LOGIN)) {
@@ -73,6 +71,7 @@ class LoginFragment : Fragment(R.layout.fragment_login), EasyPermissions.Permiss
 
         binding.tvRegister.setOnClickListener {
             parentFragmentManager.commit {
+                setCustomAnimations(R.anim.from_right, R.anim.to_right)
                 replace(R.id.fl_container, RegisterFragment())
             }
         }

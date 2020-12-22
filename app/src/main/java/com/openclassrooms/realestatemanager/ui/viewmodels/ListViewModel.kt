@@ -9,7 +9,7 @@ import com.openclassrooms.realestatemanager.repositories.MainRepository
 
 class ListViewModel @ViewModelInject constructor(
         private val currentPropertyIdRepository: CurrentPropertyIdRepository,
-        private val mainRepository: MainRepository,
+        mainRepository: MainRepository,
 ) : ViewModel() {
 
     val getAllProperties: LiveData<List<PropertyWithAllData>> = mainRepository.observeAllProperties()
