@@ -36,18 +36,25 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var bottomNavigationView: BottomNavigationView
 
     private lateinit var photoAdapter: PhotoAdapter
-    private lateinit var currentProperty: Property
     private lateinit var menu: Menu
 
+    // TODO A ne pas injecter
     @Inject
     lateinit var glide: RequestManager
-    private var isDollar = true
-    private lateinit var propertyPhotosList: List<PropertyPhoto>
-
 
     companion object {
+        private const val KEY_IS_FROM_MAP_FRAGMENT = "KEY_IS_FROM_MAP_FRAGMENT"
+
         var isForDetailsFragment = false
         var isFromDetailsFragment = false
+
+        fun newInstance(isFromMapFragment: Boolean): DetailsFragment {
+            val args = Bundle()
+            args.putBoolean(KEY_IS_FROM_MAP_FRAGMENT, isFromMapFragment)
+            val fragment = DetailsFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -83,7 +90,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }
 
         photoAdapter = PhotoAdapter()
-        propertyPhotosList = ArrayList()
 
         loadProperty()
         setupRecyclerView()
@@ -107,44 +113,27 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }
     }
 
-    // Display price in Dollars or Euro
-    private fun displayConvertedAndFormattedPrice(currentPropertyPrice: Int) {
-        if (isDollar) {
-            menu.getItem(0).setIcon(R.drawable.ic_dollar)
-            val price = Utils.convertDollarToEuro(currentPropertyPrice)
-            binding.tvPrice.text = Utils.formatInEuro(price, 0)
-            isDollar = !isDollar
-        } else {
-            menu.getItem(0).setIcon(R.drawable.ic_euro)
-            binding.tvPrice.text = Utils.formatInDollar(currentPropertyPrice, 0)
-            isDollar = !isDollar
-        }
-    }
-
     // Load property
     private fun loadProperty() {
-        viewModel.getViewStateLiveData().observe(viewLifecycleOwner) { currentPropertyWithAllData ->
-            currentProperty = currentPropertyWithAllData.property
+        viewModel.getViewStateLiveData().observe(viewLifecycleOwner) { detailUiState ->
+            requireActivity().title = detailUiState.type
 
-            requireActivity().title = currentProperty.type
-
+            // TODO A gérer côté ViewModel : c'est lui qui choisit d'insérer des photos ou pas, pas la vue !
             if (currentPropertyWithAllData.photos.none { it.propertyId == (currentPropertyWithAllData.property.id) }) {
                 viewModel.insertPropertyPhoto(PropertyPhoto(currentProperty.coverPhoto, currentProperty.labelPhoto, currentProperty.id))
             } else {
                 propertyPhotosList = currentPropertyWithAllData.photos.filter { it.propertyId == currentProperty.id }
             }
-            photoAdapter.photosListDetails = propertyPhotosList.reversed()
+            photoAdapter.photosListDetails = detailUiState.photos
 
             binding.apply {
-                if (currentProperty.coverPhoto == "") {
-                    glide.load(R.drawable.real_estate_no_image).into(ivPhoto)
-                } else {
-                    glide.load(currentProperty.coverPhoto).into(ivPhoto)
 
-                }
+                glide.load(detailUiState.coverPhoto).into(ivPhoto)
 
-                tvPrice.text = Utils.formatInDollar(currentProperty.priceInDollars, 0)
+                tvPrice.text = detailUiState.price
+                tvStatus.text = detailUiState.status
 
+                /*
                 if (currentProperty.isSold) {
                     tvStatus.text = getString(R.string.sold_cap)
                     tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorSold))
@@ -153,9 +142,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 } else {
                     tvStatus.text = getString(R.string.available_cap)
                     tvStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorAvailable))
-                }
+                }*/
 
-                chipRestaurant.isChecked = currentProperty.poi[0].toString().toBoolean()
+                chipRestaurant.isChecked = detailUiState.isChipRestaurantChecked()
                 chipBar.isChecked = currentProperty.poi[1].toString().toBoolean()
                 chipStore.isChecked = currentProperty.poi[2].toString().toBoolean()
                 chipPark.isChecked = currentProperty.poi[3].toString().toBoolean()
@@ -163,6 +152,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 chipHospital.isChecked = currentProperty.poi[5].toString().toBoolean()
 
                 tvEntryDate.text = getString(R.string.entry_date_param, currentProperty.availableDate)
+                // TODO IF dans le VM
                 tvDescription.text = if (currentProperty.description == "") "Write something!!!" else currentProperty.description
                 tvArea.text = if (currentProperty.areaInMeters.toString() == "") "0 m²" else "${currentProperty.areaInMeters} m²"
                 tvRoom.text = if (currentProperty.nbrRoom >= 10) "${currentProperty.nbrRoom}+" else currentProperty.nbrRoom.toString()
@@ -172,10 +162,13 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 tvPostcode.text = currentProperty.postcode
                 tvCity.text = currentProperty.city
                 tvCountry.text = currentProperty.country
+                // TODO String à générer côté VM (à tester aussi !)
                 tvAgent.text = getString(R.string.agent_name, currentPropertyWithAllData.agent.firstName, currentPropertyWithAllData.agent.lastName)
 
+                // TODO Concaténation de String à faire côté VM (à tester aussi !)
                 val currentPropertyAddress = "${currentProperty.street}+${currentProperty.postcode}+${currentProperty.city}"
 
+                // TODO Concaténation de String à faire côté VM (à tester aussi !)
                 glide.load("https://maps.googleapis.com/maps/api/staticmap?" +
                         "center=$currentPropertyAddress" +
                         "&zoom=14" +
@@ -187,9 +180,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         .centerCrop().into(ivMap)
             }
 
-            if (!isFromMapFragment) {
+            if (arguments?.getBoolean(KEY_IS_FROM_MAP_FRAGMENT) == false) {
                 binding.ivMap.setOnClickListener {
-                    viewModel.setCurrentPropertyId(currentProperty.id)
+                    viewModel.setCurrentPropertyId()
                     isFromDetailsFragment = true
                     parentFragmentManager.commit {
                         replace(R.id.fl_container, MapFragment())
@@ -218,12 +211,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.tb_menu_currency -> displayConvertedAndFormattedPrice(currentProperty.priceInDollars)
+            R.id.tb_menu_currency -> viewModel.onCurrencyClicked()
             R.id.tb_menu_edit -> {
                 if (resources.getBoolean(R.bool.isTablet)) {
                     hideDetailsContainer(requireActivity())
                 }
-                viewModel.setCurrentPropertyId(currentProperty.id)
+                viewModel.onEditClicked()
                 parentFragmentManager.commit {
                     setCustomAnimations(R.anim.from_right, R.anim.to_right, R.anim.from_right, R.anim.to_right)
                     replace(R.id.fl_container, EditFragment())

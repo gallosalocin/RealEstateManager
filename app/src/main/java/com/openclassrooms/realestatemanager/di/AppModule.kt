@@ -22,16 +22,6 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGlideInstance(@ApplicationContext context: Context) =
-            Glide.with(context).setDefaultRequestOptions(
-                    RequestOptions()
-                            .placeholder(R.drawable.ic_placeholder)
-                            .error(R.drawable.ic_error)
-                            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            )
-
-    @Singleton
-    @Provides
     fun provideCurrentPropertyRepository() = CurrentPropertyIdRepository()
 
     @Singleton

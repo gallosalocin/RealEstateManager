@@ -81,15 +81,14 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     private fun setupClickOnProperty() {
         propertyAdapter = PropertyAdapter {
             viewModel.setCurrentPropertyId(it.property.id)
-            isFromMapFragment = false
             isForDetailsFragment = true
             parentFragmentManager.commit {
                 if (resources.getBoolean(R.bool.isTablet)) {
                     showDetailsContainer(requireActivity())
-                    replace(R.id.fl_container_tablet, DetailsFragment(), "detailsFragmentTablet")
+                    replace(R.id.fl_container_tablet, DetailsFragment.newInstance(false), "detailsFragmentTablet")
                 } else {
                     setCustomAnimations(R.anim.from_right, R.anim.to_right, R.anim.from_right, R.anim.to_right)
-                    replace(R.id.fl_container, DetailsFragment(), "detailsFragment")
+                    replace(R.id.fl_container, DetailsFragment.newInstance(false), "detailsFragment")
                 }
                 addToBackStack(null)
             }
