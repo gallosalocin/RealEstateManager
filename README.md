@@ -5,8 +5,7 @@ Android application Real Estate
 
 - List Property
 
-![Gif list workmates](https://user-images.githubusercontent.com/49925096/102792329-a5ca5700-43a8-11eb-8af8-40cbb3aa4eac.gif)
-
+![List](https://user-images.githubusercontent.com/49925096/102883480-622b2800-4450-11eb-8d2e-419c388bc362.gif)
 
 - MapView Property
 
@@ -14,20 +13,25 @@ Android application Real Estate
 
 - Property Details
 
-
+![Details](https://user-images.githubusercontent.com/49925096/102884441-e5994900-4451-11eb-9d5a-3d4f67314c04.gif)
 
 - Edit Property
 
-
+![Edit](https://user-images.githubusercontent.com/49925096/102884560-18434180-4452-11eb-9ef6-0257dc960b4f.gif)
 
 - Search Property
 
-
+![Search](https://user-images.githubusercontent.com/49925096/102883653-a74f5a00-4450-11eb-8899-9ddbf3e05fdc.gif)
+![Search ok](https://user-images.githubusercontent.com/49925096/102883934-10cf6880-4451-11eb-8856-b15ee3d8c469.gif)
 
 - Loan Calculator
 
+![Loan](https://user-images.githubusercontent.com/49925096/102884048-3eb4ad00-4451-11eb-94b6-a47ea7f0c021.gif)
 
+- Add Property
 
+![Add first](https://user-images.githubusercontent.com/49925096/102884832-9acc0100-4452-11eb-9d0d-4696ecb709d6.gif)
+![Add fsecond](https://user-images.githubusercontent.com/49925096/102884913-c64eeb80-4452-11eb-9e2a-52157e4422a3.gif)
 
 ## Tech/Framework/Library
 - [Kotlin](https://developer.android.com/kotlin/get-started)
