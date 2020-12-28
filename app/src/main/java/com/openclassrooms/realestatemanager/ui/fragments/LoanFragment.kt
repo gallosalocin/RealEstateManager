@@ -175,10 +175,10 @@ class LoanFragment : Fragment(R.layout.fragment_loan) {
             etLoanAmount.text?.clear()
             etInterestRate.text?.clear()
             etNumberYears.text?.clear()
-            tvTotalPayment.text = resources.getString(R.string.total_amount, "");
-            tvTotalInterest.text = resources.getString(R.string.total_interest, "");
-            tvAnnualPayment.text = resources.getString(R.string.annual_payment, "");
-            tvMonthlyPayment.text = resources.getString(R.string.monthly_payment, "");
+            tvTotalPayment.text = resources.getString(R.string.total_amount, "")
+            tvTotalInterest.text = resources.getString(R.string.total_interest, "")
+            tvAnnualPayment.text = resources.getString(R.string.annual_payment, "")
+            tvMonthlyPayment.text = resources.getString(R.string.monthly_payment, "")
         }
     }
 

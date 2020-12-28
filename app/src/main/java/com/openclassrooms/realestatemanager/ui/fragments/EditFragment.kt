@@ -120,9 +120,13 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         binding.ivAddPhoto.setOnClickListener { setupAddPhotoDialog() }
 
         photoAdapter.setOnItemClickListener {
-            coverPhoto = it.filename
-            coverLabelPhoto = it.label
-            glide.load(coverPhoto).into(binding.ivPhoto)
+            if (it.filename == "") {
+                glide.load(R.drawable.real_estate_no_image).into(binding.ivPhoto)
+            } else {
+                coverPhoto = it.filename
+                coverLabelPhoto = it.label
+                glide.load(coverPhoto).into(binding.ivPhoto)
+            }
         }
 
         photoAdapter.setOnItemDeleteListener { setupDeleteDialog(it, it.filename) }
@@ -225,19 +229,10 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
         )
 
         viewModel.updateProperty(propertyUpdated)
-
         parentFragmentManager.commit {
             replace(R.id.fl_container, ListFragment())
         }
     }
-
-//    // Load property detail photos
-//    private fun loadPropertyPhotos() {
-//        viewModelMain.getAllPropertiesPhotos.observe(viewLifecycleOwner, { propertyPhoto ->
-//            propertyPhotosList = propertyPhoto.filter { it.propertyId == currentProperty.id }
-//            photoAdapter.photosListDetails = propertyPhotosList.reversed()
-//        })
-//    }
 
     // Load property to edit
     private fun loadProperty() {
@@ -269,7 +264,11 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
 
 
             binding.apply {
-                glide.load(currentProperty.coverPhoto).into(ivPhoto)
+                if (currentProperty.coverPhoto == "") {
+                    glide.load(R.drawable.real_estate_no_image).into(ivPhoto)
+                } else {
+                    glide.load(currentProperty.coverPhoto).into(ivPhoto)
+                }
 
                 etPrice.setText(currentProperty.priceInDollars.toString())
                 etArea.setText(currentProperty.areaInMeters.toString())
@@ -356,7 +355,11 @@ class EditFragment : Fragment(R.layout.fragment_edit) {
                     dialogInterface.dismiss()
                 }.create()
 
-        glide.load(photoToDelete).into(deletePhotoImageView)
+        if (photoToDelete == "") {
+            glide.load(R.drawable.real_estate_no_image).into(deletePhotoImageView)
+        } else {
+            glide.load(photoToDelete).into(deletePhotoImageView)
+        }
 
         dialog.show()
 

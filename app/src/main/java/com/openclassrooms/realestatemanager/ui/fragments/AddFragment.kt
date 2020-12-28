@@ -40,6 +40,7 @@ import com.openclassrooms.realestatemanager.utils.Utils
 import com.theartofdev.edmodo.cropper.CropImage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -94,14 +95,11 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-
+        Timber.d("test-> onViewCreated")
         requireActivity().toolbar.title = getString(R.string.add_new_property)
 
         sharedPref = requireActivity().getSharedPreferences(SHARED_PREFERENCES_LOGIN, Context.MODE_PRIVATE)
         bottomNavigationView = requireActivity().findViewById(R.id.bottom_nav_view)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        bottomNavigationView.visibility = if (resources.getBoolean(R.bool.isTablet)) View.VISIBLE else View.GONE
 
         checkAgentId()
 
@@ -141,7 +139,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     // Check for agent id
     private fun checkAgentId() {
         viewModel.getAllAgents.observe(viewLifecycleOwner, { agentsList ->
-            agentsList.forEachIndexed { index, agent ->
+            agentsList.forEachIndexed { _, agent ->
                 if (agent.username == (sharedPref.getString(SHARED_PREFERENCES_USERNAME, ""))) {
                     currentAgentId = agent.id
                 }
@@ -164,6 +162,11 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     private fun saveProperty() {
 
+        if (croppedPhoto == null) {
+            croppedPhoto = ""
+            labelPhoto = ""
+        }
+
         val poiList = ArrayList<Boolean>()
         poiList.add(binding.chipRestaurant.isChecked)
         poiList.add(binding.chipBar.isChecked)
@@ -171,7 +174,6 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         poiList.add(binding.chipPark.isChecked)
         poiList.add(binding.chipSchool.isChecked)
         poiList.add(binding.chipHospital.isChecked)
-
 
         val propertySaved = Property(
                 type = type,
@@ -205,7 +207,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
             it?.let {
                 croppedPhotoUri = it
                 croppedPhoto = it.toString()
-                glide.load(croppedPhotoUri).centerCrop().into(addPhotoImageView)
+                glide.load(croppedPhotoUri).into(addPhotoImageView)
             }
         }
     }
@@ -323,7 +325,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     // Setup DatePicker
     private fun showDatePickerDialog(editText: AppCompatEditText) {
         val getDate = Calendar.getInstance()
-        val datePicker = DatePickerDialog(requireContext(), { datePicker, year, month, day ->
+        val datePicker = DatePickerDialog(requireContext(), { _, year, month, day ->
 
             val selectDate = Calendar.getInstance()
             selectDate.set(Calendar.YEAR, year)
@@ -394,6 +396,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     override fun onStop() {
         super.onStop()
+        Timber.d("test-> onStop")
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         bottomNavigationView.visibility = View.VISIBLE
     }
@@ -401,5 +404,12 @@ class AddFragment : Fragment(R.layout.fragment_add) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("test-> onResume")
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        bottomNavigationView.visibility = if (resources.getBoolean(R.bool.isTablet)) View.VISIBLE else View.GONE
     }
 }

@@ -36,7 +36,7 @@ class PropertyAdapter(
                 Glide.with(itemView)
                         .load(propertyWithAllData.property.coverPhoto)
                         .transition(DrawableTransitionOptions.withCrossFade())
-                        .error(R.drawable.ic_bar)
+                        .error(R.drawable.real_estate_no_image)
                         .into(ivImage)
 
                 tvType.text = propertyWithAllData.property.type

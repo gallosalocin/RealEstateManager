@@ -76,9 +76,8 @@ class PhotoAdapter : RecyclerView.Adapter<PhotoAdapter.PhotoDetailsViewHolder>()
 
                 Glide.with(itemView)
                         .load(propertyPhoto.filename)
-                        .centerCrop()
                         .transition(DrawableTransitionOptions.withCrossFade())
-                        .error(R.drawable.ic_bar)
+                        .error(R.drawable.real_estate_no_image)
                         .into(ivPhoto)
 
                 tvPhotoDescription.text = propertyPhoto.label

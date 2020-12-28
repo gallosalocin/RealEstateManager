@@ -91,7 +91,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         binding.tvDescription.movementMethod = ScrollingMovementMethod()
 
         photoAdapter.setOnItemClickListener {
-            glide.load(it.filename).into(binding.ivPhoto)
+            if (it.filename == "") {
+                glide.load(R.drawable.real_estate_no_image).into(binding.ivPhoto)
+            } else {
+                glide.load(it.filename).into(binding.ivPhoto)
+            }
         }
     }
 
@@ -132,7 +136,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             photoAdapter.photosListDetails = propertyPhotosList.reversed()
 
             binding.apply {
-                glide.load(currentProperty.coverPhoto).into(ivPhoto)
+                if (currentProperty.coverPhoto == "") {
+                    glide.load(R.drawable.real_estate_no_image).into(ivPhoto)
+                } else {
+                    glide.load(currentProperty.coverPhoto).into(ivPhoto)
+
+                }
 
                 tvPrice.text = Utils.formatInDollar(currentProperty.priceInDollars, 0)
 
