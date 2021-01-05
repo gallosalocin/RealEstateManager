@@ -10,6 +10,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -190,6 +191,7 @@ object Utils {
      *  Show Details Container in Tablet Landscape Mode
      */
     fun showDetailsContainer(activity: Activity) {
+        TransitionManager.beginDelayedTransition(activity.findViewById(R.id.sv_right))
         val guideline: Guideline? = activity.findViewById(R.id.guideline)
         val scrollView: ScrollView? = activity.findViewById(R.id.sv_right)
         val divider: View? = activity.findViewById(R.id.divider)

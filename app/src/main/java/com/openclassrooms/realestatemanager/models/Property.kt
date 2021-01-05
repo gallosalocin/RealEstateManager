@@ -1,8 +1,10 @@
 package com.openclassrooms.realestatemanager.models
 
-import android.net.Uri
 import android.os.Parcelable
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -34,11 +36,3 @@ data class Property(
         var coverPhoto: String,
         var labelPhoto: String
 ) : Parcelable
-
-//@Parcelize
-//data class Address(
-//        var street: String,
-//        var postcode: String,
-//        var city: String,
-//        var country: String
-//) : Parcelable
