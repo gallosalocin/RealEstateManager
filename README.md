@@ -33,6 +33,11 @@ Android application Real Estate
 ![Add first](https://user-images.githubusercontent.com/49925096/102884832-9acc0100-4452-11eb-9d0d-4696ecb709d6.gif)
 ![Add fsecond](https://user-images.githubusercontent.com/49925096/102884913-c64eeb80-4452-11eb-9e2a-52157e4422a3.gif)
 
+- Tablet Landscape Mode
+
+![Tablet 1](https://user-images.githubusercontent.com/49925096/103620154-4dac5c80-4f33-11eb-90ba-cac73a5cc357.png)
+![Tablet 2](https://user-images.githubusercontent.com/49925096/103620457-ca3f3b00-4f33-11eb-8f35-23fe211e6584.png)
+
 ## Tech/Framework/Library
 - [Kotlin](https://developer.android.com/kotlin/get-started)
 - [AndroidX](https://developer.android.com/jetpack/androidx)
