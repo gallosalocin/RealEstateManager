@@ -48,8 +48,8 @@ class DetailsViewModel @ViewModelInject constructor(
 
         viewStateMediatorLiveData.value = DetailsViewState(
             when (currencyType) {
-                CurrencyType.EURO -> utilsAsClass.formatInEuro(utilsAsClass.convertDollarToEuro(propertyWithAllData.property.priceInDollars), 2)
-                CurrencyType.DOLLAR -> utilsAsClass.formatInDollar(propertyWithAllData.property.priceInDollars, 2)
+                CurrencyType.EURO -> utilsAsClass.formatInEuro(utilsAsClass.convertDollarToEuro(propertyWithAllData.property.priceInDollars), 0)
+                CurrencyType.DOLLAR -> utilsAsClass.formatInDollar(propertyWithAllData.property.priceInDollars, 0)
             }
         )
     }

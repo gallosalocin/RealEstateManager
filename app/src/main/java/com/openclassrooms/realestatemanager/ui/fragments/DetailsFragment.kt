@@ -124,7 +124,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     // Load property
     private fun loadProperty() {
         viewModel.getViewStateLiveData().observe(viewLifecycleOwner) { currentPropertyWithAllData ->
-            currentProperty = currentPropertyWithAllData.property
+            /*currentProperty = currentPropertyWithAllData.property
 
             requireActivity().title = currentProperty.type
 
@@ -196,7 +196,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         addToBackStack(null)
                     }
                 }
-            }
+            }*/
 
         }
     }

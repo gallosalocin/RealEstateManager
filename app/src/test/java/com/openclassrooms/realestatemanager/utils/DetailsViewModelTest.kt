@@ -31,78 +31,46 @@ class DetailsViewModelTest {
     @get:Rule
     var rule: TestRule = InstantTaskExecutorRule()
 
-    private val propertyWithAllDataMutableLiveData = MutableLiveData<PropertyWithAllData>()
     private val currentPropertyIdMutableLiveData = MutableLiveData<Int>()
+    private val propertyWithAllDataMutableLiveData = MutableLiveData<PropertyWithAllData>()
 
-    private val mainRepository = Mockito.mock(MainRepository::class.java)
     private val currentPropertyIdRepository = Mockito.mock(CurrentPropertyIdRepository::class.java)
+    private val mainRepository = Mockito.mock(MainRepository::class.java)
     private val utilsAsClass = Mockito.mock(UtilsAsClass::class.java)
 
     private lateinit var viewModel: DetailsViewModel
 
     @Before
     fun setUp() {
-        Mockito.doReturn(propertyWithAllDataMutableLiveData).`when`(mainRepository).getPropertyForId(Mockito.eq(EXPECTED_PROPERTY_ID))
+        propertyWithAllDataMutableLiveData.value = getDefaultPropertyWithAllData()
+        currentPropertyIdMutableLiveData.value = EXPECTED_PROPERTY_ID
+
         Mockito.doReturn(currentPropertyIdMutableLiveData).`when`(currentPropertyIdRepository).getCurrentPropertyIdLiveData()
+        Mockito.doReturn(propertyWithAllDataMutableLiveData).`when`(mainRepository).getPropertyForId(Mockito.eq(EXPECTED_PROPERTY_ID))
+        Mockito.doReturn("$150,000").`when`(utilsAsClass).formatInDollar(150_000, 0)
 
         viewModel = DetailsViewModel(currentPropertyIdRepository, mainRepository, utilsAsClass)
     }
 
     @Test
-    fun `nominal case - verify ViewState generation`() {
-        // When
-        viewModel.getViewStateLiveData().getOrAwaitValue {
-            // Then
-            Mockito.verify(mainRepository).getPropertyForId(Mockito.eq(EXPECTED_PROPERTY_ID))
-            Mockito.verify(currentPropertyIdRepository).getCurrentPropertyIdLiveData()
-            Mockito.verifyNoMoreInteractions(mainRepository, currentPropertyIdRepository)
-        }
-    }
-
-    @Test
     fun `nominal case - base currency is dollar`() {
-        // Given
-        Mockito.doReturn("$150,000").`when`(utilsAsClass).formatInDollar(150_000, 0)
-
-        propertyWithAllDataMutableLiveData.value = getDefaultPropertyWithAllData()
-
         // When
         val result = viewModel.getViewStateLiveData().getOrAwaitValue()
 
         // Then
-        Truth.assertThat(result).isEqualTo(
-            DetailsViewState(
-                "$150,000"
-            )
-        )
+        Truth.assertThat(result).isEqualTo(getDefaultDetailsViewState())
+
+        Mockito.verify(mainRepository).getPropertyForId(Mockito.eq(EXPECTED_PROPERTY_ID))
+        Mockito.verify(currentPropertyIdRepository).getCurrentPropertyIdLiveData()
+        Mockito.verifyNoMoreInteractions(mainRepository, currentPropertyIdRepository)
     }
 
     @Test
-    fun `nominal case - base currency is euro`() {
+    fun `edge case - currency change to euro`() {
         // Given
-        Mockito.doReturn("150 000€").`when`(utilsAsClass).formatInEuro(150_000, 0)
-
-        propertyWithAllDataMutableLiveData.value = getDefaultPropertyWithAllData()
-
-        // When
-        val result = viewModel.getViewStateLiveData().getOrAwaitValue()
-
-        // Then
-        Truth.assertThat(result).isEqualTo(
-            DetailsViewState(
-                "150 000€"
-            )
-        )
-    }
-
-
-    @Test
-    fun `edge case - base currency is dollar then user clicks on change currency button`() {
-        // Given
-        //Mockito.doReturn("$150,000").`when`(utilsAsClass).formatInDollar(150_000, 0)
-        Mockito.doReturn("150 000€").`when`(utilsAsClass).formatInEuro(150_000, 0)
-
-        propertyWithAllDataMutableLiveData.value = getDefaultPropertyWithAllData()
+        val euroPrice = "120 000€"
+        Mockito.doReturn(euroPrice).`when`(utilsAsClass).formatInEuro(120_000, 0)
+        Mockito.doReturn(120_000).`when`(utilsAsClass).convertDollarToEuro(150_000)
 
         // When
         viewModel.onCurrencyChangeButtonClicked()
@@ -110,16 +78,19 @@ class DetailsViewModelTest {
 
         // Then
         Truth.assertThat(result).isEqualTo(
-            DetailsViewState(
-                "150 000€"
+            getDefaultDetailsViewState().copy(
+                price = euroPrice
             )
         )
     }
 
+    // TODO This test doesn't really mean anything,
+    //  it's just an example to see how easy it is to show in Kotlin what is tested with "copy()" function + named parameters
     @Test
-    fun `edge case - base currency is euro and price is less than 1'000 eurs`() {
+    fun `edge case - currency change to euro and price is less than 1'000 euros`() {
         // Given
-        Mockito.doReturn("200€").`when`(utilsAsClass).formatInEuro(200, 0)
+        Mockito.doReturn("150€").`when`(utilsAsClass).formatInEuro(150, 0)
+        Mockito.doReturn(150).`when`(utilsAsClass).convertDollarToEuro(200)
 
         propertyWithAllDataMutableLiveData.value = getDefaultPropertyWithAllData(
             property = getDefaultProperty().copy(
@@ -128,11 +99,14 @@ class DetailsViewModelTest {
         )
 
         // When
+        viewModel.onCurrencyChangeButtonClicked()
         val result = viewModel.getViewStateLiveData().getOrAwaitValue()
 
         // Then
         Truth.assertThat(result).isEqualTo(
-            getDefaultDetailsViewState()
+            getDefaultDetailsViewState().copy(
+                price = "150€"
+            )
         )
     }
 
@@ -158,6 +132,6 @@ class DetailsViewModelTest {
 
     // OUT
     private fun getDefaultDetailsViewState() = DetailsViewState(
-        "200€"
+        "$150,000"
     )
 }

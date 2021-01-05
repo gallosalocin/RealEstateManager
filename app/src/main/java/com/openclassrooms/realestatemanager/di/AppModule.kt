@@ -9,6 +9,7 @@ import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.db.RealEstateDatabase
 import com.openclassrooms.realestatemanager.other.Constants.REAL_ESTATE_DATABASE_NAME
 import com.openclassrooms.realestatemanager.repositories.CurrentPropertyIdRepository
+import com.openclassrooms.realestatemanager.utils.UtilsAsClass
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +30,10 @@ object AppModule {
                             .error(R.drawable.ic_error)
                             .diskCacheStrategy(DiskCacheStrategy.DATA)
             )
+
+    @Singleton
+    @Provides
+    fun provideUtilsAsClass() = UtilsAsClass()
 
     @Singleton
     @Provides
